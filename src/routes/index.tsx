@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import chakraFigure from "@/assets/chakra-figure.jpg";
-import logo from "@/assets/arawat-logo.png";
+
 
 
 export const Route = createFileRoute("/")({
@@ -165,11 +165,11 @@ function Index() {
         />
         <div className="relative z-10 flex flex-col items-center gap-4 px-6 text-center">
           <img
-            src={logo}
+            src="/elephant-logo.jpg"
             alt="Arawat Occult Sciences emblem"
             width={512}
             height={512}
-            className="h-24 w-24 drop-shadow-[0_0_28px_oklch(0.85_0.15_88/0.6)]"
+            className="h-28 w-28 rounded-full border-2 border-gold/40 object-cover mix-blend-multiply drop-shadow-[0_0_32px_oklch(0.85_0.15_88/0.7)]"
             style={{ animation: "float-slow 6s ease-in-out infinite" }}
           />
           <h1 className="text-5xl leading-tight font-bold sm:text-7xl">
