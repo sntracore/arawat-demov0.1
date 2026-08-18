@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import chakraFigure from "@/assets/chakra-figure.jpg";
 import logo from "@/assets/arawat-logo.png";
-import heroVideo from "@/assets/hero-cosmos.mp4.asset.json";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -148,7 +148,7 @@ function Index() {
       <section className="relative flex min-h-[92vh] items-center justify-center overflow-hidden">
         <video
           className="absolute inset-0 h-full w-full object-cover"
-          src={heroVideo.url}
+          src="/hero-cosmos.mp4"
           autoPlay
           muted
           loop
