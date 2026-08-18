@@ -116,6 +116,13 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <a href="/" className="fixed top-4 left-4 z-50">
+          <img
+            src="/elephant-logo.jpg"
+            alt="Arawat Occult Sciences"
+            className="h-12 w-12 rounded-full border border-gold/40 object-cover mix-blend-multiply drop-shadow-[0_0_16px_oklch(0.85_0.15_88/0.6)] transition-transform duration-200 hover:scale-110"
+          />
+        </a>
         {children}
         <Scripts />
       </body>
