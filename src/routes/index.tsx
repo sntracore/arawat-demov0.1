@@ -181,7 +181,7 @@ function Index() {
           <p className="text-xs tracking-[0.25em] text-gold-soft/80 uppercase sm:text-sm">
             Astrology · Numerology · Astro-Vastu · Aura Scanning
           </p>
-          <p className="max-w-xl text-lg text-muted-foreground sm:text-xl font-display">
+          <p className="max-w-xl text-lg text-muted-foreground italic sm:text-xl font-display">
             Understand your chart. Find clarity. Take better decisions.
           </p>
           <a
