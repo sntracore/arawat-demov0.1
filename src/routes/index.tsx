@@ -172,7 +172,7 @@ function Index() {
             className="h-28 w-28 rounded-full border-2 border-gold/40 object-cover mix-blend-multiply drop-shadow-[0_0_32px_oklch(0.85_0.15_88/0.7)]"
             style={{ animation: "float-slow 6s ease-in-out infinite" }}
           />
-          <h1 className="text-5xl leading-tight font-bold sm:text-7xl">
+          <h1 className="text-5xl leading-tight font-bold italic sm:text-7xl">
             <span className="text-gradient-gold">ARAWAT</span>
             <span className="mt-2 block text-xl font-medium tracking-[0.35em] text-muted-foreground sm:text-2xl">
               OCCULT SCIENCES
