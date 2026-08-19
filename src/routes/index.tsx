@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
 import chakraFigure from "@/assets/chakra-figure.jpg";
 
 
@@ -114,6 +114,85 @@ const allServices = [
   "Any Personal Query",
 ];
 
+function SparkleTrail({ children }: { children: React.ReactNode }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [, setTick] = useState(0);
+  const sparklesRef = useRef<
+    { id: number; x: number; y: number; size: number; color: string; born: number }[]
+  >([]);
+  const idRef = useRef(0);
+
+  const colors = [
+    "oklch(0.85 0.15 88)",
+    "oklch(0.93 0.11 95)",
+    "oklch(0.82 0.15 85)",
+    "oklch(1 0.12 90)",
+    "oklch(0.72 0.13 70)",
+  ];
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      for (let i = 0; i < 3; i++) {
+        sparklesRef.current.push({
+          id: idRef.current++,
+          x: x + (Math.random() - 0.5) * 30,
+          y: y + (Math.random() - 0.5) * 30,
+          size: Math.random() * 6 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          born: Date.now(),
+        });
+      }
+      // keep max 60 sparkles
+      if (sparklesRef.current.length > 60) {
+        sparklesRef.current = sparklesRef.current.slice(-40);
+      }
+      setTick((t) => t + 1);
+    },
+    [],
+  );
+
+  // cleanup old sparkles
+  const now = Date.now();
+  sparklesRef.current = sparklesRef.current.filter((s) => now - s.born < 700);
+
+  return (
+    <div
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      className="relative"
+      style={{ overflow: "visible" }}
+    >
+      {children}
+      {sparklesRef.current.map((s) => {
+        const age = (now - s.born) / 700;
+        return (
+          <span
+            key={s.id}
+            className="pointer-events-none absolute z-50"
+            style={{
+              left: s.x,
+              top: s.y,
+              width: s.size,
+              height: s.size,
+              borderRadius: "50%",
+              background: s.color,
+              boxShadow: `0 0 ${s.size * 2}px ${s.color}, 0 0 ${s.size * 4}px ${s.color}`,
+              opacity: 1 - age,
+              transform: `scale(${1 - age * 0.5})`,
+              transition: "opacity 0.1s, transform 0.1s",
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 function Diamond({ color, active }: { color: string; active: boolean }) {
   return (
     <svg
@@ -164,14 +243,6 @@ function Index() {
           aria-hidden
         />
         <div className="relative z-10 flex flex-col items-center gap-4 px-6 text-center">
-          <img
-            src="/elephant-logo.jpg"
-            alt="Arawat Occult Sciences emblem"
-            width={512}
-            height={512}
-            className="h-28 w-28 rounded-full border-2 border-gold/40 object-cover mix-blend-multiply drop-shadow-[0_0_32px_oklch(0.85_0.15_88/0.7)]"
-            style={{ animation: "float-slow 6s ease-in-out infinite" }}
-          />
           <h1 className="text-5xl leading-tight font-bold italic sm:text-7xl">
             <span className="text-gradient-gold">ARAWAT</span>
             <span className="mt-2 block text-xl font-medium tracking-[0.35em] text-muted-foreground sm:text-2xl">
@@ -359,6 +430,7 @@ function Index() {
       </section>
 
       {/* Visiting Cards */}
+      <SparkleTrail>
       <section className="relative z-10 mx-auto mt-24 max-w-4xl px-6">
         <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Our Card ✦</h2>
         <p className="mt-3 text-center text-base text-muted-foreground italic">
@@ -405,6 +477,7 @@ function Index() {
           </div>
         </div>
       </section>
+      </SparkleTrail>
 
       {/* Consultation Form */}
       <section className="relative z-10 mx-auto mt-24 max-w-2xl px-6">
