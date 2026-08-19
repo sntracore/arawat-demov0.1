@@ -25,7 +25,7 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const WHATSAPP = "https://wa.me/918979612599";
+const WHATSAPP = "https://wa.me/919760340289";
 
 const chakras = [
   {
@@ -355,6 +355,138 @@ function Index() {
           <p className="mt-4 text-sm tracking-widest text-muted-foreground uppercase">
             One question. One conversation. A little more clarity.
           </p>
+        </div>
+      </section>
+
+      {/* Visiting Cards */}
+      <section className="relative z-10 mx-auto mt-24 max-w-4xl px-6">
+        <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Our Card ✦</h2>
+        <p className="mt-3 text-center text-base text-muted-foreground italic">
+          Hover to flip — see the other side.
+        </p>
+        <div className="mt-10 flex flex-col items-center gap-10 sm:flex-row sm:justify-center">
+          {/* Card 1 — Front */}
+          <div className="flip-card h-80 w-64 sm:h-96 sm:w-72">
+            <div className="flip-card-inner">
+              <div className="flip-card-front">
+                <img
+                  src="/card1.jpeg"
+                  alt="Arawat Occult Sciences — Front"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="flip-card-back">
+                <img
+                  src="/card2.jpeg"
+                  alt="Arawat Occult Sciences — Back"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </div>
+          </div>
+          {/* Card 2 — Back */}
+          <div className="flip-card h-80 w-64 sm:h-96 sm:w-72">
+            <div className="flip-card-inner">
+              <div className="flip-card-front">
+                <img
+                  src="/card2.jpeg"
+                  alt="Arawat Occult Sciences — Back"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="flip-card-back">
+                <img
+                  src="/card1.jpeg"
+                  alt="Arawat Occult Sciences — Front"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Consultation Form */}
+      <section className="relative z-10 mx-auto mt-24 max-w-2xl px-6">
+        <div className="surface-card rounded-3xl p-10">
+          <h2 className="text-center text-3xl text-gradient-gold sm:text-3xl">✦ Book Your Consultation ✦</h2>
+          <p className="mt-3 text-center text-base text-muted-foreground italic">
+            Share your details — Acharya Aarti will reach out on WhatsApp.
+          </p>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const fd = new FormData(e.currentTarget);
+              const name = fd.get("name") as string;
+              const phone = fd.get("phone") as string;
+              const dob = fd.get("dob") as string;
+              const time = fd.get("time") as string;
+              const place = fd.get("place") as string;
+              const service = fd.get("service") as string;
+              const query = fd.get("query") as string;
+
+              const msg = [
+                `🙏 *New Consultation Request*`,
+                ``,
+                `👤 *Name:* ${name}`,
+                `📱 *Phone:* ${phone}`,
+                `🎂 *DOB:* ${dob}`,
+                `🕐 *Birth Time:* ${time || "Not sure"}`,
+                `📍 *Birth Place:* ${place || "Not sure"}`,
+                `🔮 *Service:* ${service}`,
+                query ? `💬 *Query:* ${query}` : ``,
+              ]
+                .filter(Boolean)
+                .join("\n");
+
+              window.open(`https://wa.me/919760340289?text=${encodeURIComponent(msg)}`, "_blank");
+            }}
+            className="mt-8 space-y-5"
+          >
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div>
+                <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Full Name *</label>
+                <input name="name" required className="form-input" placeholder="Your name" />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Phone *</label>
+                <input name="phone" required className="form-input" placeholder="+91 XXXXX XXXXX" />
+              </div>
+            </div>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div>
+                <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Date of Birth *</label>
+                <input name="dob" type="date" required className="form-input" />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Birth Time</label>
+                <input name="time" type="time" className="form-input" />
+              </div>
+            </div>
+            <div>
+              <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Birth Place</label>
+              <input name="place" className="form-input" placeholder="City, State" />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Service Needed *</label>
+              <select name="service" required className="form-input">
+                <option value="">Select a service</option>
+                {allServices.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Your Query</label>
+              <textarea name="query" rows={3} className="form-input" placeholder="What guidance are you looking for?" />
+            </div>
+            <button
+              type="submit"
+              className="w-full rounded-full bg-primary px-6 py-3 text-sm font-semibold tracking-wide text-primary-foreground uppercase transition-transform duration-200 hover:scale-[1.02]"
+            >
+              Send on WhatsApp →
+            </button>
+          </form>
         </div>
       </section>
 
