@@ -317,7 +317,7 @@ function AIBot() {
       </button>
 
       {open && (
-        <div className="fixed bottom-36 left-6 z-50 flex w-80 flex-col overflow-hidden rounded-2xl border border-gold/30" style={{ background: "linear-gradient(160deg, oklch(0.22 0.08 300 / 0.97), oklch(0.16 0.06 300 / 0.97))", boxShadow: "0 20px 60px -15px oklch(0 0 0 / 0.8)" }}>
+        <div className="fixed bottom-36 left-6 z-50 flex w-80 flex-col overflow-hidden rounded-2xl border border-gold/30 backdrop-blur-md" style={{ background: "linear-gradient(160deg, oklch(0.22 0.08 300 / 0.97), oklch(0.16 0.06 300 / 0.97))", boxShadow: "0 20px 60px -15px oklch(0 0 0 / 0.8)" }}>
           <div className="flex items-center gap-3 px-4 py-3" style={{ background: "linear-gradient(135deg, oklch(0.82 0.15 85 / 0.2), oklch(0.65 0.24 305 / 0.15))" }}>
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gold/20 text-gold text-sm font-bold">A</div>
             <div>
@@ -386,7 +386,7 @@ function Index() {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(75% 55% at 50% 45%, oklch(0.12 0.05 300 / 0.35), oklch(0.11 0.05 300 / 0.8) 85%), linear-gradient(180deg, transparent 55%, oklch(0.11 0.05 300) 100%)",
+              "radial-gradient(75% 55% at 50% 45%, oklch(0.1 0.03 300 / 0.4), oklch(0.09 0.03 300 / 0.9) 85%), linear-gradient(180deg, transparent 55%, oklch(0.11 0.05 300) 100%)",
           }}
           aria-hidden
         />
@@ -586,7 +586,7 @@ function Index() {
         </p>
         <div className="mt-10 flex flex-col items-center gap-10 sm:flex-row sm:justify-center">
           {/* Card 1 — Front */}
-          <div className="flip-card h-80 w-64 sm:h-96 sm:w-72">
+          <div className="flip-card h-80 w-64 sm:h-96 sm:w-72 hover:scale-[1.03] transition-transform duration-300">
             <div className="flip-card-inner">
               <div className="flip-card-front">
                 <img
@@ -605,7 +605,7 @@ function Index() {
             </div>
           </div>
           {/* Card 2 — Back */}
-          <div className="flip-card h-80 w-64 sm:h-96 sm:w-72">
+          <div className="flip-card h-80 w-64 sm:h-96 sm:w-72 hover:scale-[1.03] transition-transform duration-300">
             <div className="flip-card-inner">
               <div className="flip-card-front">
                 <img
