@@ -199,7 +199,7 @@ function SparkleTrail({ children }: { children: React.ReactNode }) {
           x: x + (Math.random() - 0.5) * 30,
           y: y + (Math.random() - 0.5) * 30,
           size: Math.random() * 6 + 3,
-          color: colors[Math.floor(Math.random() * colors.length)],
+          color: colors[Math.floor(Math.random() * colors.length)]!,
           born: Date.now(),
         });
       }
