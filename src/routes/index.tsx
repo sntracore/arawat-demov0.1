@@ -305,7 +305,7 @@ function AIBot() {
     <>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="fixed bottom-20 right-22 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-transform duration-200 hover:scale-110"
+        className="fixed bottom-20 left-6 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-transform duration-200 hover:scale-110"
         style={{ background: "linear-gradient(135deg, oklch(0.82 0.15 85), oklch(0.65 0.24 305))", boxShadow: "0 4px 20px oklch(0.82 0.15 88 / 0.5)" }}
         aria-label="Chat with Arawat AI assistant"
       >
@@ -317,7 +317,7 @@ function AIBot() {
       </button>
 
       {open && (
-        <div className="fixed bottom-36 right-22 z-50 flex w-80 flex-col overflow-hidden rounded-2xl border border-gold/30" style={{ background: "linear-gradient(160deg, oklch(0.22 0.08 300 / 0.97), oklch(0.16 0.06 300 / 0.97))", boxShadow: "0 20px 60px -15px oklch(0 0 0 / 0.8)" }}>
+        <div className="fixed bottom-36 left-6 z-50 flex w-80 flex-col overflow-hidden rounded-2xl border border-gold/30" style={{ background: "linear-gradient(160deg, oklch(0.22 0.08 300 / 0.97), oklch(0.16 0.06 300 / 0.97))", boxShadow: "0 20px 60px -15px oklch(0 0 0 / 0.8)" }}>
           <div className="flex items-center gap-3 px-4 py-3" style={{ background: "linear-gradient(135deg, oklch(0.82 0.15 85 / 0.2), oklch(0.65 0.24 305 / 0.15))" }}>
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gold/20 text-gold text-sm font-bold">A</div>
             <div>
