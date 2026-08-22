@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useCallback, useRef, useEffect } from "react";
 import chakraFigure from "@/assets/chakra-figure.jpg";
-
-
+import arawatLogo from "@/assets/arawat-logo.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -11,15 +10,17 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Interactive chakra guide by Acharya Aarti — astrology, numerology, astro-vastu & aura scanning. Tap each chakra to discover the remedy meant for you.",
+          "Interactive chakra guide by Acharya Aarti — astrology, numerology, astro-vastu & aura scanning. Tap each chakra to hear its mantra and discover the remedy meant for you.",
       },
       { property: "og:title", content: "Arawat Occult Sciences" },
       {
         property: "og:description",
-        content: "Tap each chakra to discover your guidance. 7+ years of occult sciences with Acharya Aarti.",
+        content: "Tap each chakra to hear its voice and discover your guidance. 7+ years of occult sciences with Acharya Aarti.",
       },
+      { property: "og:image", content: "/card1.jpeg" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: "#170d26" },
     ],
   }),
   component: Index,
@@ -37,31 +38,56 @@ function formatDateIndian(d: Date) {
   return `${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-function playCrystalSound() {
+let audioCtx: AudioContext | null = null;
+
+function playChakraVoice(c: { freq: number; mantra: string }) {
   try {
-    const ctx = new AudioContext();
+    if (!audioCtx) audioCtx = new AudioContext();
+    if (audioCtx.state === "suspended") void audioCtx.resume();
+    const ctx = audioCtx;
     const t = ctx.currentTime;
-    const osc = ctx.createOscillator();
-    const g = ctx.createGain();
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(1200, t);
-    osc.frequency.exponentialRampToValueAtTime(2400, t + 0.08);
-    g.gain.setValueAtTime(0.15, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
-    osc.connect(g).connect(ctx.destination);
-    osc.start(t);
-    osc.stop(t + 0.45);
-    const o2 = ctx.createOscillator();
-    const g2 = ctx.createGain();
-    o2.type = "triangle";
-    o2.frequency.setValueAtTime(1800, t);
-    o2.frequency.exponentialRampToValueAtTime(3600, t + 0.05);
-    g2.gain.setValueAtTime(0.08, t);
-    g2.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
-    o2.connect(g2).connect(ctx.destination);
-    o2.start(t);
-    o2.stop(t + 0.3);
+    const harmonics: [number, number][] = [[1, 0.14], [1.5, 0.06], [2, 0.05], [2.997, 0.028]];
+    for (const [mult, vol] of harmonics) {
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = c.freq * mult;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(vol, t + 0.12);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 3.4);
+      osc.connect(g).connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + 3.6);
+    }
+    const sp = ctx.createOscillator();
+    const sg = ctx.createGain();
+    sp.type = "triangle";
+    sp.frequency.setValueAtTime(1800, t);
+    sp.frequency.exponentialRampToValueAtTime(3600, t + 0.06);
+    sg.gain.setValueAtTime(0.06, t);
+    sg.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+    sp.connect(sg).connect(ctx.destination);
+    sp.start(t);
+    sp.stop(t + 0.35);
   } catch { /* silent */ }
+
+  try {
+    if (!("speechSynthesis" in window)) return;
+    const synth = window.speechSynthesis;
+    synth.cancel();
+    const u = new SpeechSynthesisUtterance(c.mantra);
+    u.rate = 0.55;
+    u.pitch = 0.85;
+    const voices = synth.getVoices();
+    const voice =
+      voices.find((v) => /^(hi|en)[-_]IN/i.test(v.lang)) ?? voices[0];
+    if (voice) u.voice = voice;
+    synth.speak(u);
+  } catch { /* silent */ }
+}
+
+if (typeof window !== "undefined" && "speechSynthesis" in window) {
+  window.speechSynthesis.getVoices();
 }
 
 const BOT_REPLIES: { pattern: RegExp; reply: string }[] = [
@@ -83,12 +109,30 @@ function getBotReply(input: string): string {
   return `I can help you with astrology, kundali reading, vastu, career guidance, love & relationship advice, and more. You can also reach Acharya Aarti directly at ${PHONE}. What specific guidance are you looking for?`;
 }
 
-const chakras = [
+type Chakra = {
+  name: string;
+  label: string;
+  top: string;
+  color: string;
+  mantra: string;
+  glyph: string;
+  freq: number;
+  element: string;
+  theme: string;
+  line: string;
+  services: string[];
+};
+
+const chakras: Chakra[] = [
   {
     name: "Sahasrara",
     label: "Crown",
     top: "44.6%",
     color: "oklch(0.65 0.24 305)",
+    mantra: "Aum",
+    glyph: "\u0950",
+    freq: 963,
+    element: "Cosmic Consciousness",
     theme: "Spiritual Guidance & Remedies",
     line: "Jab sab kuch theek lagta hai par mann khaali — yahan se path khulta hai.",
     services: ["Spiritual Guidance & Remedies", "Any Personal Query"],
@@ -98,6 +142,10 @@ const chakras = [
     label: "Third Eye",
     top: "48.4%",
     color: "oklch(0.55 0.2 270)",
+    mantra: "Om",
+    glyph: "\u0950",
+    freq: 852,
+    element: "Light / Intuition",
     theme: "Astrology & Kundali Reading",
     line: "Aapki janm kundali ka blueprint — timing, dasha aur sahi decision.",
     services: ["Kundali Milan", "Marriage & Compatibility", "Numerology & Name Analysis"],
@@ -107,6 +155,10 @@ const chakras = [
     label: "Throat",
     top: "52.6%",
     color: "oklch(0.7 0.15 230)",
+    mantra: "Ham",
+    glyph: "\u0939\u0902",
+    freq: 741,
+    element: "Ether / Sound",
     theme: "Open Query Hour",
     line: "Ek sawaal, ek baat-cheet, thodi aur clarity.",
     services: ["Open Query Hour", "Mobile Number & Wallpaper Analysis"],
@@ -116,6 +168,10 @@ const chakras = [
     label: "Heart",
     top: "57.3%",
     color: "oklch(0.75 0.18 150)",
+    mantra: "Yam",
+    glyph: "\u092F\u0902",
+    freq: 639,
+    element: "Air",
     theme: "Love, Relationship & Family",
     line: "Rishton ki uljhan ke peeche hamesha ek energy pattern hota hai.",
     services: ["Love & Relationship", "Family Matters", "Special Chant for Healthy Relationships"],
@@ -125,6 +181,10 @@ const chakras = [
     label: "Solar Plexus",
     top: "62%",
     color: "oklch(0.85 0.17 90)",
+    mantra: "Ram",
+    glyph: "\u0930\u0902",
+    freq: 528,
+    element: "Fire",
     theme: "Career, Business & Money",
     line: "Mehnat poori, result adhoora? Yeh chakra usi block ki baat karta hai.",
     services: ["Career & Professional Life", "Business & Financial Growth", "Special Chant for Money Attraction"],
@@ -134,6 +194,10 @@ const chakras = [
     label: "Sacral",
     top: "66.8%",
     color: "oklch(0.72 0.19 55)",
+    mantra: "Vam",
+    glyph: "\u0935\u0902",
+    freq: 417,
+    element: "Water",
     theme: "Children & Learning",
     line: "Bachchon ka focus, wellness aur unki apni speed.",
     services: ["Children's Concentration & Focus Mantras", "Children Wellness Guidance"],
@@ -143,6 +207,10 @@ const chakras = [
     label: "Root",
     top: "77.2%",
     color: "oklch(0.6 0.22 25)",
+    mantra: "Lam",
+    glyph: "\u0932\u0902",
+    freq: 396,
+    element: "Earth",
     theme: "Home, Vastu & Well-being",
     line: "Ghar ki disha theek, toh jeevan ki dhara theek.",
     services: ["Astro-Vastu Guidance", "Aura & Energy Reading", "Special Chant for Health & Well-being"],
@@ -151,7 +219,7 @@ const chakras = [
 
 const allServices = [
   "Children's Concentration & Focus Mantras",
-  "Children Wellness Guidence",
+  "Children Wellness Guidance",
   "Family Matters",
   "Career & Professional Life",
   "Business & Financial Growth",
@@ -160,7 +228,7 @@ const allServices = [
   "Kundali Milan",
   "Marriage & Compatibility",
   "Numerology & Name Analysis",
-  "Mobile number and wallpaper analysis",
+  "Mobile Number & Wallpaper Analysis",
   "Aura & Energy Reading",
   "Special Chant for Money Attraction",
   "Special Chant for Healthy Relationships",
@@ -168,6 +236,38 @@ const allServices = [
   "Spiritual Guidance & Remedies",
   "Open Query Hour",
   "Any Personal Query",
+];
+
+const FAQS: { q: string; a: string }[] = [
+  {
+    q: "How do I book a consultation?",
+    a: `The fastest way is the booking form below or a direct WhatsApp message. You can also call ${PHONE} during Open Query Hours (Tue, Thu, Sat \u2014 3 to 4 PM) for one quick question.`,
+  },
+  {
+    q: "What details should I keep ready?",
+    a: "Your full name, date of birth, and \u2014 if known \u2014 your exact birth time and place of birth. The more precise your birth time, the sharper the reading.",
+  },
+  {
+    q: "Is everything I share confidential?",
+    a: "Absolutely. Every conversation, chart and reading stays strictly between you and Acharya Aarti. 100% confidentiality is the foundation of this practice.",
+  },
+  {
+    q: "What happens during Open Query Hour?",
+    a: "You bring one question \u2014 career, relationship, health or home \u2014 and receive a focused answer with a simple remedy. No long session needed, just clarity.",
+  },
+  {
+    q: "Do the remedies really work?",
+    a: "Remedies here are personalised mantras, chants and energy alignments matched to your chart and chakra state. They are gentle practices meant to be followed consistently \u2014 most clients feel the shift within weeks.",
+  },
+];
+
+const NAV_LINKS: [string, string][] = [
+  ["Chakras", "#chakras"],
+  ["Services", "#services"],
+  ["Query Hour", "#query"],
+  ["About", "#about"],
+  ["FAQ", "#faq"],
+  ["Book", "#book"],
 ];
 
 function SparkleTrail({ children }: { children: React.ReactNode }) {
@@ -274,6 +374,98 @@ function Diamond({ color, active, visited }: { color: string; active: boolean; v
   );
 }
 
+function Reveal({ children, className }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          el.classList.add("is-visible");
+          io.disconnect();
+        }
+      },
+      { threshold: 0.12 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className={`reveal ${className ?? ""}`}>
+      {children}
+    </div>
+  );
+}
+
+function Divider() {
+  return (
+    <div className="relative z-10 mx-auto mt-24 flex max-w-md items-center gap-4 px-6 text-gold/50" aria-hidden>
+      <span className="h-px flex-1 bg-gradient-to-r from-transparent to-gold/40" />
+      <span className="text-lg">✦</span>
+      <span className="h-px flex-1 bg-gradient-to-l from-transparent to-gold/40" />
+    </div>
+  );
+}
+
+const ZODIAC = ["\u2648\uFE0E", "\u2649\uFE0E", "\u264A\uFE0E", "\u264B\uFE0E", "\u264C\uFE0E", "\u264D\uFE0E", "\u264E\uFE0E", "\u264F\uFE0E", "\u2650\uFE0E", "\u2651\uFE0E", "\u2652\uFE0E", "\u2653\uFE0E"];
+
+const HERO_CHIPS = ["Astrology", "Numerology", "Astro-Vastu", "Aura Scanning"];
+
+const HERO_STATS = [
+  ["7+", "Years Experience"],
+  ["18", "Guidance Services"],
+  ["100%", "Confidential"],
+];
+
+function ZodiacWheel() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 m-auto h-[min(130vmin,980px)] w-[min(130vmin,980px)]"
+      style={{ animation: "spin-slow 160s linear infinite" }}
+    >
+      <svg viewBox="0 0 400 400" className="h-full w-full">
+        <circle cx="200" cy="200" r="196" fill="none" stroke="oklch(0.85 0.15 88 / 0.3)" strokeWidth="0.6" strokeDasharray="2 7" />
+        <circle cx="200" cy="200" r="150" fill="none" stroke="oklch(0.85 0.15 88 / 0.2)" strokeWidth="0.5" />
+        {ZODIAC.map((g, i) => {
+          const a = ((i * 30 - 90) * Math.PI) / 180;
+          return (
+            <text
+              key={g}
+              x={(200 + 173 * Math.cos(a)).toFixed(2)}
+              y={(200 + 173 * Math.sin(a)).toFixed(2)}
+              textAnchor="middle"
+              dominantBaseline="central"
+              fontSize="15"
+              fontFamily="var(--font-body), serif"
+              fill="oklch(0.92 0.08 92 / 0.85)"
+            >
+              {g}
+            </text>
+          );
+        })}
+        {Array.from({ length: 12 }, (_, i) => {
+          const a = (i * 30 * Math.PI) / 180;
+          return (
+            <line
+              key={i}
+              x1={(200 + 150 * Math.cos(a)).toFixed(2)}
+              y1={(200 + 150 * Math.sin(a)).toFixed(2)}
+              x2={(200 + 196 * Math.cos(a)).toFixed(2)}
+              y2={(200 + 196 * Math.sin(a)).toFixed(2)}
+              stroke="oklch(0.85 0.15 88 / 0.22)"
+              strokeWidth="0.5"
+            />
+          );
+        })}
+      </svg>
+    </div>
+  );
+}
+
 function AIBot() {
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState<{ from: "bot" | "user"; text: string }[]>([
@@ -366,15 +558,39 @@ function Index() {
   const handleChakraTap = (i: number) => {
     setActive(i);
     setVisited((prev) => new Set(prev).add(i));
-    playCrystalSound();
+    playChakraVoice(chakras[i]!);
+    navigator.vibrate?.(15);
   };
 
   return (
-    <main className="relative">
+    <main id="top" className="relative">
+      <div className="starfield" aria-hidden />
+      <div className="starfield-slow" aria-hidden />
+
+      {/* Nav */}
+      <nav
+        className="fixed inset-x-0 top-0 z-40 border-b border-gold/15 backdrop-blur-md"
+        style={{ background: "oklch(0.16 0.06 300 / 0.55)" }}
+      >
+        <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2.5">
+          <a href="#top" className="flex items-center gap-3">
+            <img src={arawatLogo} alt="Arawat Occult Sciences" className="h-9 w-9 rounded-full border border-gold/40 object-cover shadow-glow transition-transform duration-200 hover:scale-110" />
+            <span className="font-display hidden text-sm tracking-[0.3em] text-gradient-gold sm:inline">ARAWAT</span>
+          </a>
+          <div className="ml-auto flex flex-wrap items-center justify-end gap-x-4 gap-y-0.5 text-[11px] uppercase tracking-[0.18em] text-gold/80">
+            {NAV_LINKS.map(([label, href]) => (
+              <a key={href} href={href} className="font-display transition-colors hover:text-gold">
+                {label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </nav>
+
       {/* Video hero */}
-      <section className="relative flex min-h-[92vh] items-center justify-center overflow-hidden">
+      <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden py-24">
         <video
-          className="absolute inset-0 h-full w-full object-cover"
+          className="hero-video absolute inset-0 h-full w-full object-cover"
           src="/hero-cosmos.mp4"
           autoPlay
           muted
@@ -386,93 +602,165 @@ function Index() {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(75% 55% at 50% 45%, oklch(0.1 0.03 300 / 0.4), oklch(0.09 0.03 300 / 0.9) 85%), linear-gradient(180deg, transparent 55%, oklch(0.11 0.05 300) 100%)",
+              "radial-gradient(75% 55% at 50% 45%, oklch(0.1 0.03 300 / 0.55), oklch(0.09 0.03 300 / 0.92) 85%), linear-gradient(180deg, oklch(0.11 0.05 300 / 0.6) 0%, transparent 30% 70%, oklch(0.11 0.05 300) 100%)",
           }}
           aria-hidden
         />
-        <div className="relative z-10 flex flex-col items-center gap-4 px-6 text-center">
-          <h1 className="text-5xl leading-tight font-bold italic sm:text-7xl">
-            <span className="text-gradient-gold">ARAWAT</span>
+        <ZodiacWheel />
+
+        <div className="relative z-10 flex flex-col items-center gap-5 px-6 pt-14 text-center">
+          <p className="flex items-center justify-center gap-4 font-display text-base text-gold/90">
+            <span className="h-px w-12 bg-gradient-to-r from-transparent to-gold/60" aria-hidden />
+            <span className="text-2xl [text-shadow:0_0_18px_oklch(0.85_0.15_88/0.7)]">ॐ</span>
+            <span className="h-px w-12 bg-gradient-to-l from-transparent to-gold/60" aria-hidden />
+          </p>
+          <h1 className="text-5xl leading-tight font-bold italic sm:text-7xl lg:text-8xl">
+            <span className="text-gradient-gold text-shimmer">ARAWAT</span>
             <span className="mt-2 block text-xl font-medium tracking-[0.35em] text-muted-foreground sm:text-2xl">
               OCCULT SCIENCES
             </span>
           </h1>
-          <p className="text-xs tracking-[0.25em] text-gold-soft/80 uppercase sm:text-sm">
-            Astrology · Numerology · Astro-Vastu · Aura Scanning
-          </p>
-          <p className="max-w-xl text-lg text-muted-foreground italic sm:text-xl font-display">
+
+          <div className="mt-1 flex flex-wrap items-center justify-center gap-2.5">
+            {HERO_CHIPS.map((chip) => (
+              <span
+                key={chip}
+                className="rounded-full border border-gold/30 bg-white/[0.04] px-4 py-1.5 text-[11px] tracking-[0.2em] text-gold-soft uppercase backdrop-blur-sm sm:text-xs"
+              >
+                <span className="mr-1.5 text-gold/60">✦</span>
+                {chip}
+              </span>
+            ))}
+          </div>
+
+          <p className="max-w-xl text-xl text-muted-foreground italic sm:text-2xl font-display">
             Understand your chart. Find clarity. Take better decisions.
           </p>
-          <a
-            href="#chakras"
-            className="mt-4 inline-flex items-center gap-2 rounded-full border border-gold/50 px-7 py-3 text-xs tracking-[0.2em] text-gold uppercase transition-transform duration-200 hover:scale-105"
-          >
-            Tap the diamonds ▾
-          </a>
+          <p className="text-xs tracking-[0.3em] text-gold-soft/80 uppercase">
+            Guided by Acharya Aarti · 7+ Years of Occult Wisdom
+          </p>
+
+          <div className="mt-2 flex flex-col items-center gap-3 sm:flex-row">
+            <a
+              href="#chakras"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3.5 text-xs font-semibold tracking-[0.2em] text-primary-foreground uppercase shadow-glow transition-transform duration-200 hover:scale-105"
+            >
+              Explore Your Chakras
+            </a>
+            <a
+              href="#book"
+              className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-8 py-3.5 text-xs tracking-[0.2em] text-gold uppercase transition-all duration-200 hover:scale-105 hover:bg-gold/10"
+            >
+              Book Consultation
+            </a>
+          </div>
+
+          <dl className="mt-8 grid w-full max-w-2xl grid-cols-3 divide-x divide-gold/15 rounded-2xl border border-gold/20 bg-white/[0.03] py-5 backdrop-blur-md">
+            {HERO_STATS.map(([num, label]) => (
+              <div key={label} className="px-3">
+                <dt className="sr-only">{label}</dt>
+                <dd className="font-display text-2xl font-bold text-gradient-gold sm:text-3xl">{num}</dd>
+                <dd className="mt-1 text-[10px] tracking-[0.2em] text-muted-foreground uppercase sm:text-[11px]">
+                  {label}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
+
+        <a
+          href="#chakras"
+          aria-label="Scroll down to your seven chakras"
+          className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-center text-gold/70 transition-colors hover:text-gold"
+        >
+          <span className="block text-[10px] tracking-[0.35em] uppercase">Scroll</span>
+          <span className="scroll-cue mt-1 block text-lg" aria-hidden>▾</span>
+        </a>
       </section>
 
       {/* Header */}
       <header
         id="chakras"
-        className="relative z-10 mx-auto flex max-w-6xl scroll-mt-8 flex-col items-center gap-3 px-6 pt-20 text-center"
+        className="relative z-10 mx-auto flex max-w-6xl scroll-mt-24 flex-col items-center gap-3 px-6 pt-20 text-center"
       >
-        <h2 className="text-3xl text-gradient-gold sm:text-4xl">✦ Your Seven Diamonds ✦</h2>
-        <p className="max-w-xl text-lg text-muted-foreground italic">
-          Har chakra ek heera hai — tap kijiye aur page aapke liye badal jayega.
-        </p>
-        <span className="rounded-full border border-gold/40 px-4 py-1 text-xs tracking-widest text-gold uppercase">
-          ✦ 7+ Years of Experience ✦
-        </span>
+        <Reveal>
+          <h2 className="text-3xl text-gradient-gold sm:text-4xl">✦ Your Seven Diamonds ✦</h2>
+          <p className="mt-3 max-w-xl text-lg text-muted-foreground italic">
+            Har chakra ek heera hai — tap kijiye, uski awaaz suniye aur page aapke liye badal jayega.
+          </p>
+          <div className="mt-4 flex justify-center">
+            <span className="rounded-full border border-gold/40 px-4 py-1 text-xs tracking-widest text-gold uppercase">
+              ✦ 7+ Years of Experience ✦
+            </span>
+          </div>
+        </Reveal>
       </header>
 
       {/* Interactive chakra */}
       <section className="relative z-10 mx-auto mt-14 grid max-w-6xl items-center gap-10 px-6 lg:grid-cols-[1fr_1fr]">
-        <div className="relative mx-auto w-full max-w-md">
-          <div className="absolute -inset-6 rounded-[3rem] bg-accent/20 blur-3xl" aria-hidden />
-          <img
-            src={chakraFigure}
-            alt="Meditating silhouette with seven glowing chakras before a golden zodiac mandala"
-            width={1024}
-            height={1280}
-            className="relative rounded-[2rem] border border-gold/25 shadow-card"
-          />
-          {chakras.map((c, i) => (
-            <button
-              key={c.name}
-              type="button"
-              onClick={() => handleChakraTap(i)}
-              aria-label={`${c.label} chakra — ${c.theme}`}
-              aria-pressed={active === i}
-              className="absolute left-1/2 z-20 h-8 w-8 -translate-x-1/2 -translate-y-1/2 outline-none focus-visible:ring-2 focus-visible:ring-gold"
-              style={{
-                top: c.top,
-                animation: active === i ? "float-slow 3s ease-in-out infinite" : undefined,
-              }}
-            >
-              <Diamond color={c.color} active={active === i} visited={visited.has(i)} />
-              {active === i && (
+        <Reveal>
+          <div className="relative mx-auto w-full max-w-md">
+            <div className="absolute -inset-6 rounded-[3rem] bg-accent/20 blur-3xl" aria-hidden />
+            <img
+              src={chakraFigure}
+              alt="Meditating silhouette with seven glowing chakras before a golden zodiac mandala"
+              width={1024}
+              height={1280}
+              className="relative rounded-[2rem] border border-gold/25 shadow-card"
+            />
+            {chakras.map((c, i) => (
+              <button
+                key={c.name}
+                type="button"
+                onClick={() => handleChakraTap(i)}
+                aria-label={`${c.label} chakra — chant ${c.mantra} — ${c.theme}`}
+                aria-pressed={active === i}
+                className="absolute left-1/2 z-20 h-8 w-8 -translate-x-1/2 -translate-y-1/2 outline-none transition-transform duration-300 hover:scale-125 focus-visible:ring-2 focus-visible:ring-gold"
+                style={{
+                  top: c.top,
+                  animation: active === i ? "float-slow 3s ease-in-out infinite" : undefined,
+                }}
+              >
+                <Diamond color={c.color} active={active === i} visited={visited.has(i)} />
+                {active === i && (
+                  <span
+                    className="absolute top-1/2 left-1/2 -z-10 block h-14 w-14 -translate-x-1/2 -translate-y-1/2 rounded-full"
+                    style={{
+                      background: `radial-gradient(circle, ${c.color} 0%, transparent 70%)`,
+                      opacity: 0.55,
+                      animation: "chakra-pulse 2s ease-in-out infinite",
+                    }}
+                  />
+                )}
                 <span
-                  className="absolute top-1/2 left-1/2 -z-10 block h-14 w-14 -translate-x-1/2 -translate-y-1/2 rounded-full"
-                  style={{
-                    background: `radial-gradient(circle, ${c.color} 0%, transparent 70%)`,
-                    opacity: 0.55,
-                    animation: "chakra-pulse 2s ease-in-out infinite",
-                  }}
-                />
-              )}
-            </button>
-          ))}
-          <p className="mt-4 text-center text-sm tracking-wider text-muted-foreground">
-            ✦ {visited.size} of 7 diamonds explored ✦
-          </p>
-        </div>
+                  className="pointer-events-none absolute top-full left-1/2 mt-1 -translate-x-1/2 whitespace-nowrap rounded-full border border-gold/25 px-2 py-0.5 text-[9px] uppercase tracking-widest opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  style={{ color: c.color, background: "oklch(0.16 0.06 300 / 0.8)", opacity: active === i ? 1 : undefined }}
+                >
+                  {c.mantra}
+                </span>
+              </button>
+            ))}
+            <p className="mt-4 text-center text-sm tracking-wider text-muted-foreground">
+              ✦ {visited.size} of 7 diamonds explored ✦
+            </p>
+            <p className="mt-1 text-center text-xs tracking-widest text-gold/70 uppercase">
+              🔊 Every tap sings its bija mantra
+            </p>
+          </div>
+        </Reveal>
 
         <article
           key={current.name}
-          className="animate-fade-in surface-card rounded-3xl p-8"
+          className="animate-fade-in surface-card relative overflow-hidden rounded-3xl p-8"
           style={{ boxShadow: `0 0 60px -30px ${current.color}` }}
         >
+          <span
+            className="pointer-events-none absolute -right-4 -top-8 text-[10rem] leading-none opacity-[0.07]"
+            style={{ color: current.color }}
+            aria-hidden
+          >
+            {current.glyph}
+          </span>
           <span
             className="text-xs tracking-[0.3em] uppercase"
             style={{ color: current.color }}
@@ -482,7 +770,26 @@ function Index() {
           <h2 className="mt-2 text-3xl text-gradient-gold">{current.name}</h2>
           <p className="mt-1 text-lg text-foreground">{current.theme}</p>
           <p className="mt-4 text-lg text-muted-foreground italic">{current.line}</p>
-          <ul className="mt-6 space-y-3">
+
+          <div
+            className="mt-6 flex items-center gap-4 rounded-2xl border px-5 py-4"
+            style={{ borderColor: `${current.color}44`, background: `linear-gradient(135deg, ${current.color}14, transparent)` }}
+          >
+            <span className="text-4xl leading-none" style={{ color: current.color, textShadow: `0 0 18px ${current.color}` }} aria-hidden>
+              {current.glyph}
+            </span>
+            <div>
+              <p className="text-xs tracking-[0.25em] text-muted-foreground uppercase">Bija Mantra</p>
+              <p className="text-xl font-semibold" style={{ color: current.color }}>
+                “{current.mantra}” · {current.freq} Hz
+              </p>
+            </div>
+            <span className="ml-auto hidden text-xs text-muted-foreground sm:block">🔊 voice on tap</span>
+          </div>
+
+          <p className="mt-5 text-xs tracking-[0.25em] text-muted-foreground uppercase">Element · {current.element}</p>
+
+          <ul className="mt-4 space-y-3">
             {current.services.map((s) => (
               <li key={s} className="flex items-start gap-3 border-b border-border/40 pb-2 text-base">
                 <span style={{ color: current.color }}>✦</span>
@@ -501,28 +808,32 @@ function Index() {
         </article>
       </section>
 
+      <Divider />
+
       {/* Services */}
-      <section className="relative z-10 mx-auto mt-24 max-w-5xl px-6">
-        <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Services ✦</h2>
-        <p className="mt-3 text-center text-base text-muted-foreground">
-          Highlighted for{" "}
-          <span style={{ color: current.color }}>{current.label} — {current.theme}</span>
-        </p>
-        {/* Diamond selector — also controls the page */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-5">
-          {chakras.map((c, i) => (
-            <button
-              key={c.name}
-              type="button"
-              onClick={() => handleChakraTap(i)}
-              aria-label={`Show ${c.theme}`}
-              aria-pressed={active === i}
-              className="h-8 w-8 outline-none focus-visible:ring-2 focus-visible:ring-gold"
-            >
-              <Diamond color={c.color} active={active === i} visited={visited.has(i)} />
-            </button>
-          ))}
-        </div>
+      <section id="services" className="relative z-10 mx-auto mt-4 max-w-5xl scroll-mt-24 px-6">
+        <Reveal>
+          <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Services ✦</h2>
+          <p className="mt-3 text-center text-base text-muted-foreground">
+            Highlighted for{" "}
+            <span style={{ color: current.color }}>{current.label} — {current.theme}</span>
+          </p>
+          {/* Diamond selector — also controls the page */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-5">
+            {chakras.map((c, i) => (
+              <button
+                key={c.name}
+                type="button"
+                onClick={() => handleChakraTap(i)}
+                aria-label={`Show ${c.theme}`}
+                aria-pressed={active === i}
+                className="h-8 w-8 outline-none transition-transform duration-300 hover:scale-125 focus-visible:ring-2 focus-visible:ring-gold"
+              >
+                <Diamond color={c.color} active={active === i} visited={visited.has(i)} />
+              </button>
+            ))}
+          </div>
+        </Reveal>
         <div className="mt-10 grid gap-3 sm:grid-cols-2">
           {allServices.map((s) => {
             const norm = (v: string) => v.toLowerCase().replace(/[^a-z]/g, "");
@@ -555,162 +866,283 @@ function Index() {
         </div>
       </section>
 
+      <Divider />
+
       {/* Query hour */}
-      <section className="relative z-10 mx-auto mt-24 max-w-3xl px-6">
-        <div className="surface-card rounded-3xl p-10 text-center">
-          <h2 className="text-2xl text-gold sm:text-3xl">Open Query Hour</h2>
-          <p className="mt-3 text-lg tracking-wide">Tuesday · Thursday · Saturday</p>
-          <p className="mt-4 inline-block rounded-full bg-primary px-6 py-2 text-lg font-semibold text-primary-foreground">
-            3:00 PM – 4:00 PM
+      <section id="query" className="relative z-10 mx-auto mt-4 max-w-3xl scroll-mt-24 px-6">
+        <Reveal>
+          <div className="surface-card rounded-3xl p-10 text-center">
+            <h2 className="text-2xl text-gold sm:text-3xl">Open Query Hour</h2>
+            <p className="mt-3 text-lg tracking-wide">Tuesday · Thursday · Saturday</p>
+            <p className="mt-4 inline-block rounded-full bg-primary px-6 py-2 text-lg font-semibold text-primary-foreground">
+              3:00 PM – 4:00 PM
+            </p>
+            <a
+              href={WHATSAPP}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="mt-6 block text-3xl font-bold text-gradient-gold"
+            >
+              +91 89796 12599
+            </a>
+            <p className="mt-4 text-sm tracking-widest text-muted-foreground uppercase">
+              One question. One conversation. A little more clarity.
+            </p>
+          </div>
+        </Reveal>
+      </section>
+
+      <Divider />
+
+      {/* About */}
+      <section id="about" className="relative z-10 mx-auto mt-4 max-w-4xl scroll-mt-24 px-6">
+        <Reveal>
+          <div className="surface-card rounded-3xl p-10 sm:p-12">
+            <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Meet Acharya Aarti ✦</h2>
+            <div className="mt-8 flex flex-col items-center gap-8 sm:flex-row sm:items-start">
+              <img
+                src={arawatLogo}
+                alt="Arawat Occult Sciences emblem"
+                width={112}
+                height={112}
+                loading="lazy"
+                className="h-28 w-28 shrink-0 rounded-full border border-gold/40 object-cover shadow-glow"
+              />
+              <div className="space-y-4 text-lg leading-relaxed text-muted-foreground">
+                <p>
+                  <span className="font-semibold text-foreground">Acharya Aarti</span> has spent over seven years
+                  reading charts, auras and the quiet energies that shape our choices. Her approach is simple:
+                  no fear, only clarity — and a remedy you can actually follow.
+                </p>
+                <p>
+                  Her practice weaves together{" "}
+                  <span className="text-gold">astrology, numerology, astro-vastu and aura scanning</span>,
+                  always returning to the seven chakras as a map of where your life feels stuck — and how to
+                  unstick it.
+                </p>
+              </div>
+            </div>
+            <dl className="mt-10 grid grid-cols-2 gap-4 text-center sm:grid-cols-4">
+              {[
+                ["7+", "Years of Practice"],
+                ["18", "Guidance Services"],
+                ["7", "Chakra Paths"],
+                ["100%", "Confidential"],
+              ].map(([num, label]) => (
+                <div key={label} className="rounded-2xl border border-gold/20 bg-white/[0.03] px-3 py-5">
+                  <dt className="sr-only">{label}</dt>
+                  <dd className="text-2xl font-bold text-gradient-gold sm:text-3xl">{num}</dd>
+                  <dd className="mt-1 text-[11px] tracking-widest text-muted-foreground uppercase">{label}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </Reveal>
+      </section>
+
+      <Divider />
+
+      {/* Testimonials */}
+      <section className="relative z-10 mx-auto mt-4 max-w-3xl px-6">
+        <Reveal>
+          <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Words From Seekers ✦</h2>
+          <p className="mt-3 text-center text-base text-muted-foreground italic">
+            Real stories. Real clarity. Arriving soon.
           </p>
-          <a
-            href={WHATSAPP}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="mt-6 block text-3xl font-bold text-gradient-gold"
-          >
-            +91 89796 12599
-          </a>
-          <p className="mt-4 text-sm tracking-widest text-muted-foreground uppercase">
-            One question. One conversation. A little more clarity.
+        </Reveal>
+        <Reveal>
+          <div className="surface-card relative mt-10 overflow-hidden rounded-3xl p-12 text-center sm:p-14">
+            <span className="pointer-events-none absolute -top-6 left-6 text-[7rem] leading-none text-gold/10" aria-hidden>“</span>
+            <span className="pointer-events-none absolute -bottom-12 right-6 text-[7rem] leading-none text-gold/10" aria-hidden>”</span>
+            <p className="text-gradient-gold text-shimmer font-display inline-block rounded-full border border-gold/40 bg-gold/5 px-6 py-1.5 text-[11px] tracking-[0.35em] uppercase">
+              Coming Soon
+            </p>
+            <p className="mx-auto mt-7 max-w-md text-lg italic leading-relaxed text-muted-foreground">
+              Seeker stories are being gathered with care. This space will soon hold the words of those who found their clarity here.
+            </p>
+            <div className="mt-7 flex items-center justify-center gap-3 text-gold/50" aria-hidden>
+              <span className="h-px w-16 bg-gradient-to-r from-transparent to-gold/40" />
+              <span className="font-display text-sm">✧</span>
+              <span className="h-px w-16 bg-gradient-to-l from-transparent to-gold/40" />
+            </div>
+            <p className="mt-7 text-sm text-muted-foreground">Your story could be the first.</p>
+            <a
+              href={WHATSAPP}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="mt-4 inline-flex items-center gap-2 rounded-full border border-gold/40 px-6 py-2.5 text-xs tracking-[0.2em] text-gold uppercase transition-all duration-200 hover:scale-105 hover:bg-gold/10"
+            >
+              Share Your Experience
+            </a>
+          </div>
+        </Reveal>
+      </section>
+
+      <Divider />
+
+      {/* FAQ */}
+      <section id="faq" className="relative z-10 mx-auto mt-4 max-w-3xl scroll-mt-24 px-6">
+        <Reveal>
+          <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Questions, Answered ✦</h2>
+          <p className="mt-3 text-center text-base text-muted-foreground italic">
+            Sab kuch khula, sab kuch saral.
           </p>
+        </Reveal>
+        <div className="mt-10 space-y-4">
+          {FAQS.map((f) => (
+            <details key={f.q} className="faq-item">
+              <summary>
+                {f.q}
+                <span className="chev text-gold/70" aria-hidden>▾</span>
+              </summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
         </div>
       </section>
 
       {/* Visiting Cards */}
       <SparkleTrail>
-      <section className="relative z-10 mx-auto mt-24 max-w-4xl px-6">
-        <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Our Card ✦</h2>
-        <p className="mt-3 text-center text-base text-muted-foreground italic">
-          Hover to flip — see the other side.
-        </p>
-        <div className="mt-10 flex flex-col items-center gap-10 sm:flex-row sm:justify-center">
-          {/* Card 1 — Front */}
-          <div className="flip-card h-80 w-64 sm:h-96 sm:w-72 hover:scale-[1.03] transition-transform duration-300">
-            <div className="flip-card-inner">
-              <div className="flip-card-front">
-                <img
-                  src="/card1.jpeg"
-                  alt="Arawat Occult Sciences — Front"
-                  className="h-full w-full object-cover"
-                />
+        <section className="relative z-10 mx-auto mt-24 max-w-4xl px-6">
+          <Reveal>
+            <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Our Card ✦</h2>
+            <p className="mt-3 text-center text-base text-muted-foreground italic">
+              Hover to flip — see the other side.
+            </p>
+          </Reveal>
+          <div className="mt-10 flex flex-col items-center gap-10 sm:flex-row sm:justify-center">
+            {/* Card 1 — Front */}
+            <div className="flip-card h-80 w-64 sm:h-96 sm:w-72 hover:scale-[1.03] transition-transform duration-300">
+              <div className="flip-card-inner">
+                <div className="flip-card-front">
+                  <img
+                    src="/card1.jpeg"
+                    alt="Arawat Occult Sciences — Front"
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="flip-card-back">
+                  <img
+                    src="/card2.jpeg"
+                    alt="Arawat Occult Sciences — Back"
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
               </div>
-              <div className="flip-card-back">
-                <img
-                  src="/card2.jpeg"
-                  alt="Arawat Occult Sciences — Back"
-                  className="h-full w-full object-cover"
-                />
+            </div>
+            {/* Card 2 — Back */}
+            <div className="flip-card h-80 w-64 sm:h-96 sm:w-72 hover:scale-[1.03] transition-transform duration-300">
+              <div className="flip-card-inner">
+                <div className="flip-card-front">
+                  <img
+                    src="/card2.jpeg"
+                    alt="Arawat Occult Sciences — Back"
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="flip-card-back">
+                  <img
+                    src="/card1.jpeg"
+                    alt="Arawat Occult Sciences — Front"
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
               </div>
             </div>
           </div>
-          {/* Card 2 — Back */}
-          <div className="flip-card h-80 w-64 sm:h-96 sm:w-72 hover:scale-[1.03] transition-transform duration-300">
-            <div className="flip-card-inner">
-              <div className="flip-card-front">
-                <img
-                  src="/card2.jpeg"
-                  alt="Arawat Occult Sciences — Back"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="flip-card-back">
-                <img
-                  src="/card1.jpeg"
-                  alt="Arawat Occult Sciences — Front"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
       </SparkleTrail>
 
       {/* Consultation Form */}
-      <section className="relative z-10 mx-auto mt-24 max-w-2xl px-6">
-        <div className="surface-card rounded-3xl p-10">
-          <h2 className="text-center text-3xl text-gradient-gold sm:text-3xl">✦ Book Your Consultation ✦</h2>
-          <p className="mt-3 text-center text-base text-muted-foreground italic">
-            Share your details — Acharya Aarti will reach out on WhatsApp.
-          </p>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              const fd = new FormData(e.currentTarget);
-              const name = fd.get("name") as string;
-              const phone = fd.get("phone") as string;
-              const dob = fd.get("dob") as string;
-              const time = fd.get("time") as string;
-              const place = fd.get("place") as string;
-              const service = fd.get("service") as string;
-              const query = fd.get("query") as string;
+      <section id="book" className="relative z-10 mx-auto mt-24 max-w-2xl scroll-mt-24 px-6">
+        <Reveal>
+          <div className="surface-card rounded-3xl p-10">
+            <h2 className="text-center text-3xl text-gradient-gold sm:text-3xl">✦ Book Your Consultation ✦</h2>
+            <p className="mt-3 text-center text-base text-muted-foreground italic">
+              Share your details — Acharya Aarti will reach out on WhatsApp.
+            </p>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const fd = new FormData(e.currentTarget);
+                const name = fd.get("name") as string;
+                const phone = fd.get("phone") as string;
+                const dob = fd.get("dob") as string;
+                const time = fd.get("time") as string;
+                const place = fd.get("place") as string;
+                const service = fd.get("service") as string;
+                const query = fd.get("query") as string;
 
-              const msg = [
-                `🙏 *New Consultation Request*`,
-                ``,
-                `👤 *Name:* ${name}`,
-                `📱 *Phone:* ${phone}`,
-                `🎂 *DOB:* ${dob}`,
-                `🕐 *Birth Time:* ${time || "Not sure"}`,
-                `📍 *Birth Place:* ${place || "Not sure"}`,
-                `🔮 *Service:* ${service}`,
-                query ? `💬 *Query:* ${query}` : ``,
-                ``,
-                `📅 *Requested on:* ${formatDateIndian(new Date())}`,
-              ]
-                .filter(Boolean)
-                .join("\n");
+                const msg = [
+                  `🙏 *New Consultation Request*`,
+                  ``,
+                  `👤 *Name:* ${name}`,
+                  `📱 *Phone:* ${phone}`,
+                  `🎂 *DOB:* ${dob}`,
+                  `🕐 *Birth Time:* ${time || "Not sure"}`,
+                  `📍 *Birth Place:* ${place || "Not sure"}`,
+                  `🔮 *Service:* ${service}`,
+                  query ? `💬 *Query:* ${query}` : ``,
+                  ``,
+                  `📅 *Requested on:* ${formatDateIndian(new Date())}`,
+                ]
+                  .filter(Boolean)
+                  .join("\n");
 
-              window.open(`https://wa.me/918979612593?text=${encodeURIComponent(msg)}`, "_blank");
-            }}
-            className="mt-8 space-y-5"
-          >
-            <div className="grid gap-5 sm:grid-cols-2">
-              <div>
-                <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Full Name *</label>
-                <input name="name" required className="form-input" placeholder="Your name" />
-              </div>
-              <div>
-                <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Phone *</label>
-                <input name="phone" required className="form-input" placeholder="+91 XXXXX XXXXX" />
-              </div>
-            </div>
-            <div className="grid gap-5 sm:grid-cols-2">
-              <div>
-                <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Date of Birth *</label>
-                <input name="dob" type="date" required className="form-input" />
-              </div>
-              <div>
-                <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Birth Time</label>
-                <input name="time" type="time" className="form-input" />
-              </div>
-            </div>
-            <div>
-              <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Birth Place</label>
-              <input name="place" className="form-input" placeholder="City, State" />
-            </div>
-            <div>
-              <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Service Needed *</label>
-              <select name="service" required className="form-input">
-                <option value="">Select a service</option>
-                {allServices.map((s) => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Your Query</label>
-              <textarea name="query" rows={3} className="form-input" placeholder="What guidance are you looking for?" />
-            </div>
-            <button
-              type="submit"
-              className="w-full rounded-full bg-primary px-6 py-3 text-sm font-semibold tracking-wide text-primary-foreground uppercase transition-transform duration-200 hover:scale-[1.02]"
+                window.open(`${WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank");
+              }}
+              className="mt-8 space-y-5"
             >
-              Send on WhatsApp →
-            </button>
-          </form>
-        </div>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Full Name *</label>
+                  <input name="name" required className="form-input" placeholder="Your name" />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Phone *</label>
+                  <input name="phone" required className="form-input" placeholder="+91 XXXXX XXXXX" />
+                </div>
+              </div>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Date of Birth *</label>
+                  <input name="dob" type="date" required className="form-input" />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Birth Time</label>
+                  <input name="time" type="time" className="form-input" />
+                </div>
+              </div>
+              <div>
+                <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Birth Place</label>
+                <input name="place" className="form-input" placeholder="City, State" />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Service Needed *</label>
+                <select name="service" required className="form-input">
+                  <option value="">Select a service</option>
+                  {allServices.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Your Query</label>
+                <textarea name="query" rows={3} className="form-input" placeholder="What guidance are you looking for?" />
+              </div>
+              <button
+                type="submit"
+                className="w-full rounded-full bg-primary px-6 py-3 text-sm font-semibold tracking-wide text-primary-foreground uppercase transition-transform duration-200 hover:scale-[1.02]"
+              >
+                Send on WhatsApp →
+              </button>
+            </form>
+          </div>
+        </Reveal>
       </section>
 
       {/* Floating WhatsApp */}
@@ -735,10 +1167,12 @@ function Index() {
           Arawat Occult Sciences
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-muted-foreground">
-          <span>100% Confidential</span>
-          <span>Personalised Guidance</span>
-          <span>Effective Remedies</span>
-          <span>Positive Transformation</span>
+          {["100% Confidential", "Personalised Guidance", "Effective Remedies", "Positive Transformation"].map((t) => (
+            <span key={t} className="font-display text-xs tracking-[0.15em] uppercase">
+              <span className="mr-1.5 text-gold/60">✦</span>
+              {t}
+            </span>
+          ))}
         </div>
         <p className="mt-8 text-xs tracking-widest text-gold/70 uppercase">
           Trusted guidance for a better tomorrow

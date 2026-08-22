@@ -34,3 +34,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# local test artifacts
+.playwright-mcp/
+hero-before.png
