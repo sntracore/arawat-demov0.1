@@ -38,3 +38,7 @@ dist-ssr
 # local test artifacts
 .playwright-mcp/
 hero-before.png
+
+# screenshots
+lalkitab.png
+public/om-chant.mp3

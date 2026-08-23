@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useCallback, useRef, useEffect } from "react";
 import chakraFigure from "@/assets/chakra-figure.jpg";
 import arawatLogo from "@/assets/arawat-logo.png";
+import { translations, type Lang } from "@/lib/translations";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -40,7 +41,7 @@ function formatDateIndian(d: Date) {
 
 let audioCtx: AudioContext | null = null;
 
-function playChakraVoice(c: { freq: number; mantra: string }) {
+function playChakraVoice(c: { freq: number; voice: string }) {
   try {
     if (!audioCtx) audioCtx = new AudioContext();
     if (audioCtx.state === "suspended") void audioCtx.resume();
@@ -72,27 +73,15 @@ function playChakraVoice(c: { freq: number; mantra: string }) {
   } catch { /* silent */ }
 
   try {
-    if (!("speechSynthesis" in window)) return;
-    const synth = window.speechSynthesis;
-    synth.cancel();
-    const u = new SpeechSynthesisUtterance(c.mantra);
-    u.rate = 0.55;
-    u.pitch = 0.85;
-    const voices = synth.getVoices();
-    const voice =
-      voices.find((v) => /^(hi|en)[-_]IN/i.test(v.lang)) ?? voices[0];
-    if (voice) u.voice = voice;
-    synth.speak(u);
+    const a = new Audio(c.voice);
+    a.volume = 0.74;
+    void a.play().catch(() => {});
   } catch { /* silent */ }
-}
-
-if (typeof window !== "undefined" && "speechSynthesis" in window) {
-  window.speechSynthesis.getVoices();
 }
 
 const BOT_REPLIES: { pattern: RegExp; reply: string }[] = [
   { pattern: /\b(namaste|namaskar|pranam)\b/i, reply: "Namaste! \u{1F64F} I'm Arawat's virtual assistant. Acharya Aarti has 7+ years of experience in astrology, numerology, and aura reading. How can I help you today?" },
-  { pattern: /\b(lal\s*kitab|red\s*book|upay|totka|totke|farman)\b/i, reply: `Lal Kitab \u2014 the "common man's astrology" \u2014 gives simple, affordable remedies (upay) instead of costly rituals: feeding a stray dog, donating mustard oil, flowing a coconut in running water. Acharya Aarti prescribes personalised farmans matched to your chart. Ask her directly on WhatsApp: ${WHATSAPP}` },
+  { pattern: /\b(lal\s*kitab|red\s*book|upay|totka|totke|farman)\b/i, reply: `Lal Kitab is a distinctive system of astrological guidance known for practical, simple remedies matched to your horoscope. The same remedy is not for everyone \u2014 Acharya Aarti considers your chart, life circumstances and concern before suggesting personalised guidance. Ask her on WhatsApp: ${WHATSAPP}` },
   { pattern: /\b(hello|hi|hey|help)\b/i, reply: "Hello! Welcome to Arawat Occult Sciences. I can guide you on career, love, health, vastu, or any personal query. What would you like to know?" },
   { pattern: /\b(kundali|birth.?chart|janam|kundli)\b/i, reply: `Kundali Milan is one of our core services \u2014 Acharya Aarti reads your birth chart to find accurate timings and remedies. Would you like to book a consultation? Call us at ${PHONE}` },
   { pattern: /\b(career|job|business|work|professional)\b/i, reply: "Career feeling stuck? The Manipura chakra governs professional growth. Acharya Aarti can guide you with astrological remedies for career clarity. Book a session on WhatsApp!" },
@@ -118,6 +107,7 @@ type Chakra = {
   mantra: string;
   glyph: string;
   freq: number;
+  voice: string;
   element: string;
   theme: string;
   line: string;
@@ -133,6 +123,7 @@ const chakras: Chakra[] = [
     mantra: "Aum",
     glyph: "\u0950",
     freq: 963,
+    voice: "/voices/aum.mp3",
     element: "Cosmic Consciousness",
     theme: "Spiritual Guidance & Remedies",
     line: "Jab sab kuch theek lagta hai par mann khaali — yahan se path khulta hai.",
@@ -146,6 +137,7 @@ const chakras: Chakra[] = [
     mantra: "Om",
     glyph: "\u0950",
     freq: 852,
+    voice: "/voices/om.mp3",
     element: "Light / Intuition",
     theme: "Astrology & Kundali Reading",
     line: "Aapki janm kundali ka blueprint — timing, dasha aur sahi decision.",
@@ -159,6 +151,7 @@ const chakras: Chakra[] = [
     mantra: "Ham",
     glyph: "\u0939\u0902",
     freq: 741,
+    voice: "/voices/ham.mp3",
     element: "Ether / Sound",
     theme: "Open Query Hour",
     line: "Ek sawaal, ek baat-cheet, thodi aur clarity.",
@@ -172,6 +165,7 @@ const chakras: Chakra[] = [
     mantra: "Yam",
     glyph: "\u092F\u0902",
     freq: 639,
+    voice: "/voices/yam.mp3",
     element: "Air",
     theme: "Love, Relationship & Family",
     line: "Rishton ki uljhan ke peeche hamesha ek energy pattern hota hai.",
@@ -185,6 +179,7 @@ const chakras: Chakra[] = [
     mantra: "Ram",
     glyph: "\u0930\u0902",
     freq: 528,
+    voice: "/voices/ram.mp3",
     element: "Fire",
     theme: "Career, Business & Money",
     line: "Mehnat poori, result adhoora? Yeh chakra usi block ki baat karta hai.",
@@ -198,6 +193,7 @@ const chakras: Chakra[] = [
     mantra: "Vam",
     glyph: "\u0935\u0902",
     freq: 417,
+    voice: "/voices/vam.mp3",
     element: "Water",
     theme: "Children & Learning",
     line: "Bachchon ka focus, wellness aur unki apni speed.",
@@ -211,6 +207,7 @@ const chakras: Chakra[] = [
     mantra: "Lam",
     glyph: "\u0932\u0902",
     freq: 396,
+    voice: "/voices/lam.mp3",
     element: "Earth",
     theme: "Home, Vastu & Well-being",
     line: "Ghar ki disha theek, toh jeevan ki dhara theek.",
@@ -243,7 +240,7 @@ const allServices = [
 const FAQS: { q: string; a: string }[] = [
   {
     q: "What exactly is Lal Kitab?",
-    a: "Lal Kitab (\u201CThe Red Book\u201D) is a five-volume system of astrology and palmistry written by Pandit Roop Chand Joshi between 1939 and 1952. It is loved for its simple, affordable remedies \u2014 everyday acts like feeding dogs or donating mustard oil \u2014 instead of costly gemstones and rituals. Acharya Aarti uses it alongside chart readings for quick, practical upay.",
+    a: "Lal Kitab, commonly associated with Pandit Roop Chand Joshi, is a distinctive system of astrology known for its practical and often simple remedial measures. Originally published in Urdu in a series of volumes during the mid-20th century, it combines astrological principles with an unusual remedial approach. While some remedies are traditionally prescribed for a fixed period \u2014 often 43 days \u2014 this is not a universal rule; duration and method depend on the specific remedy and the individual horoscope.",
   },
   {
     q: "How do I book a consultation?",
@@ -278,10 +275,10 @@ const NAV_LINKS: [string, string][] = [
 ];
 
 const LAL_KITAB_PILLARS = [
-  ["Samudrik Blend", "Your kundali read together with the lines of your palm \u2014 sky and hand in one glance."],
-  ["12 Fixed Houses", "Every planet has its own kaccha and pakka ghar \u2014 a house logic unique to Lal Kitab."],
-  ["Six Karmic Debts", "Pitru, Matru, Stri, Sva, Patni and Bhai ka Rin \u2014 named in the chart, settled through upay."],
-  ["43-Day Upay", "Small daily acts done continuously for 43 days \u2014 no gemstones, no grand pujas needed."],
+  ["Understand the Pattern", "Planetary positions and house influences are read together to see the underlying pattern."],
+  ["Analyse the Horoscope", "Your birth chart is studied in detail \u2014 houses, placements and current concerns."],
+  ["Identify the Concern", "Whether relationship, marriage, career, finances or family \u2014 the focus stays on your question."],
+  ["Personalised Guidance", "Simple, practical remedies are suggested as per your chart \u2014 no one-size-fits-all."],
 ];
 
 const LAL_KITAB_UPAY = [
@@ -573,6 +570,20 @@ function AIBot() {
 }
 
 function Index() {
+  const [lang, setLang] = useState<Lang>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("arawat-lang") as Lang | null;
+      if (saved === "en" || saved === "hi") return saved;
+      return navigator.language.startsWith("hi") ? "hi" : "en";
+    }
+    return "en";
+  });
+  useEffect(() => {
+    localStorage.setItem("arawat-lang", lang);
+    document.documentElement.lang = lang === "hi" ? "hi" : "en";
+  }, [lang]);
+  const t = translations[lang];
+
   const [active, setActive] = useState(1);
   const [visited, setVisited] = useState<Set<number>>(new Set([1]));
   const current = chakras[active] ?? chakras[1]!;
@@ -596,15 +607,37 @@ function Index() {
       >
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2.5">
           <a href="#top" className="flex items-center gap-3">
-            <img src={arawatLogo} alt="Arawat Occult Sciences" className="h-9 w-9 rounded-full border border-gold/40 object-cover shadow-glow transition-transform duration-200 hover:scale-110" />
+            <img src="/elephant-logo.jpg" alt="Arawat Occult Sciences" className="h-9 w-9 rounded-full border border-gold/40 object-cover shadow-glow transition-transform duration-200 hover:scale-110" />
             <span className="font-display hidden text-sm tracking-[0.3em] text-gradient-gold sm:inline">ARAWAT</span>
           </a>
-          <div className="ml-auto flex flex-wrap items-center justify-end gap-x-4 gap-y-0.5 text-[11px] uppercase tracking-[0.18em] text-gold/80">
-            {NAV_LINKS.map(([label, href]) => (
-              <a key={href} href={href} className="font-display transition-colors hover:text-gold">
-                {label}
-              </a>
-            ))}
+          <div className="ml-auto flex flex-wrap items-center justify-end gap-2 text-[11px] uppercase tracking-[0.18em] text-gold/80">
+            <div className="hidden items-center gap-x-4 sm:flex">
+              <a href="#chakras" className="font-display transition-colors hover:text-gold">{t.nav.chakras}</a>
+              <a href="#services" className="font-display transition-colors hover:text-gold">{t.nav.services}</a>
+              <a href="#lalkitab" className="font-display transition-colors hover:text-gold">{t.nav.lalkitab}</a>
+              <a href="#query" className="font-display transition-colors hover:text-gold">{t.nav.query}</a>
+              <a href="#about" className="font-display transition-colors hover:text-gold">{t.nav.about}</a>
+              <a href="#faq" className="font-display transition-colors hover:text-gold">{t.nav.faq}</a>
+              <a href="#book" className="font-display transition-colors hover:text-gold">{t.nav.book}</a>
+            </div>
+            <div className="ml-1 flex items-center rounded-full border border-gold/40 p-1 backdrop-blur-sm">
+              <button
+                type="button"
+                onClick={() => setLang("en")}
+                aria-pressed={lang === "en"}
+                className={`rounded-full px-2.5 py-1 text-[10px] font-bold tracking-widest transition-colors ${lang === "en" ? "bg-gold text-background" : "text-gold/70 hover:text-gold"}`}
+              >
+                EN
+              </button>
+              <button
+                type="button"
+                onClick={() => setLang("hi")}
+                aria-pressed={lang === "hi"}
+                className={`rounded-full px-2.5 py-1 text-[10px] font-bold tracking-widest transition-colors ${lang === "hi" ? "bg-gold text-background" : "text-gold/70 hover:text-gold"}`}
+              >
+                हिं
+              </button>
+            </div>
           </div>
         </div>
       </nav>
@@ -644,7 +677,7 @@ function Index() {
           </h1>
 
           <div className="mt-1 flex flex-wrap items-center justify-center gap-2.5">
-            {HERO_CHIPS.map((chip) => (
+            {t.hero.chips.map((chip) => (
               <span
                 key={chip}
                 className="rounded-full border border-gold/30 bg-white/[0.04] px-4 py-1.5 text-[11px] tracking-[0.2em] text-gold-soft uppercase backdrop-blur-sm sm:text-xs"
@@ -656,10 +689,10 @@ function Index() {
           </div>
 
           <p className="max-w-xl text-xl text-muted-foreground italic sm:text-2xl font-display">
-            Understand your chart. Find clarity. Take better decisions.
+            {t.hero.tagline}
           </p>
           <p className="text-xs tracking-[0.3em] text-gold-soft/80 uppercase">
-            Guided by Acharya Aarti · 7+ Years of Occult Wisdom
+            {t.hero.guidedBy}
           </p>
 
           <div className="mt-2 flex flex-col items-center gap-3 sm:flex-row">
@@ -667,18 +700,18 @@ function Index() {
               href="#chakras"
               className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3.5 text-xs font-semibold tracking-[0.2em] text-primary-foreground uppercase shadow-glow transition-transform duration-200 hover:scale-105"
             >
-              Explore Your Chakras
+              {t.hero.explore}
             </a>
             <a
               href="#book"
               className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-8 py-3.5 text-xs tracking-[0.2em] text-gold uppercase transition-all duration-200 hover:scale-105 hover:bg-gold/10"
             >
-              Book Consultation
+              {t.hero.bookConsult}
             </a>
           </div>
 
           <dl className="mt-8 grid w-full max-w-2xl grid-cols-3 divide-x divide-gold/15 rounded-2xl border border-gold/20 bg-white/[0.03] py-5 backdrop-blur-md">
-            {HERO_STATS.map(([num, label]) => (
+            {t.hero.stats.map(([num, label]) => (
               <div key={label} className="px-3">
                 <dt className="sr-only">{label}</dt>
                 <dd className="font-display text-2xl font-bold text-gradient-gold sm:text-3xl">{num}</dd>
@@ -695,7 +728,7 @@ function Index() {
           aria-label="Scroll down to your seven chakras"
           className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-center text-gold/70 transition-colors hover:text-gold"
         >
-          <span className="block text-[10px] tracking-[0.35em] uppercase">Scroll</span>
+          <span className="block text-[10px] tracking-[0.35em] uppercase">{t.hero.scroll}</span>
           <span className="scroll-cue mt-1 block text-lg" aria-hidden>▾</span>
         </a>
       </section>
@@ -706,13 +739,13 @@ function Index() {
         className="relative z-10 mx-auto flex max-w-6xl scroll-mt-24 flex-col items-center gap-3 px-6 pt-20 text-center"
       >
         <Reveal>
-          <h2 className="text-3xl text-gradient-gold sm:text-4xl">✦ Your Seven Diamonds ✦</h2>
+          <h2 className="text-3xl text-gradient-gold sm:text-4xl">{t.diamonds.title}</h2>
           <p className="mt-3 max-w-xl text-lg text-muted-foreground italic">
-            Har chakra ek heera hai — tap kijiye, uski awaaz suniye aur page aapke liye badal jayega.
+            {t.diamonds.subtitle}
           </p>
           <div className="mt-4 flex justify-center">
             <span className="rounded-full border border-gold/40 px-4 py-1 text-xs tracking-widest text-gold uppercase">
-              ✦ 7+ Years of Experience ✦
+              {t.diamonds.experience}
             </span>
           </div>
         </Reveal>
@@ -763,10 +796,10 @@ function Index() {
               </button>
             ))}
             <p className="mt-4 text-center text-sm tracking-wider text-muted-foreground">
-              ✦ {visited.size} of 7 diamonds explored ✦
+              {t.diamonds.explored(visited.size)}
             </p>
             <p className="mt-1 text-center text-xs tracking-widest text-gold/70 uppercase">
-              🔊 Every tap sings its bija mantra
+              {t.diamonds.voiceHint}
             </p>
           </div>
         </Reveal>
@@ -801,15 +834,15 @@ function Index() {
               {current.glyph}
             </span>
             <div>
-              <p className="text-xs tracking-[0.25em] text-muted-foreground uppercase">Bija Mantra</p>
+              <p className="text-xs tracking-[0.25em] text-muted-foreground uppercase">{t.diamonds.bija}</p>
               <p className="text-xl font-semibold" style={{ color: current.color }}>
                 “{current.mantra}” · {current.freq} Hz
               </p>
             </div>
-            <span className="ml-auto hidden text-xs text-muted-foreground sm:block">🔊 voice on tap</span>
+            <span className="ml-auto hidden text-xs text-muted-foreground sm:block">{t.diamonds.voiceOnTap}</span>
           </div>
 
-          <p className="mt-5 text-xs tracking-[0.25em] text-muted-foreground uppercase">Element · {current.element}</p>
+          <p className="mt-5 text-xs tracking-[0.25em] text-muted-foreground uppercase">{t.diamonds.element} · {current.element}</p>
 
           <ul className="mt-4 space-y-3">
             {current.services.map((s) => (
@@ -825,7 +858,7 @@ function Index() {
             rel="noreferrer noopener"
             className="mt-7 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold tracking-wide text-primary-foreground uppercase transition-transform duration-200 hover:scale-105"
           >
-            Ask about this on WhatsApp
+            {t.diamonds.askWhats}
           </a>
         </article>
       </section>
@@ -835,9 +868,9 @@ function Index() {
       {/* Services */}
       <section id="services" className="relative z-10 mx-auto mt-4 max-w-5xl scroll-mt-24 px-6">
         <Reveal>
-          <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Services ✦</h2>
+          <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">{t.services.title}</h2>
           <p className="mt-3 text-center text-base text-muted-foreground">
-            Highlighted for{" "}
+            {t.services.highlightedFor}{" "}
             <span style={{ color: current.color }}>{current.label} — {current.theme}</span>
           </p>
           {/* Diamond selector — also controls the page */}
@@ -893,9 +926,10 @@ function Index() {
       {/* Lal Kitab */}
       <section id="lalkitab" className="relative z-10 mx-auto mt-4 max-w-5xl scroll-mt-24 px-6">
         <Reveal>
-          <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ The Red Book · Lal Kitab ✦</h2>
+          <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">{t.lalkitab.title}</h2>
+          <p className="mt-2 text-center font-display text-xs tracking-[0.32em] text-gold/90 uppercase">{t.lalkitab.subtitle}</p>
           <p className="mt-3 text-center text-base text-muted-foreground italic">
-            Aam aadmi ki jyotish — astrology of the common man.
+            {t.lalkitab.desc}
           </p>
         </Reveal>
         <div className="mt-12 grid items-center gap-12 lg:grid-cols-[auto_1fr]">
@@ -923,43 +957,54 @@ function Index() {
             </div>
           </Reveal>
           <Reveal>
-            <div className="space-y-4 text-lg leading-relaxed text-muted-foreground">
-              <p>
-                <span className="font-semibold text-foreground">Lal Kitab — “The Red Book” —</span> is a five-volume
-                system of astrology and palmistry written by Pandit Roop Chand Joshi between 1939 and 1952. First
-                penned in Urdu in Punjab, it takes its name from the deep-red covers of its original editions — red,
-                the colour of Ganesha and Lakshmi, of auspicious beginnings.
-              </p>
-              <p>
-                Where classical jyotish can demand costly gemstones and grand pujas, Lal Kitab answers with{" "}
-                <span className="text-gold">farmans</span> — simple household remedies anyone can afford. Done with
-                faith, for 43 continuous days, they quietly settle what the chart owes.
-              </p>
+            <div className="space-y-4 text-[15px] leading-relaxed text-muted-foreground">
+              <p className="font-display text-sm tracking-[0.2em] text-gold/90 uppercase">{t.lalkitab.pLead}</p>
+              <p>{t.lalkitab.p1}</p>
+              <p>{t.lalkitab.p2}</p>
             </div>
           </Reveal>
         </div>
         <Reveal>
-          <dl className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {LAL_KITAB_PILLARS.map(([title, desc]) => (
-              <div key={title} className="surface-card rounded-2xl px-5 py-6 transition-transform duration-300 hover:-translate-y-1">
-                <dt className="font-display flex items-center gap-2 text-sm tracking-[0.15em] text-gold uppercase">
-                  <span aria-hidden>✦</span>
+          <p className="mt-10 text-center font-display text-sm tracking-[0.3em] text-gradient-gold uppercase">{t.lalkitab.personalisedHeading}</p>
+          <p className="mx-auto mt-3 max-w-3xl text-center text-sm leading-relaxed text-muted-foreground">
+            {t.lalkitab.personalisedDesc}
+          </p>
+          <dl className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {t.lalkitab.pillars.map(([title, desc]) => (
+              <div key={title} className="surface-card rounded-2xl px-5 py-6 text-center transition-transform duration-300 hover:-translate-y-1">
+                <dt className="font-display flex flex-col items-center gap-2 text-xs tracking-[0.18em] text-gold uppercase">
+                  <span aria-hidden className="text-base">✦</span>
                   {title}
                 </dt>
                 <dd className="mt-2 text-sm leading-relaxed text-muted-foreground">{desc}</dd>
               </div>
             ))}
           </dl>
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            <div className="rounded-2xl border border-gold/20 bg-white/[0.03] px-5 py-4 text-center">
+              <p className="font-display text-xs tracking-[0.2em] text-gold uppercase">{t.lalkitab.noComplex[0]}</p>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{t.lalkitab.noComplex[1]}</p>
+            </div>
+            <div className="rounded-2xl border border-gold/20 bg-white/[0.03] px-5 py-4 text-center">
+              <p className="font-display text-xs tracking-[0.2em] text-gold uppercase">{t.lalkitab.noOneSize[0]}</p>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{t.lalkitab.noOneSize[1]}</p>
+            </div>
+            <div className="rounded-2xl border border-gold/20 bg-white/[0.03] px-5 py-4 text-center">
+              <p className="font-display text-xs tracking-[0.2em] text-gold uppercase">{t.lalkitab.noExaggerated[0]}</p>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{t.lalkitab.noExaggerated[1]}</p>
+            </div>
+          </div>
         </Reveal>
         <Reveal>
           <div className="surface-card mt-6 rounded-3xl p-8 text-center sm:p-10">
-            <p className="text-xs tracking-[0.3em] text-gold/80 uppercase">Farmans you may already know</p>
+            <p className="text-xs tracking-[0.3em] text-gold/80 uppercase">{t.lalkitab.farmansTitle}</p>
             <div className="mt-5 flex flex-wrap justify-center gap-2.5">
               {LAL_KITAB_UPAY.map((u) => (
                 <span key={u} className="rounded-full border border-gold/30 bg-white/[0.04] px-4 py-1.5 text-xs text-gold-soft sm:text-sm">
                   {u}
                 </span>
               ))}
+              <span className="rounded-full border border-dashed border-gold/40 bg-gold/10 px-4 py-1.5 text-xs font-semibold tracking-widest text-gold sm:text-sm">{t.lalkitab.andManyMore}</span>
             </div>
             <a
               href={`${WHATSAPP}?text=${encodeURIComponent(`Namaste Acharya Aarti, mujhe Lal Kitab ke upay aur apni kundali ke remedies jaanne hain.\n\n📅 Date: ${formatDateIndian(new Date())}`)}`}
@@ -967,10 +1012,10 @@ function Index() {
               rel="noreferrer noopener"
               className="mt-7 inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-xs font-semibold tracking-[0.2em] text-primary-foreground uppercase shadow-glow transition-transform duration-200 hover:scale-105"
             >
-              Ask for Your Lal Kitab Remedy
+              {t.lalkitab.askRemedy}
             </a>
-            <p className="mt-5 text-[11px] tracking-[0.2em] text-muted-foreground/70 uppercase">
-              Rooted in the five volumes of Pt. Roop Chand Joshi (1939–1952)
+            <p className="mx-auto mt-5 max-w-xl text-xs leading-relaxed text-muted-foreground/70">
+              {t.lalkitab.bottomNote}
             </p>
           </div>
         </Reveal>
@@ -982,10 +1027,10 @@ function Index() {
       <section id="query" className="relative z-10 mx-auto mt-4 max-w-3xl scroll-mt-24 px-6">
         <Reveal>
           <div className="surface-card rounded-3xl p-10 text-center">
-            <h2 className="text-2xl text-gold sm:text-3xl">Open Query Hour</h2>
-            <p className="mt-3 text-lg tracking-wide">Tuesday · Thursday · Saturday</p>
+            <h2 className="text-2xl text-gold sm:text-3xl">{t.query.title}</h2>
+            <p className="mt-3 text-lg tracking-wide">{t.query.days}</p>
             <p className="mt-4 inline-block rounded-full bg-primary px-6 py-2 text-lg font-semibold text-primary-foreground">
-              3:00 PM – 4:00 PM
+              {t.query.time}
             </p>
             <a
               href={WHATSAPP}
@@ -996,7 +1041,7 @@ function Index() {
               +91 89796 12599
             </a>
             <p className="mt-4 text-sm tracking-widest text-muted-foreground uppercase">
-              One question. One conversation. A little more clarity.
+              {t.query.oneQuestion}
             </p>
           </div>
         </Reveal>
@@ -1008,7 +1053,7 @@ function Index() {
       <section id="about" className="relative z-10 mx-auto mt-4 max-w-4xl scroll-mt-24 px-6">
         <Reveal>
           <div className="surface-card rounded-3xl p-10 sm:p-12">
-            <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Meet Acharya Aarti ✦</h2>
+            <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">{t.about.title}</h2>
             <div className="mt-8 flex flex-col items-center gap-8 sm:flex-row sm:items-start">
               <img
                 src={arawatLogo}
@@ -1020,25 +1065,13 @@ function Index() {
               />
               <div className="space-y-4 text-lg leading-relaxed text-muted-foreground">
                 <p>
-                  <span className="font-semibold text-foreground">Acharya Aarti</span> has spent over seven years
-                  reading charts, auras and the quiet energies that shape our choices. Her approach is simple:
-                  no fear, only clarity — and a remedy you can actually follow.
+                  <span className="font-semibold text-foreground">Acharya Aarti</span> {t.about.p1}
                 </p>
-                <p>
-                  Her practice weaves together{" "}
-                  <span className="text-gold">astrology, numerology, astro-vastu and aura scanning</span>,
-                  always returning to the seven chakras as a map of where your life feels stuck — and how to
-                  unstick it.
-                </p>
+                <p>{t.about.p2}</p>
               </div>
             </div>
             <dl className="mt-10 grid grid-cols-2 gap-4 text-center sm:grid-cols-4">
-              {[
-                ["7+", "Years of Practice"],
-                ["18", "Guidance Services"],
-                ["7", "Chakra Paths"],
-                ["100%", "Confidential"],
-              ].map(([num, label]) => (
+              {t.about.stats.map(([num, label]) => (
                 <div key={label} className="rounded-2xl border border-gold/20 bg-white/[0.03] px-3 py-5">
                   <dt className="sr-only">{label}</dt>
                   <dd className="text-2xl font-bold text-gradient-gold sm:text-3xl">{num}</dd>
@@ -1055,9 +1088,9 @@ function Index() {
       {/* Testimonials */}
       <section className="relative z-10 mx-auto mt-4 max-w-3xl px-6">
         <Reveal>
-          <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Words From Seekers ✦</h2>
+          <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">{t.testimonials.title}</h2>
           <p className="mt-3 text-center text-base text-muted-foreground italic">
-            Real stories. Real clarity. Arriving soon.
+            {t.testimonials.subtitle}
           </p>
         </Reveal>
         <Reveal>
@@ -1065,24 +1098,24 @@ function Index() {
             <span className="pointer-events-none absolute -top-6 left-6 text-[7rem] leading-none text-gold/10" aria-hidden>“</span>
             <span className="pointer-events-none absolute -bottom-12 right-6 text-[7rem] leading-none text-gold/10" aria-hidden>”</span>
             <p className="text-gradient-gold text-shimmer font-display inline-block rounded-full border border-gold/40 bg-gold/5 px-6 py-1.5 text-[11px] tracking-[0.35em] uppercase">
-              Coming Soon
+              {t.testimonials.comingSoon}
             </p>
             <p className="mx-auto mt-7 max-w-md text-lg italic leading-relaxed text-muted-foreground">
-              Seeker stories are being gathered with care. This space will soon hold the words of those who found their clarity here.
+              {t.testimonials.para}
             </p>
             <div className="mt-7 flex items-center justify-center gap-3 text-gold/50" aria-hidden>
               <span className="h-px w-16 bg-gradient-to-r from-transparent to-gold/40" />
               <span className="font-display text-sm">✧</span>
               <span className="h-px w-16 bg-gradient-to-l from-transparent to-gold/40" />
             </div>
-            <p className="mt-7 text-sm text-muted-foreground">Your story could be the first.</p>
+            <p className="mt-7 text-sm text-muted-foreground">{t.testimonials.firstStory}</p>
             <a
               href={WHATSAPP}
               target="_blank"
               rel="noreferrer noopener"
               className="mt-4 inline-flex items-center gap-2 rounded-full border border-gold/40 px-6 py-2.5 text-xs tracking-[0.2em] text-gold uppercase transition-all duration-200 hover:scale-105 hover:bg-gold/10"
             >
-              Share Your Experience
+              {t.testimonials.share}
             </a>
           </div>
         </Reveal>
@@ -1093,9 +1126,9 @@ function Index() {
       {/* FAQ */}
       <section id="faq" className="relative z-10 mx-auto mt-4 max-w-3xl scroll-mt-24 px-6">
         <Reveal>
-          <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Questions, Answered ✦</h2>
+          <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">{t.faq.title}</h2>
           <p className="mt-3 text-center text-base text-muted-foreground italic">
-            Sab kuch khula, sab kuch saral.
+            {t.faq.subtitle}
           </p>
         </Reveal>
         <div className="mt-10 space-y-4">
@@ -1115,9 +1148,9 @@ function Index() {
       <SparkleTrail>
         <section className="relative z-10 mx-auto mt-24 max-w-4xl px-6">
           <Reveal>
-            <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Our Card ✦</h2>
+            <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">{t.cards.title}</h2>
             <p className="mt-3 text-center text-base text-muted-foreground italic">
-              Hover to flip — see the other side.
+              {t.cards.subtitle}
             </p>
           </Reveal>
           <div className="mt-10 flex flex-col items-center gap-10 sm:flex-row sm:justify-center">
@@ -1171,9 +1204,9 @@ function Index() {
       <section id="book" className="relative z-10 mx-auto mt-24 max-w-2xl scroll-mt-24 px-6">
         <Reveal>
           <div className="surface-card rounded-3xl p-10">
-            <h2 className="text-center text-3xl text-gradient-gold sm:text-3xl">✦ Book Your Consultation ✦</h2>
+            <h2 className="text-center text-3xl text-gradient-gold sm:text-3xl">{t.booking.title}</h2>
             <p className="mt-3 text-center text-base text-muted-foreground italic">
-              Share your details — Acharya Aarti will reach out on WhatsApp.
+              {t.booking.subtitle}
             </p>
             <form
               onSubmit={(e) => {
@@ -1209,46 +1242,46 @@ function Index() {
             >
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Full Name *</label>
-                  <input name="name" required className="form-input" placeholder="Your name" />
+                  <label className="mb-1 block text-xs tracking-widest text-gold uppercase">{t.booking.name} {t.booking.required}</label>
+                  <input name="name" required className="form-input" placeholder={lang === "hi" ? "आपका नाम" : "Your name"} />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Phone *</label>
+                  <label className="mb-1 block text-xs tracking-widest text-gold uppercase">{t.booking.phone} {t.booking.required}</label>
                   <input name="phone" required className="form-input" placeholder="+91 XXXXX XXXXX" />
                 </div>
               </div>
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Date of Birth *</label>
+                  <label className="mb-1 block text-xs tracking-widest text-gold uppercase">{t.booking.dob} {t.booking.required}</label>
                   <input name="dob" type="date" required className="form-input" />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Birth Time</label>
+                  <label className="mb-1 block text-xs tracking-widest text-gold uppercase">{t.booking.birthTime}</label>
                   <input name="time" type="time" className="form-input" />
                 </div>
               </div>
               <div>
-                <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Birth Place</label>
-                <input name="place" className="form-input" placeholder="City, State" />
+                <label className="mb-1 block text-xs tracking-widest text-gold uppercase">{t.booking.birthPlace}</label>
+                <input name="place" className="form-input" placeholder={lang === "hi" ? "शहर, राज्य" : "City, State"} />
               </div>
               <div>
-                <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Service Needed *</label>
+                <label className="mb-1 block text-xs tracking-widest text-gold uppercase">{t.booking.service} {t.booking.required}</label>
                 <select name="service" required className="form-input">
-                  <option value="">Select a service</option>
+                  <option value="">{t.booking.selectService}</option>
                   {allServices.map((s) => (
                     <option key={s} value={s}>{s}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="mb-1 block text-xs tracking-widest text-gold uppercase">Your Query</label>
-                <textarea name="query" rows={3} className="form-input" placeholder="What guidance are you looking for?" />
+                <label className="mb-1 block text-xs tracking-widest text-gold uppercase">{t.booking.query}</label>
+                <textarea name="query" rows={3} className="form-input" placeholder={t.booking.queryPlaceholder} />
               </div>
               <button
                 type="submit"
                 className="w-full rounded-full bg-primary px-6 py-3 text-sm font-semibold tracking-wide text-primary-foreground uppercase transition-transform duration-200 hover:scale-[1.02]"
               >
-                Send on WhatsApp →
+                {t.booking.submit}
               </button>
             </form>
           </div>
@@ -1277,15 +1310,25 @@ function Index() {
           Arawat Occult Sciences
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-muted-foreground">
-          {["100% Confidential", "Personalised Guidance", "Effective Remedies", "Positive Transformation"].map((t) => (
-            <span key={t} className="font-display text-xs tracking-[0.15em] uppercase">
+          {t.footer.trusted.map((item) => (
+            <span key={item} className="font-display text-xs tracking-[0.15em] uppercase">
               <span className="mr-1.5 text-gold/60">✦</span>
-              {t}
+              {item}
             </span>
           ))}
         </div>
         <p className="mt-8 text-xs tracking-widest text-gold/70 uppercase">
-          Trusted guidance for a better tomorrow
+          {t.footer.tagline}
+        </p>
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-3 text-[11px] tracking-[0.2em] text-gold/55 uppercase">
+          <a href="/disclaimer" className="transition-colors hover:text-gold">{t.footer.disclaimer}</a>
+          <span className="text-gold/20">|</span>
+          <a href="/terms" className="transition-colors hover:text-gold">{t.footer.terms}</a>
+          <span className="text-gold/20">|</span>
+          <a href="/privacy" className="transition-colors hover:text-gold">{t.footer.privacy}</a>
+        </div>
+        <p className="mx-auto mt-4 max-w-3xl text-[11px] leading-relaxed text-muted-foreground/55">
+          {t.footer.disclaimerText}
         </p>
       </footer>
 
