@@ -10,7 +10,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Interactive chakra guide by Acharya Aarti — astrology, numerology, astro-vastu & aura scanning. Tap each chakra to hear its mantra and discover the remedy meant for you.",
+          "Interactive chakra guide & authentic Lal Kitab remedies by Acharya Aarti — astrology, numerology, astro-vastu, aura scanning. Tap each chakra to hear its mantra and find your upay.",
       },
       { property: "og:title", content: "Arawat Occult Sciences" },
       {
@@ -92,6 +92,7 @@ if (typeof window !== "undefined" && "speechSynthesis" in window) {
 
 const BOT_REPLIES: { pattern: RegExp; reply: string }[] = [
   { pattern: /\b(namaste|namaskar|pranam)\b/i, reply: "Namaste! \u{1F64F} I'm Arawat's virtual assistant. Acharya Aarti has 7+ years of experience in astrology, numerology, and aura reading. How can I help you today?" },
+  { pattern: /\b(lal\s*kitab|red\s*book|upay|totka|totke|farman)\b/i, reply: `Lal Kitab \u2014 the "common man's astrology" \u2014 gives simple, affordable remedies (upay) instead of costly rituals: feeding a stray dog, donating mustard oil, flowing a coconut in running water. Acharya Aarti prescribes personalised farmans matched to your chart. Ask her directly on WhatsApp: ${WHATSAPP}` },
   { pattern: /\b(hello|hi|hey|help)\b/i, reply: "Hello! Welcome to Arawat Occult Sciences. I can guide you on career, love, health, vastu, or any personal query. What would you like to know?" },
   { pattern: /\b(kundali|birth.?chart|janam|kundli)\b/i, reply: `Kundali Milan is one of our core services \u2014 Acharya Aarti reads your birth chart to find accurate timings and remedies. Would you like to book a consultation? Call us at ${PHONE}` },
   { pattern: /\b(career|job|business|work|professional)\b/i, reply: "Career feeling stuck? The Manipura chakra governs professional growth. Acharya Aarti can guide you with astrological remedies for career clarity. Book a session on WhatsApp!" },
@@ -234,11 +235,16 @@ const allServices = [
   "Special Chant for Healthy Relationships",
   "Special Chant for Health & Well-being",
   "Spiritual Guidance & Remedies",
+  "Lal Kitab Remedies & Upay",
   "Open Query Hour",
   "Any Personal Query",
 ];
 
 const FAQS: { q: string; a: string }[] = [
+  {
+    q: "What exactly is Lal Kitab?",
+    a: "Lal Kitab (\u201CThe Red Book\u201D) is a five-volume system of astrology and palmistry written by Pandit Roop Chand Joshi between 1939 and 1952. It is loved for its simple, affordable remedies \u2014 everyday acts like feeding dogs or donating mustard oil \u2014 instead of costly gemstones and rituals. Acharya Aarti uses it alongside chart readings for quick, practical upay.",
+  },
   {
     q: "How do I book a consultation?",
     a: `The fastest way is the booking form below or a direct WhatsApp message. You can also call ${PHONE} during Open Query Hours (Tue, Thu, Sat \u2014 3 to 4 PM) for one quick question.`,
@@ -264,10 +270,26 @@ const FAQS: { q: string; a: string }[] = [
 const NAV_LINKS: [string, string][] = [
   ["Chakras", "#chakras"],
   ["Services", "#services"],
+  ["Lal Kitab", "#lalkitab"],
   ["Query Hour", "#query"],
   ["About", "#about"],
   ["FAQ", "#faq"],
   ["Book", "#book"],
+];
+
+const LAL_KITAB_PILLARS = [
+  ["Samudrik Blend", "Your kundali read together with the lines of your palm \u2014 sky and hand in one glance."],
+  ["12 Fixed Houses", "Every planet has its own kaccha and pakka ghar \u2014 a house logic unique to Lal Kitab."],
+  ["Six Karmic Debts", "Pitru, Matru, Stri, Sva, Patni and Bhai ka Rin \u2014 named in the chart, settled through upay."],
+  ["43-Day Upay", "Small daily acts done continuously for 43 days \u2014 no gemstones, no grand pujas needed."],
+];
+
+const LAL_KITAB_UPAY = [
+  "Feed green fodder to a cow",
+  "Offer roti to stray dogs",
+  "Donate mustard oil on Saturdays",
+  "Flow a coconut in running water",
+  "Donate a black blanket",
 ];
 
 function SparkleTrail({ children }: { children: React.ReactNode }) {
@@ -864,6 +886,94 @@ function Index() {
             );
           })}
         </div>
+      </section>
+
+      <Divider />
+
+      {/* Lal Kitab */}
+      <section id="lalkitab" className="relative z-10 mx-auto mt-4 max-w-5xl scroll-mt-24 px-6">
+        <Reveal>
+          <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ The Red Book · Lal Kitab ✦</h2>
+          <p className="mt-3 text-center text-base text-muted-foreground italic">
+            Aam aadmi ki jyotish — astrology of the common man.
+          </p>
+        </Reveal>
+        <div className="mt-12 grid items-center gap-12 lg:grid-cols-[auto_1fr]">
+          <Reveal>
+            <div
+              className="group relative mx-auto h-72 w-52 -rotate-6 rounded-r-xl rounded-l-sm border border-gold/50 shadow-glow transition-transform duration-500 hover:rotate-0"
+              style={{ background: "linear-gradient(140deg, oklch(0.48 0.19 25), oklch(0.33 0.16 18))" }}
+              aria-hidden
+            >
+              <span className="absolute inset-y-0 left-0 w-3 rounded-l-sm bg-black/40" />
+              <span className="pointer-events-none absolute inset-y-1 right-2 w-px bg-white/10" />
+              <span
+                className="pointer-events-none absolute inset-y-1 right-3.5 w-0.5 opacity-60"
+                style={{ background: "repeating-linear-gradient(180deg, oklch(0.9 0.05 90 / 0.35) 0 2px, transparent 2px 5px)" }}
+              />
+              <span className="absolute inset-2 rounded-md border border-gold/30" />
+              <div className="relative flex h-full flex-col items-center justify-center gap-2 px-8 text-center">
+                <span className="font-display text-lg tracking-[0.25em] text-gradient-gold">LAL KITAB</span>
+                <span className="text-xl text-red-100/85">लाल किताब</span>
+                <span className="mt-2 text-[9px] tracking-[0.28em] text-gold-soft/80 uppercase">
+                  Pt. Roop Chand Joshi<br />1939 – 1952
+                </span>
+                <span className="mt-3 font-display text-sm text-gold/70">✦ ✦ ✦</span>
+              </div>
+            </div>
+          </Reveal>
+          <Reveal>
+            <div className="space-y-4 text-lg leading-relaxed text-muted-foreground">
+              <p>
+                <span className="font-semibold text-foreground">Lal Kitab — “The Red Book” —</span> is a five-volume
+                system of astrology and palmistry written by Pandit Roop Chand Joshi between 1939 and 1952. First
+                penned in Urdu in Punjab, it takes its name from the deep-red covers of its original editions — red,
+                the colour of Ganesha and Lakshmi, of auspicious beginnings.
+              </p>
+              <p>
+                Where classical jyotish can demand costly gemstones and grand pujas, Lal Kitab answers with{" "}
+                <span className="text-gold">farmans</span> — simple household remedies anyone can afford. Done with
+                faith, for 43 continuous days, they quietly settle what the chart owes.
+              </p>
+            </div>
+          </Reveal>
+        </div>
+        <Reveal>
+          <dl className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {LAL_KITAB_PILLARS.map(([title, desc]) => (
+              <div key={title} className="surface-card rounded-2xl px-5 py-6 transition-transform duration-300 hover:-translate-y-1">
+                <dt className="font-display flex items-center gap-2 text-sm tracking-[0.15em] text-gold uppercase">
+                  <span aria-hidden>✦</span>
+                  {title}
+                </dt>
+                <dd className="mt-2 text-sm leading-relaxed text-muted-foreground">{desc}</dd>
+              </div>
+            ))}
+          </dl>
+        </Reveal>
+        <Reveal>
+          <div className="surface-card mt-6 rounded-3xl p-8 text-center sm:p-10">
+            <p className="text-xs tracking-[0.3em] text-gold/80 uppercase">Farmans you may already know</p>
+            <div className="mt-5 flex flex-wrap justify-center gap-2.5">
+              {LAL_KITAB_UPAY.map((u) => (
+                <span key={u} className="rounded-full border border-gold/30 bg-white/[0.04] px-4 py-1.5 text-xs text-gold-soft sm:text-sm">
+                  {u}
+                </span>
+              ))}
+            </div>
+            <a
+              href={`${WHATSAPP}?text=${encodeURIComponent(`Namaste Acharya Aarti, mujhe Lal Kitab ke upay aur apni kundali ke remedies jaanne hain.\n\n📅 Date: ${formatDateIndian(new Date())}`)}`}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="mt-7 inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-xs font-semibold tracking-[0.2em] text-primary-foreground uppercase shadow-glow transition-transform duration-200 hover:scale-105"
+            >
+              Ask for Your Lal Kitab Remedy
+            </a>
+            <p className="mt-5 text-[11px] tracking-[0.2em] text-muted-foreground/70 uppercase">
+              Rooted in the five volumes of Pt. Roop Chand Joshi (1939–1952)
+            </p>
+          </div>
+        </Reveal>
       </section>
 
       <Divider />
