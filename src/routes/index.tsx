@@ -607,7 +607,7 @@ function Index() {
       >
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2.5">
           <a href="#top" className="flex items-center gap-3">
-            <img src="/elephant-logo.jpg" alt="Arawat Occult Sciences" className="h-9 w-9 rounded-full border border-gold/40 object-cover shadow-glow transition-transform duration-200 hover:scale-110" />
+            <img src="/elephant-logo.svg" alt="Arawat Occult Sciences" className="h-9 w-9 rounded-full border border-gold/40 bg-white object-contain p-0.5 shadow-glow transition-transform duration-200 hover:scale-110" />
             <span className="font-display hidden text-sm tracking-[0.3em] text-gradient-gold sm:inline">ARAWAT</span>
           </a>
           <div className="ml-auto flex flex-wrap items-center justify-end gap-2 text-[11px] uppercase tracking-[0.18em] text-gold/80">
@@ -1144,57 +1144,31 @@ function Index() {
         </div>
       </section>
 
-      {/* Visiting Cards */}
+      {/* Visiting Cards — 1 and 2 */}
       <SparkleTrail>
         <section className="relative z-10 mx-auto mt-24 max-w-4xl px-6">
           <Reveal>
             <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">{t.cards.title}</h2>
             <p className="mt-3 text-center text-base text-muted-foreground italic">
-              {t.cards.subtitle}
+              {lang === "hi" ? "हमारे विज़िटिंग कार्ड — सीधे, साफ़" : "Our visiting cards — clear and direct"}
             </p>
           </Reveal>
-          <div className="mt-10 flex flex-col items-center gap-10 sm:flex-row sm:justify-center">
-            {/* Card 1 — Front */}
-            <div className="flip-card h-80 w-64 sm:h-96 sm:w-72 hover:scale-[1.03] transition-transform duration-300">
-              <div className="flip-card-inner">
-                <div className="flip-card-front">
-                  <img
-                    src="/card1.jpeg"
-                    alt="Arawat Occult Sciences — Front"
-                    loading="lazy"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <div className="flip-card-back">
-                  <img
-                    src="/card2.jpeg"
-                    alt="Arawat Occult Sciences — Back"
-                    loading="lazy"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-              </div>
+          <div className="mt-10 flex flex-col items-center gap-8 sm:flex-row sm:justify-center">
+            <div className="surface-card overflow-hidden rounded-2xl p-2 shadow-card transition-transform duration-300 hover:scale-[1.02]">
+              <img
+                src="/1.jpeg"
+                alt="Arawat Card 1"
+                loading="lazy"
+                className="h-80 w-64 sm:h-[26rem] sm:w-80 object-cover rounded-xl"
+              />
             </div>
-            {/* Card 2 — Back */}
-            <div className="flip-card h-80 w-64 sm:h-96 sm:w-72 hover:scale-[1.03] transition-transform duration-300">
-              <div className="flip-card-inner">
-                <div className="flip-card-front">
-                  <img
-                    src="/card2.jpeg"
-                    alt="Arawat Occult Sciences — Back"
-                    loading="lazy"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <div className="flip-card-back">
-                  <img
-                    src="/card1.jpeg"
-                    alt="Arawat Occult Sciences — Front"
-                    loading="lazy"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-              </div>
+            <div className="surface-card overflow-hidden rounded-2xl p-2 shadow-card transition-transform duration-300 hover:scale-[1.02]">
+              <img
+                src="/2.jpeg"
+                alt="Arawat Card 2"
+                loading="lazy"
+                className="h-80 w-64 sm:h-[26rem] sm:w-80 object-cover rounded-xl"
+              />
             </div>
           </div>
         </section>

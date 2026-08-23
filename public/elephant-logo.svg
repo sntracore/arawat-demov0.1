@@ -1,0 +1,68 @@
+<svg viewBox="0 0 520 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Arawat golden elephant logo">
+  <rect width="520" height="340" rx="16" fill="white"/>
+  <!-- elephant outline - simplified side view left facing -->
+  <path d="M 38 198 C 22 182 18 148 42 120 C 58 96 92 62 134 32 C 166 10 192 14 218 42 L 238 58 C 256 66 284 76 318 82 L 384 92 C 422 98 468 112 486 154 C 492 172 490 190 482 206 C 476 224 472 238 474 252 C 476 268 482 282 492 296 L 486 298 C 476 292 468 278 468 262 C 468 246 474 232 482 216 C 484 198 482 178 470 156 C 452 122 408 104 364 98 L 318 90 L 282 82 C 276 88 268 94 260 102 L 278 122 L 268 134 L 248 118 C 238 130 228 142 220 154 L 216 170 L 210 186 L 204 208 L 200 250 L 198 286 C 198 296 190 302 172 302 L 152 302 C 138 302 132 296 136 276 L 146 218 L 140 172 C 136 188 132 204 130 220 L 126 276 C 126 294 118 302 98 302 L 76 302 C 62 302 58 294 64 272 L 78 224 L 74 182 C 68 198 62 214 56 232 L 48 250 L 42 268 C 38 284 30 292 14 292 C 8 292 4 286 4 272 C 4 258 12 244 26 232 C 40 220 52 212 58 190 L 42 172 L 28 150 L 18 124 L 12 96 C 16 108 24 120 34 136 L 46 154 L 60 168 L 74 178 L 84 188 L 88 198 Z" fill="white" stroke="#b08d26" stroke-width="5.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <!-- trunk spiral -->
+  <path d="M 42 172 C 34 190 22 210 14 226 C 8 238 8 252 18 262 C 28 272 44 274 54 262 C 64 250 60 236 48 230 C 38 224 30 228 30 238 C 30 248 38 254 48 250" fill="none" stroke="#b08d26" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- eye -->
+  <g stroke="#b08d26" fill="none" stroke-width="2.8">
+    <path d="M 98 112 C 112 98 132 96 152 108 C 138 118 120 126 98 128 C 90 120 92 114 98 112 Z" fill="white"/>
+    <circle cx="122" cy="114" r="7" fill="#b08d26" stroke="none"/>
+    <circle cx="122" cy="114" r="2.6" fill="white" stroke="none"/>
+    <path d="M 96 106 C 108 94 128 90 148 100" stroke="#b08d26" stroke-width="2.2" fill="none"/>
+  </g>
+  <!-- trishul on forehead -->
+  <g stroke="#b08d26" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 118 76 L 118 42 M 108 62 C 108 52 112 46 118 42 C 124 46 128 52 128 62 M 118 72 L 112 84 L 118 88 L 124 84 Z" fill="#c99a2e"/>
+    <circle cx="118" cy="88" r="2" fill="#b08d26" stroke="none"/>
+  </g>
+  <!-- ear -->
+  <path d="M 182 58 C 196 64 224 84 242 108 L 228 128 C 212 116 194 102 182 88 C 174 76 174 62 182 58 Z" fill="white" stroke="#b08d26" stroke-width="4.2" stroke-linejoin="round"/>
+  <path d="M 188 72 C 200 78 216 92 228 112" fill="none" stroke="#b08d26" stroke-width="2.4" stroke-linecap="round"/>
+  <!-- necklace -->
+  <g fill="none" stroke="#b08d26" stroke-width="2">
+    <path d="M 84 188 C 86 202 94 218 108 232 C 122 246 136 252 150 252" stroke="#c9a84c" stroke-width="2.8"/>
+    <path d="M 150 252 C 164 250 176 238 184 218 L 186 198" stroke="#c9a84c" stroke-width="2.8"/>
+  </g>
+  <!-- beads -->
+  <g fill="#b08d26">
+    <circle cx="88" cy="198" r="3.2"/><circle cx="92" cy="210" r="3.2"/><circle cx="98" cy="222" r="3.6"/><circle cx="108" cy="232" r="3.8"/><circle cx="120" cy="242" r="3.8"/><circle cx="134" cy="250" r="3.8"/><circle cx="150" cy="252" r="3.4"/><circle cx="164" cy="246" r="3.4"/><circle cx="174" cy="234" r="3.2"/><circle cx="180" cy="222" r="3"/><circle cx="184" cy="210" r="2.8"/>
+  </g>
+  <!-- purple gem pendant -->
+  <g>
+    <ellipse cx="124" cy="272" rx="22" ry="28" fill="none" stroke="#b08d26" stroke-width="3.2"/>
+    <path d="M 124 248 C 114 258 104 270 108 282 C 112 292 124 298 136 292 C 146 286 148 272 138 260 C 134 254 128 248 124 248 Z" fill="#6a1b3a" stroke="#b08d26" stroke-width="1.2"/>
+    <path d="M 116 260 C 114 268 118 276 124 280 C 120 272 118 264 116 260 Z" fill="white" opacity="0.55"/>
+    <circle cx="124" cy="248" r="4.5" fill="white" stroke="#b08d26" stroke-width="1.6"/>
+    <path d="M 124 298 L 116 312 L 124 324 L 132 312 Z" fill="#b08d26"/>
+  </g>
+  <!-- flower of life mandala on back -->
+  <g stroke="#b08d26" fill="none" stroke-width="1.4">
+    <circle cx="344" cy="142" r="58" stroke-width="2.2"/>
+    <circle cx="344" cy="142" r="44"/>
+    <!-- 6 outer circles -->
+    <circle cx="344" cy="98" r="22"/><circle cx="382" cy="120" r="22"/><circle cx="382" cy="164" r="22"/><circle cx="344" cy="186" r="22"/><circle cx="306" cy="164" r="22"/><circle cx="306" cy="120" r="22"/>
+    <!-- inner flower -->
+    <circle cx="344" cy="142" r="14"/>
+    <circle cx="344" cy="128" r="14"/><circle cx="356" cy="135" r="14"/><circle cx="356" cy="149" r="14"/><circle cx="344" cy="156" r="14"/><circle cx="332" cy="149" r="14"/><circle cx="332" cy="135" r="14"/>
+  </g>
+  <!-- decorative dots around mandala -->
+  <g fill="#b08d26">
+    <circle cx="298" cy="92" r="1.6"/><circle cx="312" cy="82" r="1.2"/><circle cx="328" cy="78" r="1.2"/><circle cx="360" cy="78" r="1.2"/><circle cx="376" cy="82" r="1.2"/><circle cx="390" cy="92" r="1.6"/>
+    <circle cx="298" cy="192" r="1.6"/><circle cx="312" cy="202" r="1.2"/><circle cx="390" cy="192" r="1.6"/>
+    <text x="310" y="112" font-size="9" fill="#b08d26" text-anchor="middle">✦</text><text x="378" y="112" font-size="9" fill="#b08d26" text-anchor="middle">✦</text>
+    <text x="302" y="145" font-size="8" fill="#b08d26" text-anchor="middle">✦</text><text x="386" y="145" font-size="8" fill="#b08d26" text-anchor="middle">✦</text>
+  </g>
+  <!-- outer dotted ring around mandala -->
+  <g fill="none" stroke="#b08d26" stroke-width="1.1">
+    <circle cx="344" cy="142" r="72" stroke-dasharray="0 9" stroke-linecap="round"/>
+    <circle cx="344" cy="142" r="64" stroke-dasharray="1.5 7" stroke-linecap="round" opacity="0.7"/>
+  </g>
+  <!-- feet details -->
+  <g stroke="#b08d26" fill="none" stroke-width="2.2">
+    <path d="M 58 278 C 62 268 68 266 74 274 M 74 274 C 78 266 84 264 90 274 M 90 274 C 94 266 100 264 106 274"/>
+    <path d="M 144 282 C 148 272 154 270 160 278 M 160 278 C 164 270 170 268 176 276 M 176 276 C 180 268 186 266 192 274"/>
+    <path d="M 334 284 C 338 274 344 272 350 280 M 350 280 C 354 272 360 270 366 278"/>
+    <path d="M 392 284 C 396 274 402 272 408 280 M 408 280 C 412 272 418 270 424 278 M 424 278 C 428 270 434 268 440 276"/>
+  </g>
+</svg>
