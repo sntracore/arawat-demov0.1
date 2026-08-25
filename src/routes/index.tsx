@@ -1216,6 +1216,32 @@ function Index() {
         </section>
       </SparkleTrail>
 
+      {/* Gallery — i1 to i10 */}
+      <section className="relative z-10 mx-auto mt-24 max-w-6xl px-6">
+        <Reveal>
+          <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Gallery ✦</h2>
+          <p className="mt-3 text-center text-base text-muted-foreground italic">Moments &amp; energies — all images properly placed</p>
+        </Reveal>
+        <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          {[1,2,3,4,5,6,7,8,9,10].map((n) => (
+            <div key={n} className="group surface-card overflow-hidden rounded-2xl p-1.5 shadow-card">
+              <img src={`/i${n}.jpeg`} alt={`Gallery ${n}`} loading="lazy" className="h-40 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105 sm:h-48" />
+            </div>
+          ))}
+        </div>
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="surface-card overflow-hidden rounded-2xl p-1.5 shadow-card">
+            <img src="/imgggg22.jpeg" alt="Arawat extra" loading="lazy" className="h-56 w-full object-cover rounded-xl" />
+          </div>
+          <div className="surface-card overflow-hidden rounded-2xl p-1.5 shadow-card">
+            <img src="/newimg101.jpeg" alt="Extra 101" loading="lazy" className="h-56 w-full object-cover rounded-xl" />
+          </div>
+          <div className="surface-card overflow-hidden rounded-2xl p-1.5 shadow-card">
+            <img src="/newimg102.jpeg" alt="Extra 102" loading="lazy" className="h-56 w-full object-cover rounded-xl" />
+          </div>
+        </div>
+      </section>
+
       {/* Consultation Form */}
       <section id="book" className="relative z-10 mx-auto mt-24 max-w-2xl scroll-mt-24 px-6">
         <Reveal>
