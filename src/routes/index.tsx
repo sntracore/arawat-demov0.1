@@ -7,16 +7,16 @@ import { translations, type Lang } from "@/lib/translations";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Arawat Occult Sciences | Tap Your Chakras, Find Clarity" },
+      { title: "Arawat Occult Sciences | KP Astrology · Tap Your Chakras, Find Clarity" },
       {
         name: "description",
         content:
-          "Interactive chakra guide & authentic Lal Kitab remedies by Acharya Aarti — astrology, numerology, astro-vastu, aura scanning. Tap each chakra to hear its mantra and find your upay.",
+          "Interactive chakra guide & authentic Lal Kitab remedies by Acharya Aarti — KP Astrology, Prashna Kundali, Horary Astrology, numerology, astro-vastu, aura scanning. Tap each chakra to hear its ting and find your upay.",
       },
       { property: "og:title", content: "Arawat Occult Sciences" },
       {
         property: "og:description",
-        content: "Tap each chakra to hear its voice and discover your guidance. 7+ years of occult sciences with Acharya Aarti.",
+        content: "Tap each chakra to hear its ting and discover your guidance. 15+ years of occult sciences with Acharya Aarti — personalized golden report.",
       },
       { property: "og:image", content: "/card1.jpeg" },
       { property: "og:type", content: "website" },
@@ -41,25 +41,12 @@ function formatDateIndian(d: Date) {
 
 let audioCtx: AudioContext | null = null;
 
-function playChakraVoice(c: { freq: number; voice: string }) {
+function playTing() {
   try {
     if (!audioCtx) audioCtx = new AudioContext();
     if (audioCtx.state === "suspended") void audioCtx.resume();
     const ctx = audioCtx;
     const t = ctx.currentTime;
-    const harmonics: [number, number][] = [[1, 0.14], [1.5, 0.06], [2, 0.05], [2.997, 0.028]];
-    for (const [mult, vol] of harmonics) {
-      const osc = ctx.createOscillator();
-      const g = ctx.createGain();
-      osc.type = "sine";
-      osc.frequency.value = c.freq * mult;
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.linearRampToValueAtTime(vol, t + 0.12);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 3.4);
-      osc.connect(g).connect(ctx.destination);
-      osc.start(t);
-      osc.stop(t + 3.6);
-    }
     const sp = ctx.createOscillator();
     const sg = ctx.createGain();
     sp.type = "triangle";
@@ -71,12 +58,19 @@ function playChakraVoice(c: { freq: number; voice: string }) {
     sp.start(t);
     sp.stop(t + 0.35);
   } catch { /* silent */ }
+}
 
+function playChakraVoice(_c: { freq: number; voice: string }) {
+  playTing();
+}
+
+function playOmOnOpen() {
   try {
-    const a = new Audio(c.voice);
-    a.volume = 0.74;
+    const a = new Audio("/voices/om.mp3");
+    a.volume = 0.5;
     void a.play().catch(() => {});
   } catch { /* silent */ }
+  playTing();
 }
 
 const BOT_REPLIES: { pattern: RegExp; reply: string }[] = [
@@ -88,8 +82,8 @@ const BOT_REPLIES: { pattern: RegExp; reply: string }[] = [
   { pattern: /\b(love|relationship|marriage|partner|rishta)\b/i, reply: "Love and relationships are governed by the Anahata chakra. Whether it's compatibility issues or finding the right partner, Acharya Aarti provides personalized remedies. Shall I connect you on WhatsApp?" },
   { pattern: /\b(vastu|home|house|office|ghar)\b/i, reply: `Astro-Vastu guidance aligns your home/office energy with cosmic forces. Acharya Aarti combines traditional vastu with astrological insights. Call ${PHONE} to consult.` },
   { pattern: /\b(health|well|sick|wellness|sehat)\b/i, reply: "Health and well-being connect to the Root chakra (Muladhara). Acharya Aarti offers energy readings and special chants for wellness. Want to book a consultation?" },
-  { pattern: /\b(price|fee|cost|charge|kitna)\b/i, reply: `Consultation fees depend on the service type. For Open Query Hour (Tue/Thu/Sat, 3\u20134 PM), you can ask one question. For detailed sessions, please WhatsApp Acharya Aarti directly at ${PHONE}` },
-  { pattern: /\b(phone|call|number|contact|reach)\b/i, reply: `You can reach Acharya Aarti at:\n\u{1F4DE} ${PHONE}\n\u{1F4AC} WhatsApp: ${WHATSAPP}\n\nOpen Query Hours: Tue, Thu, Sat \u2014 3:00 to 4:00 PM` },
+  { pattern: /\b(price|fee|cost|charge|kitna)\b/i, reply: `Consultation fees depend on the service type. For Open Query Hour (Tue/Thu/Sat, 3\u20134 PM & 6\u20137 PM), you can ask one question. For detailed sessions, please WhatsApp Acharya Aarti directly at ${PHONE}` },
+  { pattern: /\b(phone|call|number|contact|reach)\b/i, reply: `You can reach Acharya Aarti at:\n\u{1F4DE} ${PHONE}\n\u{1F4AC} WhatsApp: ${WHATSAPP}\n\nOpen Query Hours: Tue, Thu, Sat \u2014 3:00 to 4:00 PM & 6:00 to 7:00 PM` },
 ];
 
 function getBotReply(input: string): string {
@@ -112,6 +106,7 @@ type Chakra = {
   theme: string;
   line: string;
   services: string[];
+  symptom: string;
 };
 
 const chakras: Chakra[] = [
@@ -128,6 +123,7 @@ const chakras: Chakra[] = [
     theme: "Spiritual Guidance & Remedies",
     line: "Jab sab kuch theek lagta hai par mann khaali — yahan se path khulta hai.",
     services: ["Spiritual Guidance & Remedies", "Any Personal Query"],
+    symptom: "Symptom: feeling disconnected, lack of purpose — time to balance your Crown.",
   },
   {
     name: "Ajna",
@@ -139,9 +135,10 @@ const chakras: Chakra[] = [
     freq: 852,
     voice: "/voices/om.mp3",
     element: "Light / Intuition",
-    theme: "Astrology & Kundali Reading",
+    theme: "KP Astrology & Kundali Reading",
     line: "Aapki janm kundali ka blueprint — timing, dasha aur sahi decision.",
     services: ["Kundali Milan", "Marriage & Compatibility", "Numerology & Name Analysis"],
+    symptom: "Symptom: confusion, indecision — balance your Third Eye for clarity.",
   },
   {
     name: "Vishuddha",
@@ -156,6 +153,7 @@ const chakras: Chakra[] = [
     theme: "Open Query Hour",
     line: "Ek sawaal, ek baat-cheet, thodi aur clarity.",
     services: ["Open Query Hour", "Mobile Number & Wallpaper Analysis"],
+    symptom: "Symptom: fear to speak, throat tightness — balance your Throat chakra.",
   },
   {
     name: "Anahata",
@@ -170,6 +168,7 @@ const chakras: Chakra[] = [
     theme: "Love, Relationship & Family",
     line: "Rishton ki uljhan ke peeche hamesha ek energy pattern hota hai.",
     services: ["Love & Relationship", "Family Matters", "Special Chant for Healthy Relationships"],
+    symptom: "Symptom: hurt, jealousy, loneliness — heal your Heart chakra.",
   },
   {
     name: "Manipura",
@@ -184,6 +183,7 @@ const chakras: Chakra[] = [
     theme: "Career, Business & Money",
     line: "Mehnat poori, result adhoora? Yeh chakra usi block ki baat karta hai.",
     services: ["Career & Professional Life", "Business & Financial Growth", "Special Chant for Money Attraction"],
+    symptom: "Symptom: low confidence, money blocks — power up your Solar Plexus.",
   },
   {
     name: "Svadhisthana",
@@ -198,6 +198,7 @@ const chakras: Chakra[] = [
     theme: "Children & Learning",
     line: "Bachchon ka focus, wellness aur unki apni speed.",
     services: ["Children's Concentration & Focus Mantras", "Children Wellness Guidance"],
+    symptom: "Symptom: creative block, emotional swings — balance your Sacral.",
   },
   {
     name: "Muladhara",
@@ -212,6 +213,7 @@ const chakras: Chakra[] = [
     theme: "Home, Vastu & Well-being",
     line: "Ghar ki disha theek, toh jeevan ki dhara theek.",
     services: ["Astro-Vastu Guidance", "Aura & Energy Reading", "Special Chant for Health & Well-being"],
+    symptom: "Symptom: insecurity, fatigue, restlessness — ground your Root chakra.",
   },
 ];
 
@@ -237,18 +239,22 @@ const allServices = [
   "Any Personal Query",
 ];
 
-const FAQS: { q: string; a: string }[] = [
+const FAQS_EN: { q: string; a: string }[] = [
+  {
+    q: "Who we are?",
+    a: "We are ARAWAT OCCULT SCIENCES — guided by Acharya Aarti with 15+ years of practice in KP Astrology, Prashna Kundali, Horary Astrology, Numerology, Astro-Vastu and Aura Scanning. Every chart is read personally and every remedy is a personalized golden report for your chart only.",
+  },
   {
     q: "What exactly is Lal Kitab?",
-    a: "Lal Kitab, commonly associated with Pandit Roop Chand Joshi, is a distinctive system of astrology known for its practical and often simple remedial measures. Originally published in Urdu in a series of volumes during the mid-20th century, it combines astrological principles with an unusual remedial approach. While some remedies are traditionally prescribed for a fixed period \u2014 often 43 days \u2014 this is not a universal rule; duration and method depend on the specific remedy and the individual horoscope.",
+    a: "Lal Kitab, commonly associated with Pandit Roop Chand Joshi, is a distinctive system of KP Astrology guidance known for its practical and often simple remedial measures. Originally published in Urdu in a series of volumes during the mid-20th century, it combines KP Astrology principles with an unusual remedial approach. While some remedies are traditionally prescribed for a fixed period \u2014 often 43 days \u2014 this is not a universal rule; duration and method depend on the specific remedy and the individual horoscope.",
   },
   {
     q: "How do I book a consultation?",
-    a: `The fastest way is the booking form below or a direct WhatsApp message. You can also call ${PHONE} during Open Query Hours (Tue, Thu, Sat \u2014 3 to 4 PM) for one quick question.`,
+    a: `The fastest way is the booking form below or a direct WhatsApp message. You can also call ${PHONE} during Open Query Hours (Tue, Thu, Sat \u2014 3 to 4 PM & 6 to 7 PM) for one quick question. Your answer comes as a personalized golden report.`,
   },
   {
     q: "What details should I keep ready?",
-    a: "Your full name, date of birth, and \u2014 if known \u2014 your exact birth time and place of birth. The more precise your birth time, the sharper the reading.",
+    a: "Your full name, date of birth, and \u2014 if known \u2014 your exact birth time and place of birth. The more precise your birth time, the sharper the KP Astrology reading.",
   },
   {
     q: "Is everything I share confidential?",
@@ -256,12 +262,21 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "What happens during Open Query Hour?",
-    a: "You bring one question \u2014 career, relationship, health or home \u2014 and receive a focused answer with a simple remedy. No long session needed, just clarity.",
+    a: "Open Query Hour — now 3–4 PM & 6–7 PM, Tue/Thu/Sat — you bring one question \u2014 career, relationship, health or home \u2014 and receive a focused answer with a simple remedy. No long session needed, just clarity. Personalized golden report included.",
   },
   {
     q: "Do the remedies really work?",
-    a: "Remedies here are personalised mantras, chants and energy alignments matched to your chart and chakra state. They are gentle practices meant to be followed consistently \u2014 most clients feel the shift within weeks.",
+    a: "Remedies here are personalised mantras, chants and energy alignments matched to your chart and chakra state. They are gentle practices meant to be followed consistently \u2014 most clients feel the shift within weeks. Each remedy is a personalized golden report.",
   },
+];
+const FAQS_HI: { q: string; a: string }[] = [
+  { q: "हम कौन हैं?", a: "हम हैं ARAWAT OCCULT SCIENCES — आचार्य आरती द्वारा 15+ वर्षों के अभ्यास के साथ KP ज्योतिष, प्रश्न कुंडली, होररी ज्योतिष, अंक ज्योतिष, ज्योतिष-वास्तु और आभा परिक्षण। हर कुंडली व्यक्तिगत रूप से पढ़ी जाती है और हर उपाय आपकी कुंडली के लिए व्यक्तिगत गोल्डन रिपोर्ट है।" },
+  { q: "लाल किताब क्या है?", a: "लाल किताब, पंडित रूप चंद जोशी से जुड़ी, KP ज्योतिष मार्गदर्शन की एक विशिष्ट प्रणाली है जो सरल उपायों के लिए जानी जाती है। उर्दू में प्रकाशित, यह KP ज्योतिष सिद्धांतों और उपायों को जोड़ती है।" },
+  { q: "परामर्श कैसे बुक करें?", a: `सबसे तेज़ तरीका नीचे दिया गया फॉर्म या WhatsApp मैसेज है। आप ${PHONE} पर Open Query Hour (मंगल/गुरु/शनि — 3–4 बजे और 6–7 बजे) में एक प्रश्न पूछ सकते हैं। उत्तर व्यक्तिगत गोल्डन रिपोर्ट के रूप में मिलता है।` },
+  { q: "कौन सी जानकारी तैयार रखें?", a: "पूरा नाम, जन्म तिथि, और यदि पता हो तो सटीक जन्म समय और स्थान। जन्म समय जितना सटीक, KP ज्योतिष रीडिंग उतनी सटीक।" },
+  { q: "क्या सब कुछ गोपनीय है?", a: "बिल्कुल। हर बातचीत, कुंडली और रीडिंग आपके और आचार्य आरती के बीच ही रहती है। 100% गोपनीयता इस साधना का आधार है।" },
+  { q: "Open Query Hour में क्या होता है?", a: "Open Query Hour — अब 3–4 PM और 6–7 PM, मंगल/गुरु/शनि — एक प्रश्न लाइए, केंद्रित उत्तर और सरल उपाय पाइए। व्यक्तिगत गोल्डन रिपोर्ट सहित।" },
+  { q: "क्या उपाय सच में काम करते हैं?", a: "उपाय आपकी कुंडली और चक्र स्थिति के अनुसार व्यक्तिगत मंत्र, जाप और ऊर्जा संरेखण हैं। नियमित पालन से अधिकांश लोगों को हफ्तों में बदलाव महसूस होता है। हर उपाय व्यक्तिगत गोल्डन रिपोर्ट है।" },
 ];
 
 const NAV_LINKS: [string, string][] = [
@@ -431,11 +446,11 @@ function Divider() {
 
 const ZODIAC = ["\u2648\uFE0E", "\u2649\uFE0E", "\u264A\uFE0E", "\u264B\uFE0E", "\u264C\uFE0E", "\u264D\uFE0E", "\u264E\uFE0E", "\u264F\uFE0E", "\u2650\uFE0E", "\u2651\uFE0E", "\u2652\uFE0E", "\u2653\uFE0E"];
 
-const HERO_CHIPS = ["Astrology", "Numerology", "Astro-Vastu", "Aura Scanning"];
+const HERO_CHIPS = ["KP Astrology", "Prashna Kundali", "Horary Astrology", "Numerology", "Astro-Vastu", "Aura Scanning"];
 
 const HERO_STATS = [
-  ["7+", "Years Experience"],
-  ["18", "Guidance Services"],
+  ["15+", "Years of Practice"],
+  ["7", "Chakra Balance"],
   ["100%", "Confidential"],
 ];
 
@@ -488,7 +503,7 @@ function ZodiacWheel() {
 function AIBot() {
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState<{ from: "bot" | "user"; text: string }[]>([
-    { from: "bot", text: "Namaste! \u{1F64F} I'm Arawat's virtual guide. Ask me anything about astrology, numerology, vastu, or book a consultation with Acharya Aarti." },
+    { from: "bot", text: "Namaste! \u{1F64F} I'm Arawat's virtual guide. Ask me anything about KP Astrology, numerology, vastu, or book a consultation with Acharya Aarti." },
   ]);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
@@ -504,6 +519,7 @@ function AIBot() {
     setMsgs((m) => [...m, { from: "user", text: q }]);
     setInput("");
     setTyping(true);
+    playTing();
     setTimeout(() => {
       setMsgs((m) => [...m, { from: "bot", text: getBotReply(q) }]);
       setTyping(false);
@@ -516,7 +532,7 @@ function AIBot() {
     <>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="fixed bottom-20 left-6 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-transform duration-200 hover:scale-110"
+        className="fixed bottom-24 right-6 z-[60] flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-transform duration-200 hover:scale-110"
         style={{ background: "linear-gradient(135deg, oklch(0.82 0.15 85), oklch(0.65 0.24 305))", boxShadow: "0 4px 20px oklch(0.82 0.15 88 / 0.5)" }}
         aria-label="Chat with Arawat AI assistant"
       >
@@ -528,7 +544,7 @@ function AIBot() {
       </button>
 
       {open && (
-        <div className="fixed bottom-36 left-6 z-50 flex w-80 flex-col overflow-hidden rounded-2xl border border-gold/30 backdrop-blur-md" style={{ background: "linear-gradient(160deg, oklch(0.22 0.08 300 / 0.97), oklch(0.16 0.06 300 / 0.97))", boxShadow: "0 20px 60px -15px oklch(0 0 0 / 0.8)" }}>
+        <div className="fixed bottom-40 right-6 z-[60] flex w-80 flex-col overflow-hidden rounded-2xl border border-gold/30 backdrop-blur-md" style={{ background: "linear-gradient(160deg, oklch(0.22 0.08 300 / 0.97), oklch(0.16 0.06 300 / 0.97))", boxShadow: "0 20px 60px -15px oklch(0 0 0 / 0.8)" }}>
           <div className="flex items-center gap-3 px-4 py-3" style={{ background: "linear-gradient(135deg, oklch(0.82 0.15 85 / 0.2), oklch(0.65 0.24 305 / 0.15))" }}>
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gold/20 text-gold text-sm font-bold">A</div>
             <div>
@@ -595,8 +611,16 @@ function Index() {
     navigator.vibrate?.(15);
   };
 
+  useEffect(() => {
+    const id = window.setTimeout(() => playOmOnOpen(), 800);
+    const onFirstInteract = () => { playOmOnOpen(); window.removeEventListener("click", onFirstInteract); window.removeEventListener("touchstart", onFirstInteract); };
+    window.addEventListener("click", onFirstInteract, { once: true });
+    window.addEventListener("touchstart", onFirstInteract, { once: true });
+    return () => { clearTimeout(id); window.removeEventListener("click", onFirstInteract); window.removeEventListener("touchstart", onFirstInteract); };
+  }, []);
+
   return (
-    <main id="top" className="relative">
+    <main id="top" className="relative golden-cursor">
       <div className="starfield" aria-hidden />
       <div className="starfield-slow" aria-hidden />
 
@@ -638,6 +662,7 @@ function Index() {
                 हिं
               </button>
             </div>
+            <a href={`tel:${PHONE.replace(/\s/g, "")}`} className="hidden sm:inline-flex items-center rounded-full bg-gold px-3 py-1 text-[10px] font-bold tracking-widest text-background hover:bg-gold-soft">Customer Care</a>
           </div>
         </div>
       </nav>
@@ -669,9 +694,9 @@ function Index() {
             <span className="text-2xl [text-shadow:0_0_18px_oklch(0.85_0.15_88/0.7)]">ॐ</span>
             <span className="h-px w-12 bg-gradient-to-l from-transparent to-gold/60" aria-hidden />
           </p>
-          <h1 className="text-5xl leading-tight font-bold italic sm:text-7xl lg:text-8xl">
-            <span className="text-gradient-gold text-shimmer">ARAWAT</span>
-            <span className="mt-2 block text-xl font-medium tracking-[0.35em] text-muted-foreground sm:text-2xl">
+          <h1 className="leading-tight font-black italic">
+            <span className="block text-5xl font-black italic text-gradient-gold text-shimmer sm:text-7xl lg:text-8xl">ARAWAT</span>
+            <span className="mt-1 block text-4xl font-black italic tracking-[0.12em] text-gradient-gold text-shimmer sm:text-5xl lg:text-6xl">
               OCCULT SCIENCES
             </span>
           </h1>
@@ -751,17 +776,17 @@ function Index() {
         </Reveal>
       </header>
 
-      {/* Interactive chakra */}
-      <section className="relative z-10 mx-auto mt-14 grid max-w-6xl items-center gap-10 px-6 lg:grid-cols-[1fr_1fr]">
+      {/* Interactive chakra — enlarged body */}
+      <section className="relative z-10 mx-auto mt-14 grid max-w-6xl items-center gap-10 px-6 lg:grid-cols-[1.15fr_1fr]">
         <Reveal>
-          <div className="relative mx-auto w-full max-w-md">
+          <div className="relative mx-auto w-full max-w-lg lg:max-w-xl">
             <div className="absolute -inset-6 rounded-[3rem] bg-accent/20 blur-3xl" aria-hidden />
             <img
               src={chakraFigure}
               alt="Meditating silhouette with seven glowing chakras before a golden zodiac mandala"
               width={1024}
               height={1280}
-              className="relative rounded-[2rem] border border-gold/25 shadow-card"
+              className="relative w-full rounded-[2rem] border border-gold/25 shadow-card scale-[1.08] object-cover"
             />
             {chakras.map((c, i) => (
               <button
@@ -843,10 +868,11 @@ function Index() {
           </div>
 
           <p className="mt-5 text-xs tracking-[0.25em] text-muted-foreground uppercase">{t.diamonds.element} · {current.element}</p>
+          <p className="mt-3 rounded-xl border px-3 py-2 text-sm font-semibold italic" style={{ borderColor: `${current.color}55`, background: `${current.color}12`, color: current.color }}>{current.symptom}</p>
 
           <ul className="mt-4 space-y-3">
             {current.services.map((s) => (
-              <li key={s} className="flex items-start gap-3 border-b border-border/40 pb-2 text-base">
+              <li key={s} className="flex items-start gap-3 border-b border-border/40 pb-2 text-base font-semibold">
                 <span style={{ color: current.color }}>✦</span>
                 {s}
               </li>
@@ -1132,13 +1158,13 @@ function Index() {
           </p>
         </Reveal>
         <div className="mt-10 space-y-4">
-          {FAQS.map((f) => (
+          {(lang === "hi" ? FAQS_HI : FAQS_EN).map((f) => (
             <details key={f.q} className="faq-item">
               <summary>
                 {f.q}
                 <span className="chev text-gold/70" aria-hidden>▾</span>
               </summary>
-              <p>{f.a}</p>
+              <p className="font-semibold">{f.a}</p>
             </details>
           ))}
         </div>
@@ -1154,21 +1180,25 @@ function Index() {
             </p>
           </Reveal>
           <div className="mt-10 flex flex-col items-center gap-8 sm:flex-row sm:justify-center">
-            <div className="surface-card overflow-hidden rounded-2xl p-2 shadow-card transition-transform duration-300 hover:scale-[1.02]">
-              <img
-                src="/1.jpeg"
-                alt="Arawat Card 1"
-                loading="lazy"
-                className="h-80 w-64 sm:h-[26rem] sm:w-80 object-cover rounded-xl"
-              />
+            <div className="flip-card h-80 w-64 sm:h-[26rem] sm:w-80">
+              <div className="flip-card-inner surface-card rounded-2xl p-2 shadow-card">
+                <div className="flip-card-front">
+                  <img src="/1.jpeg" alt="Arawat Card 1 front" loading="lazy" className="h-full w-full object-cover rounded-xl" />
+                </div>
+                <div className="flip-card-back">
+                  <img src="/2.jpeg" alt="Arawat Card 1 back" loading="lazy" className="h-full w-full object-cover rounded-xl" />
+                </div>
+              </div>
             </div>
-            <div className="surface-card overflow-hidden rounded-2xl p-2 shadow-card transition-transform duration-300 hover:scale-[1.02]">
-              <img
-                src="/2.jpeg"
-                alt="Arawat Card 2"
-                loading="lazy"
-                className="h-80 w-64 sm:h-[26rem] sm:w-80 object-cover rounded-xl"
-              />
+            <div className="flip-card h-80 w-64 sm:h-[26rem] sm:w-80">
+              <div className="flip-card-inner surface-card rounded-2xl p-2 shadow-card">
+                <div className="flip-card-front">
+                  <img src="/2.jpeg" alt="Arawat Card 2 front" loading="lazy" className="h-full w-full object-cover rounded-xl" />
+                </div>
+                <div className="flip-card-back">
+                  <img src="/1.jpeg" alt="Arawat Card 2 back" loading="lazy" className="h-full w-full object-cover rounded-xl" />
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -1262,6 +1292,15 @@ function Index() {
         </Reveal>
       </section>
 
+      {/* Customer Care — right most corner */}
+      <a
+        href={`tel:${PHONE.replace(/\s/g, "")}`}
+        aria-label="Customer Care"
+        className="fixed bottom-44 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-gold text-background shadow-lg transition-transform duration-200 hover:scale-110"
+        title="Customer Care"
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6"><path d="M6.62 10.79a15.15 15.15 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+      </a>
       {/* Floating WhatsApp */}
       <a
         href={WHATSAPP}
@@ -1275,13 +1314,14 @@ function Index() {
         </svg>
       </a>
 
-      {/* Footer */}
-      <footer className="relative z-10 mx-auto mt-24 max-w-5xl px-6 pb-16 text-center">
-        <p className="text-3xl text-gradient-gold" style={{ fontFamily: "var(--font-body)" }}>
-          Acharya Aarti
-        </p>
-        <p className="mt-1 text-xs tracking-[0.3em] text-muted-foreground uppercase">
-          Arawat Occult Sciences
+      {/* Lotus — centre small last page */}
+      <div className="relative z-10 mx-auto mt-16 flex justify-center" aria-hidden>
+        <span className="text-4xl opacity-80" style={{ filter: "drop-shadow(0 0 8px oklch(0.85 0.15 88 / 0.5))" }}>🪷</span>
+      </div>
+      {/* Footer — ARAWAT OCCULT SCIENCES italic bold enlarged */}
+      <footer className="relative z-10 mx-auto mt-8 max-w-5xl px-6 pb-16 text-center">
+        <p className="text-4xl font-black italic text-gradient-gold sm:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
+          ARAWAT <span className="font-black italic">OCCULT SCIENCES</span>
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-muted-foreground">
           {t.footer.trusted.map((item) => (
