@@ -1195,20 +1195,20 @@ function Index() {
             <div className="flip-card h-80 w-64 sm:h-[26rem] sm:w-80">
               <div className="flip-card-inner surface-card rounded-2xl p-2 shadow-card">
                 <div className="flip-card-front">
-                  <img src="/1.jpeg" alt="Arawat Card 1 front" loading="lazy" className="h-full w-full object-cover rounded-xl" />
+                  <img src="/newimg101.jpeg" alt="Arawat Card 1 front" loading="lazy" className="h-full w-full object-cover rounded-xl" />
                 </div>
                 <div className="flip-card-back">
-                  <img src="/2.jpeg" alt="Arawat Card 1 back" loading="lazy" className="h-full w-full object-cover rounded-xl" />
+                  <img src="/newimg102.jpeg" alt="Arawat Card 1 back" loading="lazy" className="h-full w-full object-cover rounded-xl" />
                 </div>
               </div>
             </div>
             <div className="flip-card h-80 w-64 sm:h-[26rem] sm:w-80">
               <div className="flip-card-inner surface-card rounded-2xl p-2 shadow-card">
                 <div className="flip-card-front">
-                  <img src="/2.jpeg" alt="Arawat Card 2 front" loading="lazy" className="h-full w-full object-cover rounded-xl" />
+                  <img src="/newimg102.jpeg" alt="Arawat Card 2 front" loading="lazy" className="h-full w-full object-cover rounded-xl" />
                 </div>
                 <div className="flip-card-back">
-                  <img src="/1.jpeg" alt="Arawat Card 2 back" loading="lazy" className="h-full w-full object-cover rounded-xl" />
+                  <img src="/newimg101.jpeg" alt="Arawat Card 2 back" loading="lazy" className="h-full w-full object-cover rounded-xl" />
                 </div>
               </div>
             </div>
