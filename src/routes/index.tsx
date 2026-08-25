@@ -1228,7 +1228,11 @@ function Index() {
               <img src={`/i${n}.jpeg`} alt={`Pendant ${n}`} loading="lazy" className="h-40 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105 sm:h-48" />
             </div>
           ))}
+          <div className="group surface-card overflow-hidden rounded-2xl p-1.5 shadow-card">
+            <img src="https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=400&h=400&fit=crop" alt="Pendant 11" loading="lazy" className="h-40 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105 sm:h-48" />
+          </div>
         </div>
+        <p className="mt-3 text-center text-xs text-muted-foreground/60">Pendant 11 is placeholder — replace `public/i11.jpeg` when you have file</p>
       </section>
 
       {/* Consultation Form */}
