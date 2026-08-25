@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useCallback, useRef, useEffect } from "react";
 import chakraFigure from "@/assets/chakra-figure.jpg";
-import arawatLogo from "@/assets/arawat-logo.png";
 import { translations, type Lang } from "@/lib/translations";
 
 export const Route = createFileRoute("/")({
@@ -95,6 +94,7 @@ function getBotReply(input: string): string {
 
 type Chakra = {
   name: string;
+  hindi: string;
   label: string;
   top: string;
   color: string;
@@ -112,6 +112,7 @@ type Chakra = {
 const chakras: Chakra[] = [
   {
     name: "Sahasrara",
+    hindi: "सहस्रार चक्र",
     label: "Crown",
     top: "44.6%",
     color: "oklch(0.65 0.24 305)",
@@ -127,6 +128,7 @@ const chakras: Chakra[] = [
   },
   {
     name: "Ajna",
+    hindi: "आज्ञा चक्र",
     label: "Third Eye",
     top: "48.4%",
     color: "oklch(0.55 0.2 270)",
@@ -142,6 +144,7 @@ const chakras: Chakra[] = [
   },
   {
     name: "Vishuddha",
+    hindi: "विशुद्धि चक्र",
     label: "Throat",
     top: "52.6%",
     color: "oklch(0.7 0.15 230)",
@@ -157,6 +160,7 @@ const chakras: Chakra[] = [
   },
   {
     name: "Anahata",
+    hindi: "अनाहत चक्र",
     label: "Heart",
     top: "57.3%",
     color: "oklch(0.75 0.18 150)",
@@ -172,6 +176,7 @@ const chakras: Chakra[] = [
   },
   {
     name: "Manipura",
+    hindi: "मणिपुर चक्र",
     label: "Solar Plexus",
     top: "62%",
     color: "oklch(0.85 0.17 90)",
@@ -187,6 +192,7 @@ const chakras: Chakra[] = [
   },
   {
     name: "Svadhisthana",
+    hindi: "स्वाधिष्ठान चक्र",
     label: "Sacral",
     top: "66.8%",
     color: "oklch(0.72 0.19 55)",
@@ -202,6 +208,7 @@ const chakras: Chakra[] = [
   },
   {
     name: "Muladhara",
+    hindi: "मूलाधार चक्र",
     label: "Root",
     top: "77.2%",
     color: "oklch(0.6 0.22 25)",
@@ -631,7 +638,7 @@ function Index() {
       >
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2.5">
           <a href="#top" className="flex items-center gap-3">
-            <img src="/elephant-logo.svg" alt="Arawat Occult Sciences" className="h-9 w-9 rounded-full border border-gold/40 bg-white object-contain p-0.5 shadow-glow transition-transform duration-200 hover:scale-110" />
+            <img src="/imgggg22.jpeg" alt="Arawat" className="h-11 w-11 rounded-full border border-gold/40 bg-white object-cover shadow-glow transition-transform duration-200 hover:scale-110" />
             <span className="font-display hidden text-sm tracking-[0.3em] text-gradient-gold sm:inline">ARAWAT</span>
           </a>
           <div className="ml-auto flex flex-wrap items-center justify-end gap-2 text-[11px] uppercase tracking-[0.18em] text-gold/80">
@@ -847,7 +854,7 @@ function Index() {
           >
             {current.label} Chakra
           </span>
-          <h2 className="mt-2 text-3xl text-gradient-gold">{current.name}</h2>
+          <h2 className="mt-2 text-3xl font-bold text-gradient-gold">{current.hindi} — {current.name}</h2>
           <p className="mt-1 text-lg text-foreground">{current.theme}</p>
           <p className="mt-4 text-lg text-muted-foreground italic">{current.line}</p>
 
@@ -961,7 +968,7 @@ function Index() {
         <div className="mt-12 grid items-center gap-12 lg:grid-cols-[auto_1fr]">
           <Reveal>
             <div
-              className="group relative mx-auto h-72 w-52 -rotate-6 rounded-r-xl rounded-l-sm border border-gold/50 shadow-glow transition-transform duration-500 hover:rotate-0"
+              className="group relative mx-auto h-72 w-52 rounded-r-xl rounded-l-sm border border-gold/50 shadow-glow"
               style={{ background: "linear-gradient(140deg, oklch(0.48 0.19 25), oklch(0.33 0.16 18))" }}
               aria-hidden
             >
@@ -1023,15 +1030,20 @@ function Index() {
         </Reveal>
         <Reveal>
           <div className="surface-card mt-6 rounded-3xl p-8 text-center sm:p-10">
-            <p className="text-xs tracking-[0.3em] text-gold/80 uppercase">{t.lalkitab.farmansTitle}</p>
-            <div className="mt-5 flex flex-wrap justify-center gap-2.5">
-              {LAL_KITAB_UPAY.map((u) => (
-                <span key={u} className="rounded-full border border-gold/30 bg-white/[0.04] px-4 py-1.5 text-xs text-gold-soft sm:text-sm">
-                  {u}
-                </span>
-              ))}
-              <span className="rounded-full border border-dashed border-gold/40 bg-gold/10 px-4 py-1.5 text-xs font-semibold tracking-widest text-gold sm:text-sm">{t.lalkitab.andManyMore}</span>
-            </div>
+            <p className="text-sm tracking-[0.3em] text-gold font-bold uppercase">{t.lalkitab.farmansTitle}</p>
+            <p className="mt-3 text-sm text-gold-soft">
+              and many more as per your chart
+            </p>
+            <p className="mt-4 text-sm font-semibold text-foreground">
+              Contact &amp; Help Support:{" "}
+              <a href="tel:7906416125" className="text-gold hover:text-gold-soft underline underline-offset-4">
+                7906416125
+              </a>
+              {" · "}
+              <a href={`tel:${PHONE.replace(/\s/g, "")}`} className="text-gold hover:text-gold-soft underline underline-offset-4">
+                {PHONE}
+              </a>
+            </p>
             <a
               href={`${WHATSAPP}?text=${encodeURIComponent(`Namaste Acharya Aarti, mujhe Lal Kitab ke upay aur apni kundali ke remedies jaanne hain.\n\n📅 Date: ${formatDateIndian(new Date())}`)}`}
               target="_blank"
@@ -1082,8 +1094,8 @@ function Index() {
             <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">{t.about.title}</h2>
             <div className="mt-8 flex flex-col items-center gap-8 sm:flex-row sm:items-start">
               <img
-                src={arawatLogo}
-                alt="Arawat Occult Sciences emblem"
+                src="/imgggg22.jpeg"
+                alt="Arawat"
                 width={112}
                 height={112}
                 loading="lazy"
