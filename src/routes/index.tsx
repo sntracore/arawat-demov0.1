@@ -27,7 +27,9 @@ export const Route = createFileRoute("/")({
 });
 
 const WHATSAPP = "https://wa.me/918979612593";
+const WHATSAPP2 = "https://wa.me/917906416125";
 const PHONE = "+91 89796 12599";
+const PHONE2 = "+91 79064 16125";
 
 const MONTH_NAMES = [
   "January", "February", "March", "April", "May", "June",
@@ -1036,12 +1038,20 @@ function Index() {
             </p>
             <p className="mt-4 text-sm font-semibold text-foreground">
               Contact &amp; Help Support:{" "}
-              <a href="tel:7906416125" className="text-gold hover:text-gold-soft underline underline-offset-4">
+              <a href="tel:+917906416125" className="text-gold hover:text-gold-soft underline underline-offset-4">
                 7906416125
               </a>
               {" · "}
-              <a href={`tel:${PHONE.replace(/\s/g, "")}`} className="text-gold hover:text-gold-soft underline underline-offset-4">
-                {PHONE}
+              <a href={WHATSAPP2} target="_blank" rel="noreferrer noopener" className="text-gold hover:text-gold-soft underline underline-offset-4">
+                WhatsApp 79064
+              </a>
+              {" · "}
+              <a href="tel:+918979612593" className="text-gold hover:text-gold-soft underline underline-offset-4">
+                8979612593
+              </a>
+              {" · "}
+              <a href={WHATSAPP} target="_blank" rel="noreferrer noopener" className="text-gold hover:text-gold-soft underline underline-offset-4">
+                WhatsApp 89796
               </a>
             </p>
             <a
@@ -1071,13 +1081,21 @@ function Index() {
               {t.query.time}
             </p>
             <a
-              href={WHATSAPP}
-              target="_blank"
-              rel="noreferrer noopener"
+              href="tel:+918979612593"
               className="mt-6 block text-3xl font-bold text-gradient-gold"
             >
               +91 89796 12599
             </a>
+            <a
+              href="tel:+917906416125"
+              className="mt-2 block text-2xl font-bold text-gold/90"
+            >
+              +91 79064 16125
+            </a>
+            <div className="mt-3 flex justify-center gap-3 text-xs">
+              <a href={WHATSAPP} target="_blank" rel="noreferrer noopener" className="rounded-full border border-gold/30 px-3 py-1 text-gold">WhatsApp 89796</a>
+              <a href={WHATSAPP2} target="_blank" rel="noreferrer noopener" className="rounded-full border border-gold/30 px-3 py-1 text-gold">WhatsApp 79064</a>
+            </div>
             <p className="mt-4 text-sm tracking-widest text-muted-foreground uppercase">
               {t.query.oneQuestion}
             </p>
