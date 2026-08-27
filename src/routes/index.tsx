@@ -867,34 +867,15 @@ function Index() {
       <section id="services" className="relative z-10 mx-auto mt-4 max-w-5xl scroll-mt-24 px-6">
         <Reveal>
           <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">{t.services.title}</h2>
-          <p className="mt-3 text-center text-base text-muted-foreground">
-            {t.services.highlightedFor}{" "}
-            <span style={{ color: current.color }}>{current.label} — {current.theme}</span>
-          </p>
         </Reveal>
         <div className="mt-10 grid gap-3 sm:grid-cols-2">
           {allServices.map((s) => {
-            const norm = (v: string) => v.toLowerCase().replace(/[^a-z]/g, "");
-            const on = current.services.some((cs) => {
-              const a = norm(cs);
-              const b = norm(s);
-              return a.includes(b) || b.includes(a);
-            });
             return (
               <div
                 key={s}
                 className="surface-card rounded-xl px-5 py-4 text-base transition-all duration-300 hover:-translate-y-1"
-                style={
-                  on
-                    ? {
-                        borderColor: current.color,
-                        boxShadow: `0 0 30px -12px ${current.color}`,
-                        transform: "translateY(-2px)",
-                      }
-                    : { opacity: 0.55 }
-                }
               >
-                <span className="mr-2" style={{ color: on ? current.color : "var(--gold)" }}>
+                <span className="mr-2" style={{ color: "var(--gold)" }}>
                   ✦
                 </span>
                 {s}
