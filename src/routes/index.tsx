@@ -363,6 +363,84 @@ function SparkleTrail({ children }: { children: React.ReactNode }) {
   );
 }
 
+function GlobalCursorSparkle() {
+  const [sparkles, setSparkles] = useState<{ id: number; x: number; y: number; size: number; color: string; born: number }[]>([]);
+  const idRef = useRef(0);
+  const colors = ["oklch(0.85 0.15 88)", "oklch(0.93 0.11 95)", "oklch(0.82 0.15 85)", "oklch(1 0.12 90)", "oklch(0.72 0.13 70)"];
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    // respect reduced motion
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // disable on touch devices
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+
+    let raf = 0;
+    let last = 0;
+    const handler = (e: MouseEvent) => {
+      const now = Date.now();
+      if (now - last < 18) return; // ~55fps throttle
+      last = now;
+      const x = e.clientX;
+      const y = e.clientY;
+      const next: { id: number; x: number; y: number; size: number; color: string; born: number }[] = [];
+      for (let i = 0; i < 2; i++) {
+        next.push({
+          id: idRef.current++,
+          x: x + (Math.random() - 0.5) * 22,
+          y: y + (Math.random() - 0.5) * 22,
+          size: Math.random() * 5 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)]!,
+          born: now,
+        });
+      }
+      setSparkles((prev) => {
+        const merged = [...prev, ...next];
+        return merged.length > 40 ? merged.slice(-40) : merged;
+      });
+      // cleanup after raf
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const t = Date.now();
+        setSparkles((prev) => prev.filter((s) => t - s.born < 650));
+      });
+    };
+    window.addEventListener("mousemove", handler, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", handler);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  if (sparkles.length === 0) return null;
+  const now = Date.now();
+  return (
+    <div className="pointer-events-none fixed inset-0 z-[9999]" aria-hidden>
+      {sparkles.map((s) => {
+        const age = (now - s.born) / 650;
+        if (age >= 1) return null;
+        return (
+          <span
+            key={s.id}
+            className="absolute"
+            style={{
+              left: s.x,
+              top: s.y,
+              width: s.size,
+              height: s.size,
+              borderRadius: "50%",
+              background: s.color,
+              boxShadow: `0 0 ${s.size * 2}px ${s.color}, 0 0 ${s.size * 4}px ${s.color}`,
+              opacity: 1 - age,
+              transform: `translate(-50%, -50%) scale(${1 - age * 0.4})`,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 function Diamond({ color, active, visited }: { color: string; active: boolean; visited: boolean }) {
   const opacity = active ? 0.95 : visited ? 0.7 : 0.25;
   return (
@@ -595,6 +673,7 @@ function Index() {
 
   return (
     <main id="top" className="relative golden-cursor">
+      <GlobalCursorSparkle />
       <div className="starfield" aria-hidden />
       <div className="starfield-slow" aria-hidden />
 
