@@ -20,13 +20,10 @@ function Disclaimer() {
         <h1 className="mt-6 font-display text-3xl text-gradient-gold sm:text-4xl">Disclaimer</h1>
         <div className="surface-card mt-8 rounded-3xl p-8 text-sm leading-relaxed text-muted-foreground sm:p-10">
           <p>
-            The services offered by <span className="text-foreground">ARAWAT OCCULT SCIENCES</span> and Acharya Aarti are based on traditional and spiritual systems of guidance, including astrology, numerology, astro-vastu, aura scanning and Lal Kitab principles.
+            <span className="text-foreground">ARAWAT OCCULT SCIENCES</span> offers traditional and spiritual guidance for informational and personal purposes only. Our services do not diagnose, treat, or cure any medical condition, and no specific result or outcome is guaranteed.
           </p>
           <p className="mt-4">
-            All consultations, remedies and guidance are intended for informational and personal guidance purposes only. They should not be considered a substitute for professional medical, legal, financial or psychological advice.
-          </p>
-          <p className="mt-4">
-            No specific outcome or result is guaranteed. The effectiveness of any remedial guidance depends on many individual factors and personal effort.
+            For medical concerns, please consult a qualified healthcare professional.
           </p>
           <p className="mt-4">
             By using this website and availing our services, you acknowledge that you have read, understood and agreed to this disclaimer.

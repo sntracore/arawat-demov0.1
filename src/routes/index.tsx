@@ -83,8 +83,8 @@ const BOT_REPLIES: { pattern: RegExp; reply: string }[] = [
   { pattern: /\b(love|relationship|marriage|partner|rishta)\b/i, reply: "Love and relationships are governed by the Anahata chakra. Whether it's compatibility issues or finding the right partner, Acharya Aarti provides personalized remedies. Shall I connect you on WhatsApp?" },
   { pattern: /\b(vastu|home|house|office|ghar)\b/i, reply: `Astro-Vastu guidance aligns your home/office energy with cosmic forces. Acharya Aarti combines traditional vastu with astrological insights. Call ${PHONE} to consult.` },
   { pattern: /\b(health|well|sick|wellness|sehat)\b/i, reply: "Health and well-being connect to the Root chakra (Muladhara). Acharya Aarti offers energy readings and special chants for wellness. Want to book a consultation?" },
-  { pattern: /\b(price|fee|cost|charge|kitna)\b/i, reply: `Consultation fees depend on the service type. For Open Query Hour (Tue/Thu/Sat, 3\u20134 PM & 6\u20137 PM), you can ask one question. For detailed sessions, please WhatsApp Acharya Aarti directly at ${PHONE}` },
-  { pattern: /\b(phone|call|number|contact|reach)\b/i, reply: `You can reach Acharya Aarti at:\n\u{1F4DE} ${PHONE}\n\u{1F4AC} WhatsApp: ${WHATSAPP}\n\nOpen Query Hours: Tue, Thu, Sat \u2014 3:00 to 4:00 PM & 6:00 to 7:00 PM` },
+  { pattern: /\b(price|fee|cost|charge|kitna)\b/i, reply: `Consultation fees depend on the service type. For Open Query Hour (Tue/Thu/Sat 3–4 PM & Mon/Wed/Fri 5–6 PM), you can ask one question. For detailed sessions, please WhatsApp Acharya Aarti directly at ${PHONE}` },
+  { pattern: /\b(phone|call|number|contact|reach)\b/i, reply: `You can reach Acharya Aarti at:\n\u{1F4DE} ${PHONE}\n\u{1F4AC} WhatsApp: ${WHATSAPP}\n\nOpen Query Hours: Tue/Thu/Sat 3–4 PM & Mon/Wed/Fri 5–6 PM` },
 ];
 
 function getBotReply(input: string): string {
@@ -250,8 +250,8 @@ const allServices = [
 
 const FAQS_EN: { q: string; a: string }[] = [
   {
-    q: "Who we are?",
-    a: "We are ARAWAT OCCULT SCIENCES — guided by Acharya Aarti with 15+ years of practice in KP Astrology, Prashna Kundali, Horary Astrology, Numerology, Astro-Vastu and Aura Scanning. Every chart is read personally and every remedy is a personalized golden report for your chart only.",
+    q: "Why Arawat Occult Sciences?",
+    a: "We are ARAWAT OCCULT SCIENCES — guided by Acharya Aarti with 15+ years of practice in KP Astrology, Numerology, Aura Scanning, Astro-Vastu, Prashna Kundali and Horary Astrology. Every chart is read personally and every remedy is a personalized golden report for your chart only.",
   },
   {
     q: "What exactly is Lal Kitab?",
@@ -259,7 +259,7 @@ const FAQS_EN: { q: string; a: string }[] = [
   },
   {
     q: "How do I book a consultation?",
-    a: `The fastest way is the booking form below or a direct WhatsApp message. You can also call ${PHONE} during Open Query Hours (Tue, Thu, Sat \u2014 3 to 4 PM & 6 to 7 PM) for one quick question. Your answer comes as a personalized golden report.`,
+    a: `The fastest way is the booking form below or a direct WhatsApp message. You can also call ${PHONE} during Open Query Hours (Tue/Thu/Sat 3–4 PM & Mon/Wed/Fri 5–6 PM) for one quick question. Your answer comes as a personalized golden report.`,
   },
   {
     q: "What details should I keep ready?",
@@ -271,21 +271,21 @@ const FAQS_EN: { q: string; a: string }[] = [
   },
   {
     q: "What happens during Open Query Hour?",
-    a: "Open Query Hour — now 3–4 PM & 6–7 PM, Tue/Thu/Sat — you bring one question \u2014 career, relationship, health or home \u2014 and receive a focused answer with a simple remedy. No long session needed, just clarity. Personalized golden report included.",
+    a: "Open Query Hour — Tue/Thu/Sat 3–4 PM & Mon/Wed/Fri 5–6 PM — you bring one question \u2014 career, relationship, health or home \u2014 and receive a focused answer with a simple remedy. No long session needed, just clarity.",
   },
   {
     q: "Do the remedies really work?",
-    a: "Remedies here are personalised mantras, chants and energy alignments matched to your chart and chakra state. They are gentle practices meant to be followed consistently \u2014 most clients feel the shift within weeks. Each remedy is a personalized golden report.",
+    a: "Remedies here are personalized mantras, chants and energy alignments matched to your chart and chakra state. They are gentle practices meant to be followed consistently — most clients feel the shift within weeks.",
   },
 ];
 const FAQS_HI: { q: string; a: string }[] = [
-  { q: "हम कौन हैं?", a: "हम हैं ARAWAT OCCULT SCIENCES — आचार्य आरती द्वारा 15+ वर्षों के अभ्यास के साथ KP ज्योतिष, प्रश्न कुंडली, होररी ज्योतिष, अंक ज्योतिष, ज्योतिष-वास्तु और आभा परिक्षण। हर कुंडली व्यक्तिगत रूप से पढ़ी जाती है और हर उपाय आपकी कुंडली के लिए व्यक्तिगत गोल्डन रिपोर्ट है।" },
+  { q: "आरावत ऑकल्ट साइंसेज़ क्यों?", a: "हम हैं ARAWAT OCCULT SCIENCES — आचार्य आरती द्वारा 15+ वर्षों के अभ्यास के साथ KP ज्योतिष, अंक ज्योतिष, आभा परिक्षण, ज्योतिष-वास्तु, प्रश्न कुंडली और होररी ज्योतिष। हर कुंडली व्यक्तिगत रूप से पढ़ी जाती है और हर उपाय आपकी कुंडली के लिए व्यक्तिगत गोल्डन रिपोर्ट है।" },
   { q: "लाल किताब क्या है?", a: "लाल किताब, पंडित रूप चंद जोशी से जुड़ी, KP ज्योतिष मार्गदर्शन की एक विशिष्ट प्रणाली है जो सरल उपायों के लिए जानी जाती है। उर्दू में प्रकाशित, यह KP ज्योतिष सिद्धांतों और उपायों को जोड़ती है।" },
-  { q: "परामर्श कैसे बुक करें?", a: `सबसे तेज़ तरीका नीचे दिया गया फॉर्म या WhatsApp मैसेज है। आप ${PHONE} पर Open Query Hour (मंगल/गुरु/शनि — 3–4 बजे और 6–7 बजे) में एक प्रश्न पूछ सकते हैं। उत्तर व्यक्तिगत गोल्डन रिपोर्ट के रूप में मिलता है।` },
+  { q: "परामर्श कैसे बुक करें?", a: `सबसे तेज़ तरीका नीचे दिया गया फॉर्म या WhatsApp मैसेज है। आप ${PHONE} पर Open Query Hour (मंगल/गुरु/शनि 3–4 बजे और सोम/बुध/शुक्र 5–6 बजे) में एक प्रश्न पूछ सकते हैं। उत्तर व्यक्तिगत गोल्डन रिपोर्ट के रूप में मिलता है।` },
   { q: "कौन सी जानकारी तैयार रखें?", a: "पूरा नाम, जन्म तिथि, और यदि पता हो तो सटीक जन्म समय और स्थान। जन्म समय जितना सटीक, KP ज्योतिष रीडिंग उतनी सटीक।" },
   { q: "क्या सब कुछ गोपनीय है?", a: "बिल्कुल। हर बातचीत, कुंडली और रीडिंग आपके और आचार्य आरती के बीच ही रहती है। 100% गोपनीयता इस साधना का आधार है।" },
-  { q: "Open Query Hour में क्या होता है?", a: "Open Query Hour — अब 3–4 PM और 6–7 PM, मंगल/गुरु/शनि — एक प्रश्न लाइए, केंद्रित उत्तर और सरल उपाय पाइए। व्यक्तिगत गोल्डन रिपोर्ट सहित।" },
-  { q: "क्या उपाय सच में काम करते हैं?", a: "उपाय आपकी कुंडली और चक्र स्थिति के अनुसार व्यक्तिगत मंत्र, जाप और ऊर्जा संरेखण हैं। नियमित पालन से अधिकांश लोगों को हफ्तों में बदलाव महसूस होता है। हर उपाय व्यक्तिगत गोल्डन रिपोर्ट है।" },
+  { q: "Open Query Hour में क्या होता है?", a: "Open Query Hour — मंगल/गुरु/शनि 3–4 PM और सोम/बुध/शुक्र 5–6 PM — एक प्रश्न लाइए, केंद्रित उत्तर और सरल उपाय पाइए।" },
+  { q: "क्या उपाय सच में काम करते हैं?", a: "उपाय आपकी कुंडली और चक्र स्थिति के अनुसार व्यक्तिगत मंत्र, जाप और ऊर्जा संरेखण हैं। नियमित पालन से अधिकांश लोगों को हफ्तों में बदलाव महसूस होता है।" },
 ];
 
 const NAV_LINKS: [string, string][] = [
@@ -640,7 +640,7 @@ function Index() {
       >
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2.5">
           <a href="#top" className="flex items-center gap-3">
-            <img src="/imgggg22.jpeg" alt="Arawat" className="h-11 w-11 rounded-full border border-gold/40 bg-white object-cover shadow-glow transition-transform duration-200 hover:scale-110" />
+            <img src="/elephant-logo.svg" alt="Arawat" className="h-14 w-14 rounded-full border border-gold/40 bg-white object-cover shadow-glow transition-transform duration-200 hover:scale-110 sm:h-16 sm:w-16" />
             <span className="font-display hidden text-sm tracking-[0.3em] text-gradient-gold sm:inline">ARAWAT</span>
           </a>
           <div className="ml-auto flex flex-wrap items-center justify-end gap-2 text-[11px] uppercase tracking-[0.18em] text-gold/80">
@@ -671,7 +671,7 @@ function Index() {
                 हिं
               </button>
             </div>
-            <a href={`tel:${PHONE.replace(/\s/g, "")}`} className="hidden sm:inline-flex items-center rounded-full bg-gold px-3 py-1 text-[10px] font-bold tracking-widest text-background hover:bg-gold-soft">Customer Care</a>
+            <a href={`tel:${PHONE.replace(/\s/g, "")}`} className="hidden sm:inline-flex items-center rounded-full bg-gold px-3 py-1 text-[10px] font-bold tracking-widest text-background hover:bg-gold-soft">Customer Support</a>
           </div>
         </div>
       </nav>
@@ -703,9 +703,9 @@ function Index() {
             <span className="text-2xl [text-shadow:0_0_18px_oklch(0.85_0.15_88/0.7)]">ॐ</span>
             <span className="h-px w-12 bg-gradient-to-l from-transparent to-gold/60" aria-hidden />
           </p>
-          <h1 className="leading-tight font-black italic">
-            <span className="block text-5xl font-black italic text-gradient-gold text-shimmer sm:text-7xl lg:text-8xl">ARAWAT</span>
-            <span className="mt-1 block text-4xl font-black italic tracking-[0.12em] text-gradient-gold text-shimmer sm:text-5xl lg:text-6xl">
+          <h1 className="leading-tight">
+            <span className="block text-5xl font-bold text-gradient-gold text-shimmer sm:text-7xl lg:text-8xl" style={{ fontFamily: "var(--font-display)" }}>ARAWAT</span>
+            <span className="mt-1 block text-4xl font-bold tracking-[0.12em] text-gradient-gold text-shimmer sm:text-5xl lg:text-6xl" style={{ fontFamily: "var(--font-display)" }}>
               OCCULT SCIENCES
             </span>
           </h1>
@@ -744,17 +744,7 @@ function Index() {
             </a>
           </div>
 
-          <dl className="mt-8 grid w-full max-w-2xl grid-cols-3 divide-x divide-gold/15 rounded-2xl border border-gold/20 bg-white/[0.03] py-5 backdrop-blur-md">
-            {t.hero.stats.map(([num, label]) => (
-              <div key={label} className="px-3">
-                <dt className="sr-only">{label}</dt>
-                <dd className="font-display text-2xl font-bold text-gradient-gold sm:text-3xl">{num}</dd>
-                <dd className="mt-1 text-[10px] tracking-[0.2em] text-muted-foreground uppercase sm:text-[11px]">
-                  {label}
-                </dd>
-              </div>
-            ))}
-          </dl>
+
         </div>
 
         <a
@@ -777,25 +767,20 @@ function Index() {
           <p className="mt-3 max-w-xl text-lg text-muted-foreground italic">
             {t.diamonds.subtitle}
           </p>
-          <div className="mt-4 flex justify-center">
-            <span className="rounded-full border border-gold/40 px-4 py-1 text-xs tracking-widest text-gold uppercase">
-              {t.diamonds.experience}
-            </span>
-          </div>
         </Reveal>
       </header>
 
       {/* Interactive chakra — enlarged body */}
-      <section className="relative z-10 mx-auto mt-14 grid max-w-6xl items-center gap-10 px-6 lg:grid-cols-[1.15fr_1fr]">
-        <Reveal>
-          <div className="relative mx-auto w-full max-w-lg lg:max-w-xl">
+      <section className="relative z-10 mx-auto mt-14 grid max-w-6xl items-stretch gap-10 px-6 lg:grid-cols-[1.15fr_1fr]">
+        <Reveal className="flex">
+          <div className="relative mx-auto flex w-full max-w-lg flex-col lg:max-w-xl">
             <div className="absolute -inset-6 rounded-[3rem] bg-accent/20 blur-3xl" aria-hidden />
             <img
               src={chakraFigure}
               alt="Meditating silhouette with seven glowing chakras before a golden zodiac mandala"
               width={1024}
               height={1280}
-              className="relative w-full rounded-[2rem] border border-gold/25 shadow-card scale-[1.08] object-cover"
+              className="relative w-full flex-1 rounded-[2rem] border border-gold/25 shadow-card object-cover"
             />
             {chakras.map((c, i) => (
               <button
@@ -821,19 +806,10 @@ function Index() {
                     }}
                   />
                 )}
-                <span
-                  className="pointer-events-none absolute top-full left-1/2 mt-1 -translate-x-1/2 whitespace-nowrap rounded-full border border-gold/25 px-2 py-0.5 text-[9px] uppercase tracking-widest opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                  style={{ color: c.color, background: "oklch(0.16 0.06 300 / 0.8)", opacity: active === i ? 1 : undefined }}
-                >
-                  {c.mantra}
-                </span>
               </button>
             ))}
             <p className="mt-4 text-center text-sm tracking-wider text-muted-foreground">
               {t.diamonds.explored(visited.size)}
-            </p>
-            <p className="mt-1 text-center text-xs tracking-widest text-gold/70 uppercase">
-              {t.diamonds.voiceHint}
             </p>
           </div>
         </Reveal>
@@ -870,10 +846,9 @@ function Index() {
             <div>
               <p className="text-xs tracking-[0.25em] text-muted-foreground uppercase">{t.diamonds.bija}</p>
               <p className="text-xl font-semibold" style={{ color: current.color }}>
-                “{current.mantra}” · {current.freq} Hz
+                “{current.mantra}”
               </p>
             </div>
-            <span className="ml-auto hidden text-xs text-muted-foreground sm:block">{t.diamonds.voiceOnTap}</span>
           </div>
 
           <p className="mt-5 text-xs tracking-[0.25em] text-muted-foreground uppercase">{t.diamonds.element} · {current.element}</p>
@@ -898,6 +873,30 @@ function Index() {
         </article>
       </section>
 
+      {/* Diamonds with highlights — moved from 3rd page to 2nd page */}
+      <div className="relative z-10 mx-auto mt-10 flex max-w-5xl flex-wrap items-center justify-center gap-5 px-6">
+        {chakras.map((c, i) => (
+          <button
+            key={`d2-${c.name}`}
+            type="button"
+            onClick={() => handleChakraTap(i)}
+            aria-label={`Show ${c.theme}`}
+            aria-pressed={active === i}
+            className="h-8 w-8 outline-none transition-transform duration-300 hover:scale-125 focus-visible:ring-2 focus-visible:ring-gold"
+          >
+            <Diamond color={c.color} active={active === i} visited={visited.has(i)} />
+          </button>
+        ))}
+      </div>
+      <p className="relative z-10 mt-4 text-center text-xs tracking-[0.25em] text-gold/70 uppercase">
+        Personalised Golden Report — matched to your chart &amp; chakra
+      </p>
+
+      {/* Lotus — middle */}
+      <div className="relative z-10 mx-auto mt-8 flex justify-center" aria-hidden>
+        <span className="text-3xl opacity-70" style={{ filter: "drop-shadow(0 0 8px oklch(0.85 0.15 88 / 0.5))" }}>🪷</span>
+      </div>
+
       <Divider />
 
       {/* Services */}
@@ -908,21 +907,6 @@ function Index() {
             {t.services.highlightedFor}{" "}
             <span style={{ color: current.color }}>{current.label} — {current.theme}</span>
           </p>
-          {/* Diamond selector — also controls the page */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-5">
-            {chakras.map((c, i) => (
-              <button
-                key={c.name}
-                type="button"
-                onClick={() => handleChakraTap(i)}
-                aria-label={`Show ${c.theme}`}
-                aria-pressed={active === i}
-                className="h-8 w-8 outline-none transition-transform duration-300 hover:scale-125 focus-visible:ring-2 focus-visible:ring-gold"
-              >
-                <Diamond color={c.color} active={active === i} visited={visited.has(i)} />
-              </button>
-            ))}
-          </div>
         </Reveal>
         <div className="mt-10 grid gap-3 sm:grid-cols-2">
           {allServices.map((s) => {
@@ -1076,10 +1060,18 @@ function Index() {
         <Reveal>
           <div className="surface-card rounded-3xl p-10 text-center">
             <h2 className="text-2xl text-gold sm:text-3xl">{t.query.title}</h2>
-            <p className="mt-3 text-lg tracking-wide">{t.query.days}</p>
-            <p className="mt-4 inline-block rounded-full bg-primary px-6 py-2 text-lg font-semibold text-primary-foreground">
-              {t.query.time}
-            </p>
+            <div className="mt-3 space-y-2 text-lg tracking-wide">
+              <p>{t.query.days} — {(t.query as any).time}</p>
+              <p>{(t.query as any).days2} — {(t.query as any).time2}</p>
+            </div>
+            <div className="mt-4 flex flex-wrap justify-center gap-3">
+              <span className="inline-block rounded-full bg-primary px-6 py-2 text-lg font-semibold text-primary-foreground">
+                {(t.query as any).time}
+              </span>
+              <span className="inline-block rounded-full bg-primary px-6 py-2 text-lg font-semibold text-primary-foreground">
+                {(t.query as any).time2}
+              </span>
+            </div>
             <a
               href="tel:+918979612593"
               className="mt-6 block text-3xl font-bold text-gradient-gold"
@@ -1096,9 +1088,6 @@ function Index() {
               <a href={WHATSAPP} target="_blank" rel="noreferrer noopener" className="rounded-full border border-gold/30 px-3 py-1 text-gold">WhatsApp 89796</a>
               <a href={WHATSAPP2} target="_blank" rel="noreferrer noopener" className="rounded-full border border-gold/30 px-3 py-1 text-gold">WhatsApp 79064</a>
             </div>
-            <p className="mt-4 text-sm tracking-widest text-muted-foreground uppercase">
-              {t.query.oneQuestion}
-            </p>
           </div>
         </Reveal>
       </section>
@@ -1234,23 +1223,23 @@ function Index() {
         </section>
       </SparkleTrail>
 
-      {/* Gallery — i1 to i10 */}
+      {/* Mystic Store — i1 to i10 */}
       <section className="relative z-10 mx-auto mt-24 max-w-6xl px-6">
         <Reveal>
-          <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Gallery ✦</h2>
-          <p className="mt-3 text-center text-base text-muted-foreground italic">Moments &amp; energies — all images properly placed</p>
+          <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Mystic Store ✦</h2>
+          <p className="mt-3 text-center text-base text-muted-foreground italic">Crystals, pendants &amp; sacred tools — curated for your journey</p>
         </Reveal>
         <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {[1,2,3,4,5,6,7,8,9,10].map((n) => (
             <div key={n} className="group surface-card overflow-hidden rounded-2xl p-1.5 shadow-card">
-              <img src={`/i${n}.jpeg`} alt={`Pendant ${n}`} loading="lazy" className="h-40 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105 sm:h-48" />
+              <img src={`/i${n}.jpeg`} alt={`Mystic item ${n}`} loading="lazy" className="h-40 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105 sm:h-48" />
             </div>
           ))}
           <div className="group surface-card overflow-hidden rounded-2xl p-1.5 shadow-card">
-            <img src="https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=400&h=400&fit=crop" alt="Pendant 11" loading="lazy" className="h-40 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105 sm:h-48" />
+            <img src="https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=400&h=400&fit=crop" alt="Mystic item 11" loading="lazy" className="h-40 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105 sm:h-48" />
           </div>
         </div>
-        <p className="mt-3 text-center text-xs text-muted-foreground/60">Pendant 11 is placeholder — replace `public/i11.jpeg` when you have file</p>
+        <p className="mt-3 text-center text-xs text-muted-foreground/60">Item 11 is placeholder — replace `public/i11.jpeg` when you have file</p>
       </section>
 
       {/* Consultation Form */}
@@ -1341,12 +1330,12 @@ function Index() {
         </Reveal>
       </section>
 
-      {/* Customer Care — right most corner */}
+      {/* Customer Support — right most corner */}
       <a
         href={`tel:${PHONE.replace(/\s/g, "")}`}
-        aria-label="Customer Care"
+        aria-label="Customer Support"
         className="fixed bottom-44 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-gold text-background shadow-lg transition-transform duration-200 hover:scale-110"
-        title="Customer Care"
+        title="Customer Support"
       >
         <svg viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6"><path d="M6.62 10.79a15.15 15.15 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
       </a>
@@ -1369,8 +1358,8 @@ function Index() {
       </div>
       {/* Footer — ARAWAT OCCULT SCIENCES italic bold enlarged */}
       <footer className="relative z-10 mx-auto mt-8 max-w-5xl px-6 pb-16 text-center">
-        <p className="text-4xl font-black italic text-gradient-gold sm:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
-          ARAWAT <span className="font-black italic">OCCULT SCIENCES</span>
+        <p className="text-4xl font-bold italic text-gradient-gold sm:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
+          ARAWAT <span className="font-bold italic">OCCULT SCIENCES</span>
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-muted-foreground">
           {t.footer.trusted.map((item) => (
