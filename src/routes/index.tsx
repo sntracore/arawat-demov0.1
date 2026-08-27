@@ -1382,7 +1382,7 @@ function Index() {
       </div>
       {/* Footer — ARAWAT OCCULT SCIENCES italic bold enlarged */}
       <footer className="relative z-10 mx-auto mt-8 max-w-5xl px-6 pb-16 text-center">
-        <img src="/elephant-logo.svg" alt="Arawat" width={80} height={80} className="mx-auto mb-4 h-16 w-16 rounded-full border border-gold/40 bg-white object-contain p-1 shadow-glow" loading="lazy" />
+        <img src="/elephant-logo.svg" alt="Arawat — golden elephant with mandala" width={520} height={340} className="mx-auto mb-6 h-auto w-[320px] max-w-[85vw] rounded-2xl border border-gold/40 bg-white p-2 shadow-glow" loading="lazy" />
         <p className="text-4xl font-bold italic text-gradient-gold sm:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
           ARAWAT <span className="font-bold italic">OCCULT SCIENCES</span>
         </p>
