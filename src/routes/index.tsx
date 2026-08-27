@@ -40,39 +40,10 @@ function formatDateIndian(d: Date) {
   return `${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-let audioCtx: AudioContext | null = null;
-
-function playTing() {
-  try {
-    if (!audioCtx) audioCtx = new AudioContext();
-    if (audioCtx.state === "suspended") void audioCtx.resume();
-    const ctx = audioCtx;
-    const t = ctx.currentTime;
-    const sp = ctx.createOscillator();
-    const sg = ctx.createGain();
-    sp.type = "triangle";
-    sp.frequency.setValueAtTime(1800, t);
-    sp.frequency.exponentialRampToValueAtTime(3600, t + 0.06);
-    sg.gain.setValueAtTime(0.06, t);
-    sg.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
-    sp.connect(sg).connect(ctx.destination);
-    sp.start(t);
-    sp.stop(t + 0.35);
-  } catch { /* silent */ }
-}
-
-function playChakraVoice(_c: { freq: number; voice: string }) {
-  playTing();
-}
-
-function playOmOnOpen() {
-  try {
-    const a = new Audio("/voices/om.mp3");
-    a.volume = 0.5;
-    void a.play().catch(() => {});
-  } catch { /* silent */ }
-  playTing();
-}
+// ponytail: sound removed per client — no ting/om/voice on diamond tap or open
+function playTing() {}
+function playChakraVoice(_c: { freq: number; voice: string }) {}
+function playOmOnOpen() {}
 
 const BOT_REPLIES: { pattern: RegExp; reply: string }[] = [
   { pattern: /\b(namaste|namaskar|pranam)\b/i, reply: "Namaste! \u{1F64F} I'm Arawat's virtual assistant. Acharya Aarti has 7+ years of experience in astrology, numerology, and aura reading. How can I help you today?" },
@@ -528,7 +499,6 @@ function AIBot() {
     setMsgs((m) => [...m, { from: "user", text: q }]);
     setInput("");
     setTyping(true);
-    playTing();
     setTimeout(() => {
       setMsgs((m) => [...m, { from: "bot", text: getBotReply(q) }]);
       setTyping(false);
@@ -620,13 +590,8 @@ function Index() {
     navigator.vibrate?.(15);
   };
 
-  useEffect(() => {
-    const id = window.setTimeout(() => playOmOnOpen(), 800);
-    const onFirstInteract = () => { playOmOnOpen(); window.removeEventListener("click", onFirstInteract); window.removeEventListener("touchstart", onFirstInteract); };
-    window.addEventListener("click", onFirstInteract, { once: true });
-    window.addEventListener("touchstart", onFirstInteract, { once: true });
-    return () => { clearTimeout(id); window.removeEventListener("click", onFirstInteract); window.removeEventListener("touchstart", onFirstInteract); };
-  }, []);
+  // sound disabled — no auto play on open
+  void playOmOnOpen;
 
   return (
     <main id="top" className="relative golden-cursor">
@@ -639,9 +604,8 @@ function Index() {
         style={{ background: "oklch(0.16 0.06 300 / 0.55)" }}
       >
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2.5">
-          <a href="#top" className="flex items-center gap-3">
-            <img src="/elephant-logo.svg" alt="Arawat" className="h-14 w-14 rounded-full border border-gold/40 bg-white object-cover shadow-glow transition-transform duration-200 hover:scale-110 sm:h-16 sm:w-16" />
-            <span className="font-display hidden text-sm tracking-[0.3em] text-gradient-gold sm:inline">ARAWAT</span>
+          <a href="#top" className="flex items-center gap-2">
+            <span className="font-display text-sm tracking-[0.3em] text-gradient-gold">ARAWAT</span>
           </a>
           <div className="ml-auto flex flex-wrap items-center justify-end gap-2 text-[11px] uppercase tracking-[0.18em] text-gold/80">
             <div className="hidden items-center gap-x-4 sm:flex">
@@ -1358,6 +1322,7 @@ function Index() {
       </div>
       {/* Footer — ARAWAT OCCULT SCIENCES italic bold enlarged */}
       <footer className="relative z-10 mx-auto mt-8 max-w-5xl px-6 pb-16 text-center">
+        <img src="/elephant-logo.svg" alt="Arawat" width={80} height={80} className="mx-auto mb-4 h-16 w-16 rounded-full border border-gold/40 bg-white object-contain p-1 shadow-glow" loading="lazy" />
         <p className="text-4xl font-bold italic text-gradient-gold sm:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
           ARAWAT <span className="font-bold italic">OCCULT SCIENCES</span>
         </p>
