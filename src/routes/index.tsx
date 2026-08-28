@@ -222,19 +222,19 @@ const allServices = [
 const FAQS_EN: { q: string; a: string }[] = [
   {
     q: "Why Arawat Occult Sciences?",
-    a: "We are ARAWAT OCCULT SCIENCES — guided by Acharya Aarti with 15+ years of practice in KP Astrology, Numerology, Aura Scanning, Astro-Vastu, Prashna Kundali and Horary Astrology. Every chart is read personally and every remedy is a personalized golden report for your chart only.",
+    a: "At Arawat Occult Sciences, every chart is studied personally by Acharya Aarti, with 15+ years of experience in Occult Sciences. No generic advice, no copied remedies \u2014 only personalised analysis, clear guidance and a Golden Report prepared specifically for you.",
   },
   {
     q: "What exactly is Lal Kitab?",
-    a: "Lal Kitab, commonly associated with Pandit Roop Chand Joshi, is a distinctive system of KP Astrology guidance known for its practical and often simple remedial measures. Originally published in Urdu in a series of volumes during the mid-20th century, it combines KP Astrology principles with an unusual remedial approach. While some remedies are traditionally prescribed for a fixed period \u2014 often 43 days \u2014 this is not a universal rule; duration and method depend on the specific remedy and the individual horoscope.",
+    a: "Lal Kitab, commonly associated with Pandit Roop Chand Joshi, is a distinctive system of astrological guidance known for its practical and simple remedial approach. It offers a unique way of understanding planetary influences and suggests remedies based on an individual\u2019s horoscope. The remedies are selected according to the specific planetary influences and needs reflected in the chart.",
   },
   {
     q: "How do I book a consultation?",
-    a: `The fastest way is the booking form below or a direct WhatsApp message. You can also call ${PHONE} during Open Query Hours (Tue/Thu/Sat 3–4 PM & Mon/Wed/Fri 5–6 PM) for one quick question. Your answer comes as a personalized golden report.`,
+    a: `The fastest way is the booking form below or a direct WhatsApp message. You can also call ${PHONE} during Open Query Hours (Tue/Thu/Sat 3\u20134 PM & Mon/Wed/Fri 5\u20136 PM) for one quick question. Your answer comes as a personalized golden report.`,
   },
   {
     q: "What details should I keep ready?",
-    a: "Your full name, date of birth, and \u2014 if known \u2014 your exact birth time and place of birth. The more precise your birth time, the sharper the KP Astrology reading.",
+    a: "Your full name, date of birth, and \u2014 if known \u2014 your exact birth time and place of birth. The more precise your birth time, the sharper the reading.",
   },
   {
     q: "Is everything I share confidential?",
@@ -242,21 +242,21 @@ const FAQS_EN: { q: string; a: string }[] = [
   },
   {
     q: "What happens during Open Query Hour?",
-    a: "Open Query Hour — Tue/Thu/Sat 3–4 PM & Mon/Wed/Fri 5–6 PM — you bring one question \u2014 career, relationship, health or home \u2014 and receive a focused answer with a simple remedy. No long session needed, just clarity.",
+    a: "Open Query Hour \u2014 Tue/Thu/Sat 3\u20134 PM & Mon/Wed/Fri 5\u20136 PM \u2014 you bring one question \u2014 career, relationship, health or home \u2014 and receive a focused answer with a simple remedy. No long session needed, just clarity.",
   },
   {
     q: "Do the remedies really work?",
-    a: "Remedies here are personalized mantras, chants and energy alignments matched to your chart and chakra state. They are gentle practices meant to be followed consistently — most clients feel the shift within weeks.",
+    a: "Yes, remedies are personalised according to your birth chart, planetary influences and energy needs. They may include specific mantras, chants, spiritual practices and energy-balancing techniques. These remedies are simple and gentle. The recommended remedies are explained clearly in your Personalised Golden Report.",
   },
 ];
 const FAQS_HI: { q: string; a: string }[] = [
-  { q: "आरावत ऑकल्ट साइंसेज़ क्यों?", a: "हम हैं ARAWAT OCCULT SCIENCES — आचार्य आरती द्वारा 15+ वर्षों के अभ्यास के साथ KP ज्योतिष, अंक ज्योतिष, आभा परिक्षण, ज्योतिष-वास्तु, प्रश्न कुंडली और होररी ज्योतिष। हर कुंडली व्यक्तिगत रूप से पढ़ी जाती है और हर उपाय आपकी कुंडली के लिए व्यक्तिगत गोल्डन रिपोर्ट है।" },
-  { q: "लाल किताब क्या है?", a: "लाल किताब, पंडित रूप चंद जोशी से जुड़ी, KP ज्योतिष मार्गदर्शन की एक विशिष्ट प्रणाली है जो सरल उपायों के लिए जानी जाती है। उर्दू में प्रकाशित, यह KP ज्योतिष सिद्धांतों और उपायों को जोड़ती है।" },
+  { q: "आरावत ऑकल्ट साइंसेज़ क्यों?", a: "आरावत ऑकल्ट साइंसेज़ में हर कुंडली का अध्ययन आचार्य आरती व्यक्तिगत रूप से करती हैं, जिनके पास ऑकल्ट साइंसेज़ में 15+ वर्षों का अनुभव है। कोई सामान्य सलाह नहीं, कोई कॉपी किया हुआ उपाय नहीं — केवल व्यक्तिगत विश्लेषण, स्पष्ट मार्गदर्शन और विशेष रूप से आपके लिए तैयार की गई गोल्डन रिपोर्ट।" },
+  { q: "लाल किताब क्या है?", a: "लाल किताब, जो सामान्यतः पंडित रूप चंद जोशी से जुड़ी है, एक विशिष्ट ज्योतिषीय मार्गदर्शन प्रणाली है जो अपने व्यावहारिक और सरल उपायों के लिए जानी जाती है। यह ग्रह प्रभावों को समझने का एक अनूठा तरीका प्रस्तुत करती है और व्यक्ति की कुंडली के आधार पर उपाय सुझाती है। उपाय कुंडली में दिखने वाले विशिष्ट ग्रह प्रभावों और आवश्यकताओं के अनुसार चुने जाते हैं।" },
   { q: "परामर्श कैसे बुक करें?", a: `सबसे तेज़ तरीका नीचे दिया गया फॉर्म या WhatsApp मैसेज है। आप ${PHONE} पर Open Query Hour (मंगल/गुरु/शनि 3–4 बजे और सोम/बुध/शुक्र 5–6 बजे) में एक प्रश्न पूछ सकते हैं। उत्तर व्यक्तिगत गोल्डन रिपोर्ट के रूप में मिलता है।` },
-  { q: "कौन सी जानकारी तैयार रखें?", a: "पूरा नाम, जन्म तिथि, और यदि पता हो तो सटीक जन्म समय और स्थान। जन्म समय जितना सटीक, KP ज्योतिष रीडिंग उतनी सटीक।" },
+  { q: "कौन सी जानकारी तैयार रखें?", a: "पूरा नाम, जन्म तिथि, और यदि पता हो तो सटीक जन्म समय और स्थान। जन्म समय जितना सटीक, रीडिंग उतनी सटीक।" },
   { q: "क्या सब कुछ गोपनीय है?", a: "बिल्कुल। हर बातचीत, कुंडली और रीडिंग आपके और आचार्य आरती के बीच ही रहती है। 100% गोपनीयता इस साधना का आधार है।" },
   { q: "Open Query Hour में क्या होता है?", a: "Open Query Hour — मंगल/गुरु/शनि 3–4 PM और सोम/बुध/शुक्र 5–6 PM — एक प्रश्न लाइए, केंद्रित उत्तर और सरल उपाय पाइए।" },
-  { q: "क्या उपाय सच में काम करते हैं?", a: "उपाय आपकी कुंडली और चक्र स्थिति के अनुसार व्यक्तिगत मंत्र, जाप और ऊर्जा संरेखण हैं। नियमित पालन से अधिकांश लोगों को हफ्तों में बदलाव महसूस होता है।" },
+  { q: "क्या उपाय सच में काम करते हैं?", a: "हाँ, उपाय आपकी जन्म कुंडली, ग्रह प्रभावों और ऊर्जा आवश्यकताओं के अनुसार व्यक्तिगत रूप से तैयार किए जाते हैं। इनमें विशिष्ट मंत्र, जाप, आध्यात्मिक साधनाएँ और ऊर्जा-संतुलन तकनीकें शामिल हो सकती हैं। ये उपाय सरल और सौम्य हैं। अनुशंसित उपाय आपकी Personalised Golden Report में स्पष्ट रूप से समझाए जाते हैं।" },
 ];
 
 const NAV_LINKS: [string, string][] = [
@@ -364,45 +364,58 @@ function SparkleTrail({ children }: { children: React.ReactNode }) {
 }
 
 function GlobalCursorSparkle() {
-  const [sparkles, setSparkles] = useState<{ id: number; x: number; y: number; size: number; color: string; born: number }[]>([]);
+  type Sparkle = { id: number; x: number; y: number; size: number; color: string; born: number; kind: "dot" | "star"; rot: number };
+  const [sparkles, setSparkles] = useState<Sparkle[]>([]);
   const idRef = useRef(0);
-  const colors = ["oklch(0.85 0.15 88)", "oklch(0.93 0.11 95)", "oklch(0.82 0.15 85)", "oklch(1 0.12 90)", "oklch(0.72 0.13 70)"];
+  const colors = ["oklch(0.85 0.15 88)", "oklch(0.92 0.10 95)", "oklch(0.78 0.14 78)", "oklch(1 0.10 90)", "oklch(0.74 0.13 70)"];
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    // respect reduced motion
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    // disable on touch devices
     if (window.matchMedia("(pointer: coarse)").matches) return;
 
     let raf = 0;
     let last = 0;
     const handler = (e: MouseEvent) => {
       const now = Date.now();
-      if (now - last < 18) return; // ~55fps throttle
+      if (now - last < 16) return;
       last = now;
       const x = e.clientX;
       const y = e.clientY;
-      const next: { id: number; x: number; y: number; size: number; color: string; born: number }[] = [];
+      const next: Sparkle[] = [];
+      // 2 golden dust + occasional star
       for (let i = 0; i < 2; i++) {
         next.push({
           id: idRef.current++,
-          x: x + (Math.random() - 0.5) * 22,
-          y: y + (Math.random() - 0.5) * 22,
-          size: Math.random() * 5 + 3,
+          x: x + (Math.random() - 0.5) * 20,
+          y: y + (Math.random() - 0.5) * 20,
+          size: Math.random() * 4 + 2.5,
           color: colors[Math.floor(Math.random() * colors.length)]!,
           born: now,
+          kind: "dot",
+          rot: Math.random() * 360,
+        });
+      }
+      if (Math.random() < 0.28) {
+        next.push({
+          id: idRef.current++,
+          x: x + (Math.random() - 0.5) * 28,
+          y: y + (Math.random() - 0.5) * 28,
+          size: Math.random() * 6 + 7,
+          color: colors[Math.floor(Math.random() * colors.length)]!,
+          born: now,
+          kind: "star",
+          rot: Math.random() * 360,
         });
       }
       setSparkles((prev) => {
         const merged = [...prev, ...next];
-        return merged.length > 40 ? merged.slice(-40) : merged;
+        return merged.length > 36 ? merged.slice(-36) : merged;
       });
-      // cleanup after raf
       if (raf) cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
         const t = Date.now();
-        setSparkles((prev) => prev.filter((s) => t - s.born < 650));
+        setSparkles((prev) => prev.filter((s) => t - s.born < 700));
       });
     };
     window.addEventListener("mousemove", handler, { passive: true });
@@ -417,8 +430,29 @@ function GlobalCursorSparkle() {
   return (
     <div className="pointer-events-none fixed inset-0 z-[9999]" aria-hidden>
       {sparkles.map((s) => {
-        const age = (now - s.born) / 650;
+        const age = (now - s.born) / 700;
         if (age >= 1) return null;
+        if (s.kind === "star") {
+          return (
+            <span
+              key={s.id}
+              className="absolute select-none"
+              style={{
+                left: s.x,
+                top: s.y,
+                fontSize: s.size,
+                lineHeight: 1,
+                color: s.color,
+                opacity: 1 - age,
+                transform: `translate(-50%, -50%) scale(${1 - age * 0.35}) rotate(${s.rot + age * 40}deg)`,
+                textShadow: `0 0 ${s.size * 0.9}px ${s.color}, 0 0 ${s.size * 1.8}px oklch(1 0 0 / 0.55)`,
+                filter: "blur(0.15px)",
+              }}
+            >
+              ✦
+            </span>
+          );
+        }
         return (
           <span
             key={s.id}
@@ -429,8 +463,8 @@ function GlobalCursorSparkle() {
               width: s.size,
               height: s.size,
               borderRadius: "50%",
-              background: s.color,
-              boxShadow: `0 0 ${s.size * 2}px ${s.color}, 0 0 ${s.size * 4}px ${s.color}`,
+              background: `radial-gradient(circle at 35% 30%, oklch(1 0 0 / 0.95), ${s.color} 55%, oklch(0.72 0.13 70 / 0.9))`,
+              boxShadow: `0 0 ${s.size * 1.8}px ${s.color}, 0 0 ${s.size * 3.5}px oklch(0.85 0.15 88 / 0.45)`,
               opacity: 1 - age,
               transform: `translate(-50%, -50%) scale(${1 - age * 0.4})`,
             }}
@@ -1046,20 +1080,8 @@ function Index() {
             </p>
             <p className="mt-4 text-sm font-semibold text-foreground">
               Contact &amp; Help Support:{" "}
-              <a href="tel:+917906416125" className="text-gold hover:text-gold-soft underline underline-offset-4">
-                7906416125
-              </a>
-              {" · "}
-              <a href={WHATSAPP2} target="_blank" rel="noreferrer noopener" className="text-gold hover:text-gold-soft underline underline-offset-4">
-                WhatsApp 79064
-              </a>
-              {" · "}
               <a href="tel:+918979612593" className="text-gold hover:text-gold-soft underline underline-offset-4">
-                8979612593
-              </a>
-              {" · "}
-              <a href={WHATSAPP} target="_blank" rel="noreferrer noopener" className="text-gold hover:text-gold-soft underline underline-offset-4">
-                WhatsApp 89796
+                +91 89796 12593
               </a>
             </p>
             <a
@@ -1259,11 +1281,7 @@ function Index() {
               <img src={`/i${n}.jpeg`} alt={`Mystic item ${n}`} loading="lazy" className="h-40 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105 sm:h-48" />
             </div>
           ))}
-          <div className="group surface-card overflow-hidden rounded-2xl p-1.5 shadow-card">
-            <img src="https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=400&h=400&fit=crop" alt="Mystic item 11" loading="lazy" className="h-40 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105 sm:h-48" />
-          </div>
         </div>
-        <p className="mt-3 text-center text-xs text-muted-foreground/60">Item 11 is placeholder — replace `public/i11.jpeg` when you have file</p>
       </section>
 
       {/* Consultation Form */}
@@ -1382,7 +1400,7 @@ function Index() {
       </div>
       {/* Footer — ARAWAT OCCULT SCIENCES italic bold enlarged */}
       <footer className="relative z-10 mx-auto mt-8 max-w-5xl px-6 pb-16 text-center">
-        <img src="/elephant-logo.svg" alt="Arawat — golden elephant with mandala" width={520} height={340} className="mx-auto mb-6 h-auto w-[320px] max-w-[85vw] rounded-2xl border border-gold/40 bg-white p-2 shadow-glow" loading="lazy" />
+        <video src="/arawat-logo-video.mp4" autoPlay muted loop playsInline preload="metadata" poster="/elephant-logo.jpg" aria-label="Arawat — golden elephant with mandala" className="mx-auto mb-6 h-auto w-[420px] max-w-[90vw] rounded-2xl border border-gold/40 bg-white p-1.5 shadow-glow" />
         <p className="text-4xl font-bold italic text-gradient-gold sm:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
           ARAWAT <span className="font-bold italic">OCCULT SCIENCES</span>
         </p>

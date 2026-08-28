@@ -263,8 +263,9 @@
     font-weight: 600;
   }
 
+  /* normal cursor kept — golden glitter follows via JS */
   .golden-cursor, .golden-cursor * {
-    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><circle cx='14' cy='14' r='7' fill='%23d4af37' stroke='white' stroke-width='1.5'/><circle cx='14' cy='14' r='3' fill='white' opacity='0.9'/></svg>") 14 14, auto;
+    cursor: auto;
   }
 
   /* keep legal pages normal weight */
