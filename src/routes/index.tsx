@@ -950,24 +950,6 @@ function Index() {
         </article>
       </section>
 
-      {/* Diamonds with highlights — moved from 3rd page to 2nd page */}
-      <div className="relative z-10 mx-auto mt-10 flex max-w-5xl flex-wrap items-center justify-center gap-5 px-6">
-        {chakras.map((c, i) => (
-          <button
-            key={`d2-${c.name}`}
-            type="button"
-            onClick={() => handleChakraTap(i)}
-            aria-label={`Show ${c.theme}`}
-            aria-pressed={active === i}
-            className="h-8 w-8 outline-none transition-transform duration-300 hover:scale-125 focus-visible:ring-2 focus-visible:ring-gold"
-          >
-            <Diamond color={c.color} active={active === i} visited={visited.has(i)} />
-          </button>
-        ))}
-      </div>
-      <p className="relative z-10 mt-4 text-center text-xs tracking-[0.25em] text-gold/70 uppercase">
-        Personalised Golden Report — matched to your chart &amp; chakra
-      </p>
 
       {/* Lotus — middle */}
       <div className="relative z-10 mx-auto mt-8 flex justify-center" aria-hidden>
