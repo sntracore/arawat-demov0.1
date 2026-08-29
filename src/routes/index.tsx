@@ -781,7 +781,7 @@ function Index() {
             <span className="h-px w-12 bg-gradient-to-l from-transparent to-gold/60" aria-hidden />
           </p>
           <h1 className="leading-tight">
-            <span className="block text-5xl font-bold text-gradient-gold text-shimmer sm:text-7xl lg:text-8xl" style={{ fontFamily: "var(--font-display)" }}>ARAWAT</span>
+            <span className="block text-5xl font-bold italic text-gradient-gold text-shimmer sm:text-7xl lg:text-8xl" style={{ fontFamily: "var(--font-display)" }}>ARAWAT</span>
             <span className="mt-1 block text-4xl font-bold tracking-[0.12em] text-gradient-gold text-shimmer sm:text-5xl lg:text-6xl" style={{ fontFamily: "var(--font-display)" }}>
               OCCULT SCIENCES
             </span>
