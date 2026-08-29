@@ -885,9 +885,7 @@ function Index() {
                 )}
               </button>
             ))}
-            <p className="mt-4 text-center text-sm tracking-wider text-muted-foreground">
-              {t.diamonds.explored(visited.size)}
-            </p>
+
           </div>
         </Reveal>
 
