@@ -1249,7 +1249,7 @@ function Index() {
         </section>
       </SparkleTrail>
 
-      {/* Mystic Store — i1 to i10 + Bracelets */}
+      {/* Mystic Store — i1 to i10 */}
       <section className="relative z-10 mx-auto mt-24 max-w-6xl px-6">
         <Reveal>
           <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Mystic Store ✦</h2>
@@ -1262,10 +1262,75 @@ function Index() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* Sacred Malas */}
+      <section className="relative z-10 mx-auto mt-20 max-w-6xl px-6">
         <Reveal>
-          <p className="mt-8 text-center text-sm text-muted-foreground italic">Enchanted bracelets easy to carry and wear, chosen to enhance personal energy and harmonise planetary influence</p>
+          <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Sacred Malas ✦</h2>
+          <p className="mt-3 text-center text-base text-muted-foreground italic">Handcrafted prayer beads — each mala carries the energy of its sacred origin</p>
         </Reveal>
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="group surface-card overflow-hidden rounded-2xl p-3 shadow-card">
+            <img src="/bracelet-1.png" alt="Garnet Mala" loading="lazy" className="h-48 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105" />
+            <p className="mt-3 text-center text-sm text-gold font-medium">Garnet Mala</p>
+            <p className="mt-1 text-center text-xs text-muted-foreground">Deep crimson garnet beads believed to boost vitality, passion &amp; grounding energy. Ideal for meditation and manifesting courage.</p>
+          </div>
+          <div className="group surface-card overflow-hidden rounded-2xl p-3 shadow-card">
+            <img src="/bracelet-2.png" alt="Tulsi Mala" loading="lazy" className="h-48 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105" />
+            <p className="mt-3 text-center text-sm text-gold font-medium">Tulsi Mala</p>
+            <p className="mt-1 text-center text-xs text-muted-foreground">Sacred basil wood beads — the most revered mala in Hindu tradition. Purifies the aura, protects against negative energies &amp; deepens devotion.</p>
+          </div>
+          <div className="group surface-card overflow-hidden rounded-2xl p-3 shadow-card">
+            <img src="/bracelet-3.png" alt="Lapis Lazuli Mala" loading="lazy" className="h-48 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105" />
+            <p className="mt-3 text-center text-sm text-gold font-medium">Lapis Lazuli Mala</p>
+            <p className="mt-1 text-center text-xs text-muted-foreground">Royal blue stone of wisdom &amp; truth. Enhances intellectual ability, inner peace &amp; spiritual insight. Connected to the throat chakra.</p>
+          </div>
+          <div className="group surface-card overflow-hidden rounded-2xl p-3 shadow-card">
+            <img src="/bracelet-5.png" alt="Sphatik Mala" loading="lazy" className="h-48 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105" />
+            <p className="mt-3 text-center text-sm text-gold font-medium">Sphatik (Crystal) Mala</p>
+            <p className="mt-1 text-center text-xs text-muted-foreground">Pure clear quartz beads — cooling, calming &amp; amplifier of intentions. Perfect for japa meditation and balancing all seven chakras.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Yantra Pendants */}
+      <section className="relative z-10 mx-auto mt-20 max-w-6xl px-6">
+        <Reveal>
+          <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Yantra Pendants ✦</h2>
+          <p className="mt-3 text-center text-base text-muted-foreground italic">Sacred geometry in silver — wear the divine frequency of planetary yantras</p>
+        </Reveal>
+        <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="group surface-card overflow-hidden rounded-2xl p-3 shadow-card">
+            <img src="/bracelet-6.png" alt="Swastik Pendant" loading="lazy" className="h-48 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105" />
+            <p className="mt-3 text-center text-sm text-gold font-medium">Swastik Silver Pendant</p>
+            <p className="mt-1 text-center text-xs text-muted-foreground">The eternal Swastik — symbol of auspiciousness, prosperity &amp; cosmic balance. Handcrafted in pure silver, worn for protection &amp; good fortune.</p>
+          </div>
+          <div className="group surface-card overflow-hidden rounded-2xl p-3 shadow-card">
+            <img src="/bracelet-7.png" alt="Rahu Yantra Pendant" loading="lazy" className="h-48 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105" />
+            <p className="mt-3 text-center text-sm text-gold font-medium">Rahu Yantra Pendant</p>
+            <p className="mt-1 text-center text-xs text-muted-foreground">Sacred Rahu Yantra engraved with "श्री राहुयन्त्र ९६०००" — believed to neutralise Rahu dosha, shield against planetary maleficence &amp; attract unexpected breakthroughs.</p>
+          </div>
+          <div className="group surface-card overflow-hidden rounded-2xl p-3 shadow-card">
+            <img src="/bracelet-8.png" alt="Numerology Grid Pendant" loading="lazy" className="h-48 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105" />
+            <p className="mt-3 text-center text-sm text-gold font-medium">Numerology Grid Pendant</p>
+            <p className="mt-1 text-center text-xs text-muted-foreground">Silver pendant with sacred numerology grid — the magic square of planetary numbers. Harmonises personal vibrations with cosmic rhythms.</p>
+          </div>
+          <div className="group surface-card overflow-hidden rounded-2xl p-3 shadow-card">
+            <img src="/bracelet-9.png" alt="Rahu Yantra Card" loading="lazy" className="h-48 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105" />
+            <p className="mt-3 text-center text-sm text-gold font-medium">Rahu Yantra (Print)</p>
+            <p className="mt-1 text-center text-xs text-muted-foreground">Traditional Rahu Yantra on sacred card with mantra — place in puja altar or wallet. Invokes divine grace &amp; transforms obstacles into opportunities.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Enchanted Bracelets */}
+      <section className="relative z-10 mx-auto mt-20 max-w-6xl px-6">
+        <Reveal>
+          <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Enchanted Bracelets ✦</h2>
+          <p className="mt-3 text-center text-base text-muted-foreground italic">Easy to carry and wear — chosen to enhance personal energy and harmonise planetary influence</p>
+        </Reveal>
+        <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {[1,2,3,4,5,6,7,8,9].map((n) => (
             <div key={`b${n}`} className="group surface-card overflow-hidden rounded-2xl p-1.5 shadow-card">
               <img src={`/bracelet-${n}.png`} alt={`Enchanted bracelet ${n}`} loading="lazy" className="h-40 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105 sm:h-48" />
