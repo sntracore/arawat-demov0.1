@@ -1249,7 +1249,7 @@ function Index() {
         </section>
       </SparkleTrail>
 
-      {/* Mystic Store — i1 to i10 */}
+      {/* Mystic Store — i1 to i10 + Bracelets */}
       <section className="relative z-10 mx-auto mt-24 max-w-6xl px-6">
         <Reveal>
           <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">✦ Mystic Store ✦</h2>
@@ -1259,6 +1259,16 @@ function Index() {
           {[1,2,3,4,5,6,7,8,9,10].map((n) => (
             <div key={n} className="group surface-card overflow-hidden rounded-2xl p-1.5 shadow-card">
               <img src={`/i${n}.jpeg`} alt={`Mystic item ${n}`} loading="lazy" className="h-40 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105 sm:h-48" />
+            </div>
+          ))}
+        </div>
+        <Reveal>
+          <p className="mt-8 text-center text-sm text-muted-foreground italic">Enchanted bracelets easy to carry and wear, chosen to enhance personal energy and harmonise planetary influence</p>
+        </Reveal>
+        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          {[1,2,3,4,5,6,7,8,9].map((n) => (
+            <div key={`b${n}`} className="group surface-card overflow-hidden rounded-2xl p-1.5 shadow-card">
+              <img src={`/bracelet-${n}.png`} alt={`Enchanted bracelet ${n}`} loading="lazy" className="h-40 w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105 sm:h-48" />
             </div>
           ))}
         </div>
