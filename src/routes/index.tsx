@@ -692,6 +692,8 @@ function TestimonialsBlock() {
   const [speakingIdx, setSpeakingIdx] = useState<number | null>(null);
   const [search, setSearch] = useState("");
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
+  const [shareT, setShareT] = useState<(typeof testimonials)[number] | null>(null);
+  const [shareImg, setShareImg] = useState<string | null>(null);
 
   const FEMALE_FIRST = new Set(["ananya","priya","sneha","neha","aditi","meera","kavya","nisha","rhea","tanya","simran","pooja","isha","diya","sanya","preksha","kiara","adhya"]);
   const isFemaleName = useCallback((name: string) => FEMALE_FIRST.has(name.trim().split(/\s+/)[0]!.toLowerCase()), []);
@@ -766,6 +768,92 @@ function TestimonialsBlock() {
     }
   }, []);
   useEffect(() => () => { if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel(); }, []);
+
+  // share post canvas — 1080x1080 square for Insta/FB
+  useEffect(() => {
+    if (!shareT) { setShareImg(null); return; }
+    const c = document.createElement("canvas");
+    c.width = 1080; c.height = 1080;
+    const ctx = c.getContext("2d");
+    if (!ctx) return;
+    // bg
+    ctx.fillStyle = "#150e2f";
+    ctx.fillRect(0,0,1080,1080);
+    // subtle radial
+    const g = ctx.createRadialGradient(540, 200, 0, 540, 200, 700);
+    g.addColorStop(0, "rgba(201,168,106,0.18)");
+    g.addColorStop(1, "transparent");
+    ctx.fillStyle = g; ctx.fillRect(0,0,1080,1080);
+    // border
+    ctx.strokeStyle = "rgba(201,168,106,0.35)"; ctx.lineWidth = 4;
+    // @ts-ignore roundRect
+    if ((ctx as any).roundRect) { (ctx as any).roundRect(22,22,1036,1036,28); ctx.stroke(); } else ctx.strokeRect(22,22,1036,1036);
+    // card
+    ctx.fillStyle = "rgba(255,255,255,0.04)";
+    // @ts-ignore
+    if ((ctx as any).roundRect) { ctx.beginPath(); (ctx as any).roundRect(48,48,984,984,32); ctx.fill(); } 
+    // header
+    ctx.fillStyle = "#c9a86a"; ctx.textAlign = "center";
+    ctx.font = "700 36px serif"; ctx.fillText("ARAWAT  OCCULT  SCIENCES", 540, 115);
+    ctx.font = "600 15px sans-serif"; ctx.fillStyle = "rgba(201,168,106,0.75)";
+    ctx.fillText("Guided by Acharya Aarti  ·  15+ Years  ·  Confidential", 540, 150);
+    // stars
+    ctx.font = "30px serif"; ctx.fillStyle = "#c9a86a";
+    ctx.fillText("★".repeat(shareT.stars) + "☆".repeat(5-shareT.stars), 540, 205);
+    // divider
+    ctx.strokeStyle = "rgba(201,168,106,0.25)"; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(430,230); ctx.lineTo(650,230); ctx.stroke();
+    // quote mark
+    ctx.font = "100px serif"; ctx.fillStyle = "rgba(201,168,106,0.14)"; ctx.fillText("“", 540, 330);
+    // body — wrap
+    const clean = shareT.text.replace(/[“”]/g, "").trim();
+    ctx.fillStyle = "#ede7d6"; ctx.textAlign = "center";
+    ctx.font = "italic 30px serif";
+    const maxW = 880; const lineH = 44; let y = 360;
+    const words = clean.split(/\s+/); let line = "";
+    const lines: string[] = [];
+    for (const w of words) {
+      const test = line ? line + " " + w : w;
+      if (ctx.measureText(test).width > maxW) { if (line) lines.push(line); line = w; } else line = test;
+    }
+    if (line) lines.push(line);
+    // clamp to 9 lines
+    const show = lines.slice(0, 9);
+    for (let i=0;i<show.length;i++) { ctx.fillText(show[i]!, 540, y); y += lineH; }
+    if (lines.length > 9) { ctx.font = "22px sans-serif"; ctx.fillStyle = "rgba(237,231,214,0.55)"; ctx.fillText("…", 540, y); y+= lineH; }
+    // name
+    ctx.font = "700 26px sans-serif"; ctx.fillStyle = "#c9a86a";
+    ctx.fillText(`— ${shareT.name}${shareT.age ? ", " + shareT.age : ""}`, 540, y + 22);
+    if (shareT.tag) { ctx.font = "600 13px sans-serif"; ctx.fillStyle = "rgba(201,168,106,0.7)"; ctx.fillText(shareT.tag.toUpperCase(), 540, y + 50); }
+    // footer
+    ctx.font = "600 13px sans-serif"; ctx.fillStyle = "rgba(237,231,214,0.45)";
+    ctx.fillText("arawat.co.in  ·  +91 89796 12593  ·  WhatsApp to book", 540, 1030);
+    setShareImg(c.toDataURL("image/png"));
+  }, [shareT]);
+
+  const downloadShare = useCallback(() => {
+    if (!shareImg || !shareT) return;
+    const a = document.createElement("a");
+    a.href = shareImg; a.download = `arawat-${shareT.name.replace(/\s+/g,"-").toLowerCase()}.png`;
+    a.click();
+  }, [shareImg, shareT]);
+
+  const nativeShare = useCallback(async () => {
+    if (!shareImg || !shareT) return;
+    try {
+      const res = await fetch(shareImg); const blob = await res.blob();
+      const file = new File([blob], `arawat-${shareT.name.replace(/\s+/g,"-")}.png`, { type: "image/png" });
+      const text = `${shareT.name} (${shareT.stars}★): ${shareT.text} — via Arawat Occult Sciences ${typeof window !== "undefined" ? window.location.href : ""}`;
+      // @ts-ignore canShare
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ title: "Arawat Review", text, files: [file] });
+      } else if (navigator.share) {
+        await navigator.share({ title: "Arawat Review", text });
+      } else {
+        downloadShare();
+      }
+    } catch { downloadShare(); }
+  }, [shareImg, shareT, downloadShare]);
 
   return (
     <div className="mt-8">
@@ -872,7 +960,7 @@ function TestimonialsBlock() {
             {isSpeaking ? <span className="mt-2 text-[10px] tracking-widest text-gold/60 uppercase">{isFemaleName(t.name) ? "Female voice · English..." : "Male voice · English..."}</span> : null}
             <div className="mt-3 flex items-center gap-1.5 border-t border-gold/10 pt-3">
               <button type="button" onClick={() => copy(`${t.name} (${t.stars}★): ${t.text}`, i)} className="rounded-full border border-gold/20 px-2.5 py-1 text-[10px] tracking-wide text-gold/70 hover:bg-gold/10 hover:text-gold transition-colors">{copiedIdx === i ? "Copied!" : "Copy"}</button>
-              <a href={`https://wa.me/?text=${encodeURIComponent(`${t.name} (${t.stars}★): ${t.text} — via Arawat Occult Sciences`)}`} target="_blank" rel="noreferrer noopener" className="rounded-full border border-gold/20 px-2.5 py-1 text-[10px] tracking-wide text-gold/70 hover:bg-gold/10 hover:text-gold transition-colors">Share</a>
+              <button type="button" onClick={() => setShareT(t)} className="rounded-full border border-gold bg-gold/10 px-2.5 py-1 text-[10px] tracking-wide text-gold hover:bg-gold hover:text-background transition-colors">Share</button>
               <span className="ml-auto text-[10px] text-muted-foreground/50">#{i + 1}</span>
             </div>
           </div>
@@ -895,6 +983,29 @@ function TestimonialsBlock() {
         <span className="font-display text-xs">✧ Acharya Aarti ✧</span>
         <span className="h-px w-12 bg-gradient-to-l from-transparent to-gold/30" />
       </div>
+
+      {/* share post modal — Insta/FB square post */}
+      {shareT ? (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center p-4" onClick={() => setShareT(null)}>
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+          <div onClick={(e) => e.stopPropagation()} className="relative w-full max-w-[420px] surface-card rounded-3xl p-5 shadow-glow max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between">
+              <p className="font-display text-sm tracking-widest text-gold uppercase">Share Post · 1080×1080</p>
+              <button onClick={() => setShareT(null)} className="flex h-7 w-7 items-center justify-center rounded-full border border-gold/30 text-gold/70 hover:bg-gold/10">×</button>
+            </div>
+            {shareImg ? <img src={shareImg} alt={`Share post for ${shareT.name}`} className="mt-4 w-full rounded-2xl border border-gold/20" /> : <div className="mt-4 h-64 animate-pulse rounded-2xl bg-white/5" />}
+            <p className="mt-3 text-xs leading-relaxed text-muted-foreground">Ye image Insta feed / FB post / WhatsApp status ke liye perfect hai — download karke direct post karo, paise ka reach badhega.</p>
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <button onClick={downloadShare} className="rounded-full bg-gold px-4 py-2.5 text-xs font-bold tracking-widest text-background uppercase">Download PNG</button>
+              <button onClick={nativeShare} className="rounded-full border border-gold/40 px-4 py-2.5 text-xs tracking-widest text-gold uppercase hover:bg-gold/10">System Share</button>
+              <a href={`https://wa.me/?text=${encodeURIComponent(`${shareT.name} (${shareT.stars}★): ${shareT.text} — via Arawat Occult Sciences ${typeof window !== "undefined" ? window.location.href : ""}`)}`} target="_blank" rel="noreferrer noopener" className="rounded-full border border-[#25D366]/40 bg-[#25D366]/10 px-4 py-2.5 text-center text-xs font-bold tracking-widest text-[#25D366] uppercase">WhatsApp</a>
+              <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== "undefined" ? window.location.href : "")}&quote=${encodeURIComponent(`${shareT.name}: ${shareT.text}`)}`} target="_blank" rel="noreferrer noopener" className="rounded-full border border-[#1877F2]/30 bg-[#1877F2]/10 px-4 py-2.5 text-center text-xs font-bold tracking-widest text-[#1877F2] uppercase">Facebook</a>
+            </div>
+            <button onClick={() => { downloadShare(); window.open("https://www.instagram.com/", "_blank"); }} className="mt-2 w-full rounded-full border border-pink-500/30 bg-gradient-to-r from-pink-500/10 to-purple-500/10 px-4 py-2.5 text-xs font-bold tracking-widest text-pink-400 uppercase">Download + Open Instagram</button>
+            <p className="mt-2 text-center text-[10px] text-muted-foreground/60">Tip: Roz 1 post share = Insta/FB algorithm me reach + WhatsApp status se bookings badhti hain.</p>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
