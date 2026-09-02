@@ -700,8 +700,12 @@ function TestimonialsBlock() {
   const visible = showAll ? filtered : filtered.slice(0, 9);
   const avg = (testimonials.reduce((s, t) => s + t.stars, 0) / testimonials.length).toFixed(1);
 
-  // native Web Speech API — no deps, en-IN voice
-  const speak = useCallback((raw: string, idx: number) => {
+  // female names set — for female-voice selection
+  const FEMALE_FIRST = new Set(["ananya","priya","sneha","neha","aditi","meera","kavya","nisha","rhea","tanya","simran","pooja","isha","diya","sanya","preksha","kiara","adhya"]);
+  const isFemaleName = useCallback((name: string) => FEMALE_FIRST.has(name.trim().split(/\s+/)[0]!.toLowerCase()), []);
+
+  // native Web Speech API — female voice for female names
+  const speak = useCallback((raw: string, idx: number, female: boolean) => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
     const synth = window.speechSynthesis;
     if (speakingIdx === idx) { synth.cancel(); setSpeakingIdx(null); return; }
@@ -710,10 +714,23 @@ function TestimonialsBlock() {
     const u = new SpeechSynthesisUtterance(clean);
     u.lang = "en-IN";
     u.rate = 0.95;
-    // pick best english voice if available
     const voices = synth.getVoices();
-    const pick = voices.find((v) => v.lang === "en-IN") || voices.find((v) => v.lang.startsWith("en")) || null;
-    if (pick) u.voice = pick;
+    let pick: SpeechSynthesisVoice | null = null;
+    if (female) {
+      pick = voices.find((v) => v.lang.startsWith("en") && /female|zira|samantha|karen|moira|tessa|susan|heather|veena|sarah|aarti/i.test(v.name))
+        || voices.find((v) => v.lang === "en-IN" && /female/i.test(v.name))
+        || voices.find((v) => v.lang === "en-IN")
+        || voices.find((v) => v.lang.startsWith("en") && !/male|david/i.test(v.name))
+        || voices.find((v) => v.lang.startsWith("en"))
+        || null;
+      u.pitch = 1.15;
+    } else {
+      pick = voices.find((v) => v.lang.startsWith("en") && /male|david|mark|alex|george/i.test(v.name))
+        || voices.find((v) => v.lang.startsWith("en"))
+        || null;
+      u.pitch = 0.92;
+    }
+    if (pick) { u.voice = pick; u.lang = pick.lang; }
     u.onend = () => setSpeakingIdx(null);
     u.onerror = () => setSpeakingIdx(null);
     setSpeakingIdx(idx);
@@ -775,9 +792,9 @@ function TestimonialsBlock() {
                 {t.tag ? <span className="rounded-full border border-gold/20 bg-gold/10 px-2 py-0.5 text-[10px] tracking-widest text-gold uppercase">{t.tag}</span> : null}
                 <button
                   type="button"
-                  onClick={() => speak(`${t.name} says: ${t.text}`, i)}
-                  aria-label={isSpeaking ? `Stop reading ${t.name}` : `Read ${t.name} aloud in English`}
-                  title={isSpeaking ? "Stop" : "Read aloud"}
+                  onClick={() => speak(`${t.name} says: ${t.text}`, i, isFemaleName(t.name))}
+                  aria-label={isSpeaking ? `Stop reading ${t.name}` : `Read ${t.name} aloud in ${isFemaleName(t.name) ? "female" : "male"} English voice`}
+                  title={isSpeaking ? "Stop" : isFemaleName(t.name) ? "Female voice" : "Male voice"}
                   className={`flex h-7 w-7 items-center justify-center rounded-full border transition-colors ${isSpeaking ? "border-gold bg-gold text-background" : "border-gold/30 text-gold/70 hover:bg-gold/10 hover:text-gold"}`}
                 >
                   {isSpeaking ? (
@@ -789,7 +806,7 @@ function TestimonialsBlock() {
               </div>
             </div>
             <p className="mt-3 flex-1 text-[13.5px] leading-relaxed text-muted-foreground whitespace-pre-wrap break-words">{t.text}</p>
-            {isSpeaking ? <span className="mt-2 text-[10px] tracking-widest text-gold/60 uppercase">Reading in English...</span> : null}
+            {isSpeaking ? <span className="mt-2 text-[10px] tracking-widest text-gold/60 uppercase">{isFemaleName(t.name) ? "Female voice · English..." : "Male voice · English..."}</span> : null}
           </div>
           );
         })}
