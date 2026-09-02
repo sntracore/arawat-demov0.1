@@ -1059,7 +1059,8 @@ function Index() {
   void playOmOnOpen;
 
   // YouTube Om 432Hz — site open pe sound + mute control (https://youtu.be/Ua2-zCo9iNE)
-  const [isMuted, setIsMuted] = useState(false);
+  // Browser blocks unmuted autoplay → start muted, user taps to enable sound
+  const [isMuted, setIsMuted] = useState(true);
   const [ytReady, setYtReady] = useState(false);
   const ytRef = useRef<any>(null);
   useEffect(() => {
@@ -1074,13 +1075,19 @@ function Index() {
           events: {
             onReady: (e: any) => {
               setYtReady(true);
-              try { e.target.mute(); e.target.playVideo(); // autoplay muted first (allowed)
-                // try to unmute after a tick — if blocked, stays muted and button shows muted
-                setTimeout(() => { try { e.target.unMute(); e.target.setVolume(70); setIsMuted(false); } catch {} }, 600);
-              } catch {}
+              try { e.target.mute(); e.target.playVideo(); setIsMuted(true); } catch {}
+              // first user interaction → unmute (browsers allow sound after gesture)
+              const once = () => {
+                try { e.target.unMute(); e.target.setVolume(70); e.target.playVideo(); setIsMuted(false); } catch {}
+                document.removeEventListener("click", once);
+                document.removeEventListener("touchstart", once);
+                document.removeEventListener("keydown", once);
+              };
+              document.addEventListener("click", once, { once: true });
+              document.addEventListener("touchstart", once, { once: true });
+              document.addEventListener("keydown", once, { once: true });
             },
             onStateChange: (e: any) => {
-              // loop
               if (e.data === 0) { try { e.target.playVideo(); } catch {} }
             },
           },
@@ -1104,7 +1111,6 @@ function Index() {
         return;
       } catch {}
     }
-    // fallback: toggle local audio if yt not ready (not used)
     setIsMuted((v) => !v);
   }, [isMuted, ytReady]);
 
@@ -1125,7 +1131,7 @@ function Index() {
           <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.74 2.5-2.26 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" /></svg>
         )}
       </button>
-      {!ytReady ? <span className="fixed bottom-[5.2rem] left-6 z-[55] rounded-full bg-black/50 px-2 py-1 text-[10px] tracking-wide text-gold/60 backdrop-blur">Loading Om…</span> : null}
+      {isMuted && ytReady ? <span className="fixed bottom-[5.2rem] left-6 z-[55] rounded-full bg-black/60 px-3 py-1.5 text-[11px] tracking-wide text-gold backdrop-blur border border-gold/20">Tap speaker to enable Om 432Hz</span> : !ytReady ? <span className="fixed bottom-[5.2rem] left-6 z-[55] rounded-full bg-black/50 px-2 py-1 text-[10px] tracking-wide text-gold/60 backdrop-blur">Loading Om…</span> : null}
       <GlobalCursorSparkle />
       <div className="starfield" aria-hidden />
       <div className="starfield-slow" aria-hidden />
