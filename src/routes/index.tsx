@@ -1058,8 +1058,74 @@ function Index() {
 
   void playOmOnOpen;
 
+  // YouTube Om 432Hz — site open pe sound + mute control (https://youtu.be/Ua2-zCo9iNE)
+  const [isMuted, setIsMuted] = useState(false);
+  const [ytReady, setYtReady] = useState(false);
+  const ytRef = useRef<any>(null);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const create = () => {
+      const YT = (window as any).YT;
+      if (!YT || !YT.Player) return;
+      try {
+        ytRef.current = new YT.Player("yt-om-player", {
+          height: "1", width: "1", videoId: "Ua2-zCo9iNE",
+          playerVars: { autoplay: 1, loop: 1, playlist: "Ua2-zCo9iNE", controls: 0, playsinline: 1, rel: 0, modestbranding: 1, fs: 0, enablejsapi: 1 },
+          events: {
+            onReady: (e: any) => {
+              setYtReady(true);
+              try { e.target.mute(); e.target.playVideo(); // autoplay muted first (allowed)
+                // try to unmute after a tick — if blocked, stays muted and button shows muted
+                setTimeout(() => { try { e.target.unMute(); e.target.setVolume(70); setIsMuted(false); } catch {} }, 600);
+              } catch {}
+            },
+            onStateChange: (e: any) => {
+              // loop
+              if (e.data === 0) { try { e.target.playVideo(); } catch {} }
+            },
+          },
+        });
+      } catch {}
+    };
+    if ((window as any).YT && (window as any).YT.Player) { create(); return; }
+    const tag = document.createElement("script");
+    tag.src = "https://www.youtube.com/iframe_api";
+    tag.async = true;
+    document.body.appendChild(tag);
+    (window as any).onYouTubeIframeAPIReady = () => create();
+    return () => { try { ytRef.current?.destroy?.(); } catch {} };
+  }, []);
+  const toggleMute = useCallback(() => {
+    const p = ytRef.current;
+    if (p && ytReady) {
+      try {
+        if (isMuted) { p.unMute(); p.setVolume(70); p.playVideo(); setIsMuted(false); }
+        else { p.mute(); setIsMuted(true); }
+        return;
+      } catch {}
+    }
+    // fallback: toggle local audio if yt not ready (not used)
+    setIsMuted((v) => !v);
+  }, [isMuted, ytReady]);
+
   return (
     <main id="top" className="relative golden-cursor">
+      {/* YouTube Om 432Hz hidden player */}
+      <div id="yt-om-player" className="fixed -left-[9999px] -top-[9999px] h-px w-px overflow-hidden pointer-events-none" aria-hidden />
+      {/* mute control */}
+      <button
+        onClick={toggleMute}
+        aria-label={isMuted ? "Unmute Om chant" : "Mute Om chant"}
+        title={isMuted ? "Sound off — tap to enable Om" : "Om playing — tap to mute"}
+        className={`fixed bottom-6 left-6 z-[55] flex h-11 w-11 items-center justify-center rounded-full border shadow-lg backdrop-blur-md transition-all hover:scale-105 ${isMuted ? "border-gold/30 bg-white/5 text-gold/60" : "border-gold bg-gold text-background shadow-glow"}`}
+      >
+        {isMuted ? (
+          <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 2.53-1.01 4.81-2.64 6.48l1.48 1.48C19.69 18.06 21 15.22 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" /></svg>
+        ) : (
+          <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.74 2.5-2.26 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" /></svg>
+        )}
+      </button>
+      {!ytReady ? <span className="fixed bottom-[5.2rem] left-6 z-[55] rounded-full bg-black/50 px-2 py-1 text-[10px] tracking-wide text-gold/60 backdrop-blur">Loading Om…</span> : null}
       <GlobalCursorSparkle />
       <div className="starfield" aria-hidden />
       <div className="starfield-slow" aria-hidden />
