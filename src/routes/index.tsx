@@ -1071,7 +1071,7 @@ function Index() {
       >
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2.5">
           <a href="#top" className="flex items-center gap-2">
-            <span className="font-display text-sm tracking-[0.3em] text-gradient-gold">{lang === "hi" ? "ऐRAWAT" : "ARAWAT"}</span>
+            <span className="font-display text-sm tracking-[0.3em] text-gradient-gold">ऐRAWAT</span>
           </a>
           <div className="ml-auto flex flex-wrap items-center justify-end gap-2 text-[11px] uppercase tracking-[0.18em] text-gold/80">
             <div className="hidden items-center gap-x-4 sm:flex">
@@ -1796,7 +1796,7 @@ function Index() {
       <footer className="relative z-10 mx-auto mt-8 max-w-5xl px-6 pb-16 text-center">
         <video src="/arawat-logo-video.mp4" autoPlay muted loop playsInline preload="metadata" poster="/elephant-logo.jpg" aria-label="Arawat — golden elephant with mandala" className="mx-auto mb-6 h-auto w-[420px] max-w-[90vw] rounded-2xl border border-gold/40 bg-white p-1.5 shadow-glow" />
         <p className="text-4xl font-bold italic text-gradient-gold sm:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
-          {lang === "hi" ? "ऐRAWAT" : "ARAWAT"} <span className="font-bold italic">{lang === "hi" ? "ऑकल्ट साइंसेज़" : "OCCULT SCIENCES"}</span>
+          ऐRAWAT <span className="font-bold italic">{lang === "hi" ? "ऑकल्ट साइंसेज़" : "OCCULT SCIENCES"}</span>
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-muted-foreground">
           {t.footer.trusted.map((item) => (
