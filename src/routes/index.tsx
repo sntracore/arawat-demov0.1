@@ -1142,7 +1142,9 @@ function Index() {
         style={{ background: "oklch(0.16 0.06 300 / 0.55)" }}
       >
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2.5">
-          <a href="#top" className="flex items-center gap-2" aria-label="Top" />
+          <a href="#top" className="flex items-center gap-2">
+            <span className="font-display text-sm tracking-[0.3em] text-gradient-gold">ऐRAWAT</span>
+          </a>
           <div className="ml-auto flex flex-wrap items-center justify-end gap-2 text-[11px] uppercase tracking-[0.18em] text-gold/80">
             <div className="hidden items-center gap-x-4 sm:flex">
               <a href="#chakras" className="font-display transition-colors hover:text-gold">{t.nav.chakras}</a>
