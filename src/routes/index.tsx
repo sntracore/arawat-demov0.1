@@ -31,6 +31,7 @@ const WHATSAPP = "https://wa.me/918979612593";
 const WHATSAPP2 = "https://wa.me/917906416125";
 const PHONE = "              +91 89796 12593";
 const PHONE2 = "+91 79064 16125";
+const SUPPORT_EMAIL = "arawatoccultsciences@gmail.com";
 
 const MONTH_NAMES = [
   "January", "February", "March", "April", "May", "June",
@@ -41,10 +42,48 @@ function formatDateIndian(d: Date) {
   return `${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-// ponytail: sound removed per client — no ting/om/voice on diamond tap or open
-function playTing() {}
-function playChakraVoice(_c: { freq: number; voice: string }) {}
-function playOmOnOpen() {}
+function playTing() {
+  try {
+    const Ctx = (window as any).AudioContext || (window as any).webkitAudioContext;
+    if (!Ctx) return;
+    const ctx = new Ctx();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = "sine";
+    o.frequency.value = 880;
+    o.connect(g); g.connect(ctx.destination);
+    g.gain.setValueAtTime(0.35, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.7);
+    o.start(); o.stop(ctx.currentTime + 0.7);
+    // resume if suspended (autoplay policy)
+    if (ctx.state === "suspended") ctx.resume();
+  } catch {}
+}
+function playChakraVoice(c: { freq: number; voice: string }) {
+  playTing();
+  try {
+    const a = new Audio(c.voice);
+    a.volume = 0.75;
+    a.play().catch(() => {});
+  } catch {}
+}
+function playOmOnOpen() {
+  try {
+    const a = new Audio("/voices/aum.mp3");
+    a.volume = 0.7;
+    a.preload = "auto";
+    const tryPlay = () => a.play().catch(() => {});
+    const p = a.play();
+    if (p && (p as Promise<void>).catch) {
+      (p as Promise<void>).catch(() => {
+        const once = () => { tryPlay(); document.removeEventListener("click", once); document.removeEventListener("touchstart", once); document.removeEventListener("keydown", once); };
+        document.addEventListener("click", once, { once: true });
+        document.addEventListener("touchstart", once, { once: true });
+        document.addEventListener("keydown", once, { once: true });
+      });
+    }
+  } catch {}
+}
 
 const BOT_REPLIES: { pattern: RegExp; reply: string }[] = [
   { pattern: /\b(namaste|namaskar|pranam)\b/i, reply: "Namaste! \u{1F64F} I'm Arawat's virtual assistant. Acharya Aarti has 7+ years of experience in astrology, numerology, and aura reading. How can I help you today?" },
@@ -1036,8 +1075,8 @@ function Index() {
     navigator.vibrate?.(15);
   };
 
-  // sound disabled — no auto play on open
-  void playOmOnOpen;
+  // Om on site open — with autoplay fallback to first click
+  useEffect(() => { playOmOnOpen(); }, []);
 
   return (
     <main id="top" className="relative golden-cursor">
@@ -1083,7 +1122,7 @@ function Index() {
                 हिं
               </button>
             </div>
-            <a href={`tel:${PHONE.replace(/\s/g, "")}`} className="hidden sm:inline-flex items-center rounded-full bg-gold px-3 py-1 text-[10px] font-bold tracking-widest text-background hover:bg-gold-soft">Customer Support</a>
+            <a href={`mailto:${SUPPORT_EMAIL}`} className="hidden sm:inline-flex items-center rounded-full bg-gold px-3 py-1 text-[10px] font-bold tracking-widest text-background hover:bg-gold-soft">Customer Support</a>
           </div>
         </div>
       </nav>
@@ -1115,10 +1154,10 @@ function Index() {
             <span className="text-2xl [text-shadow:0_0_18px_oklch(0.85_0.15_88/0.7)]">ॐ</span>
             <span className="h-px w-12 bg-gradient-to-l from-transparent to-gold/60" aria-hidden />
           </p>
-          <h1 className="leading-tight">
-            <span className="block text-5xl font-bold italic text-gradient-gold text-shimmer sm:text-7xl lg:text-8xl" style={{ fontFamily: "var(--font-display)" }}>ARAWAT</span>
+          <h1 key={lang} className="leading-tight animate-fade-in">
+            <span className="block text-5xl font-bold italic text-gradient-gold text-shimmer sm:text-7xl lg:text-8xl" style={{ fontFamily: "var(--font-display)" }}>{lang === "hi" ? "ऐRAWAT" : "ARAWAT"}</span>
             <span className="mt-1 block text-4xl font-bold tracking-[0.12em] text-gradient-gold text-shimmer sm:text-5xl lg:text-6xl" style={{ fontFamily: "var(--font-display)" }}>
-              OCCULT SCIENCES
+              {lang === "hi" ? "ऑकल्ट साइंसेज़" : "OCCULT SCIENCES"}
             </span>
           </h1>
 
@@ -1395,8 +1434,8 @@ function Index() {
             </p>
             <p className="mt-4 text-sm font-semibold text-foreground">
               Contact &amp; Help Support:{" "}
-              <a href="tel:+918979612593" className="text-gold hover:text-gold-soft underline underline-offset-4">
-                +91 89796 12593
+              <a href={`mailto:${SUPPORT_EMAIL}`} className="text-gold hover:text-gold-soft underline underline-offset-4">
+                {SUPPORT_EMAIL}
               </a>
             </p>
             <a
@@ -1747,14 +1786,14 @@ function Index() {
         </Reveal>
       </section>
 
-      {/* Customer Support — right most corner */}
+      {/* Customer Support — email only */}
       <a
-        href={`tel:${PHONE.replace(/\s/g, "")}`}
-        aria-label="Customer Support"
+        href={`mailto:${SUPPORT_EMAIL}`}
+        aria-label="Customer Support — email"
         className="fixed bottom-44 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-gold text-background shadow-lg transition-transform duration-200 hover:scale-110"
-        title="Customer Support"
+        title={SUPPORT_EMAIL}
       >
-        <svg viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6"><path d="M6.62 10.79a15.15 15.15 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
       </a>
       {/* Floating WhatsApp */}
       <a
