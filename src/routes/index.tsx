@@ -1205,7 +1205,7 @@ function Index() {
             <span className="h-px w-12 bg-gradient-to-l from-transparent to-gold/60" aria-hidden />
           </p>
           <h1 key={lang} className="leading-tight animate-fade-in">
-            <span className="block text-5xl font-bold italic text-gradient-gold text-shimmer sm:text-7xl lg:text-8xl" style={{ fontFamily: "var(--font-display)" }}>ऐRAWAT</span>
+            <span className="block text-5xl font-bold italic text-gradient-gold text-shimmer sm:text-7xl lg:text-8xl" style={{ fontFamily: "var(--font-display)" }}>ARAWAT</span>
             <span className="mt-1 block text-4xl font-bold tracking-[0.12em] text-gradient-gold text-shimmer sm:text-5xl lg:text-6xl" style={{ fontFamily: "var(--font-display)" }}>
               {lang === "hi" ? "ऑकल्ट साइंसेज़" : "OCCULT SCIENCES"}
             </span>
@@ -1866,7 +1866,7 @@ function Index() {
       <footer className="relative z-10 mx-auto mt-8 max-w-5xl px-6 pb-16 text-center">
         <video src="/arawat-logo-video.mp4" autoPlay muted loop playsInline preload="metadata" poster="/elephant-logo.jpg" aria-label="Arawat — golden elephant with mandala" className="mx-auto mb-6 h-auto w-[420px] max-w-[90vw] rounded-2xl border border-gold/40 bg-white p-1.5 shadow-glow" />
         <p className="text-4xl font-bold italic text-gradient-gold sm:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
-          ऐRAWAT <span className="font-bold italic">{lang === "hi" ? "ऑकल्ट साइंसेज़" : "OCCULT SCIENCES"}</span>
+          ARAWAT <span className="font-bold italic">{lang === "hi" ? "ऑकल्ट साइंसेज़" : "OCCULT SCIENCES"}</span>
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-muted-foreground">
           {t.footer.trusted.map((item) => (
