@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useCallback, useRef, useEffect } from "react";
 import chakraFigure from "@/assets/chakra-figure.jpg";
 import { translations, type Lang } from "@/lib/translations";
+import { testimonials } from "@/lib/testimonials";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -676,6 +677,93 @@ function AIBot() {
   );
 }
 
+function Stars({ n }: { n: number }) {
+  return (
+    <span className="text-[13px] tracking-widest" aria-label={`${n} out of 5 stars`}>
+      <span style={{ color: "oklch(0.85 0.15 88)" }}>{"★".repeat(n)}</span>
+      <span className="text-gold/20">{"★".repeat(5 - n)}</span>
+    </span>
+  );
+}
+
+function TestimonialsBlock() {
+  const [showAll, setShowAll] = useState(false);
+  const [filter, setFilter] = useState<"all" | "5" | "4" | "hinglish" | "genz">("all");
+  const filtered = testimonials.filter((t) => {
+    if (filter === "5") return t.stars === 5;
+    if (filter === "4") return t.stars >= 4;
+    if (filter === "hinglish") return t.tag === "Hinglish";
+    if (filter === "genz") return t.tag === "GenZ";
+    return true;
+  });
+  const visible = showAll ? filtered : filtered.slice(0, 9);
+  const avg = (testimonials.reduce((s, t) => s + t.stars, 0) / testimonials.length).toFixed(1);
+  return (
+    <div className="mt-8">
+      <div className="flex flex-wrap items-center justify-center gap-2 text-[11px]">
+        <span className="rounded-full border border-gold/20 bg-white/[0.03] px-3 py-1 text-gold/70">{testimonials.length} reviews · {avg} ★ avg</span>
+        <span className="h-3 w-px bg-gold/20 hidden sm:block" aria-hidden />
+        <div className="flex flex-wrap gap-1.5">
+          {[
+            ["all", "All"],
+            ["5", "★★★★★"],
+            ["4", "★★★★+"],
+            ["hinglish", "Hinglish"],
+            ["genz", "GenZ"],
+          ].map(([v, label]) => (
+            <button
+              key={v}
+              onClick={() => { setFilter(v as any); setShowAll(false); }}
+              className={`rounded-full border px-3 py-1 text-[11px] tracking-wide transition-colors ${filter === v ? "border-gold bg-gold text-background font-bold" : "border-gold/25 text-gold/70 hover:bg-gold/10 hover:text-gold"}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {visible.map((t, i) => (
+          <div
+            key={`${t.name}-${i}`}
+            className="surface-card flex flex-col rounded-2xl p-5 text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-glow"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold text-foreground">
+                  {t.name}
+                  {t.age ? <span className="ml-1 font-normal text-muted-foreground">, {t.age}</span> : null}
+                </p>
+                <div className="mt-1"><Stars n={t.stars} /></div>
+              </div>
+              {t.tag ? <span className="shrink-0 rounded-full border border-gold/20 bg-gold/10 px-2 py-0.5 text-[10px] tracking-widest text-gold uppercase">{t.tag}</span> : null}
+            </div>
+            <p className="mt-3 flex-1 text-[13.5px] leading-relaxed text-muted-foreground whitespace-pre-wrap break-words">{t.text}</p>
+          </div>
+        ))}
+      </div>
+
+      {filtered.length > 9 ? (
+        <div className="mt-8 flex flex-col items-center gap-3">
+          <button
+            onClick={() => setShowAll((v) => !v)}
+            className="rounded-full border border-gold/40 px-6 py-2.5 text-xs tracking-[0.18em] text-gold uppercase transition-all hover:scale-105 hover:bg-gold/10"
+          >
+            {showAll ? "Show less ↑" : `View all ${filtered.length} reviews →`}
+          </button>
+          {!showAll ? <span className="text-xs text-muted-foreground/60">Showing {visible.length} of {filtered.length} · {filter !== "all" ? "filtered" : "total 41"}</span> : null}
+        </div>
+      ) : null}
+
+      <div className="mt-8 flex items-center justify-center gap-3 text-gold/40" aria-hidden>
+        <span className="h-px w-12 bg-gradient-to-r from-transparent to-gold/30" />
+        <span className="font-display text-xs">✧ Acharya Aarti ✧</span>
+        <span className="h-px w-12 bg-gradient-to-l from-transparent to-gold/30" />
+      </div>
+    </div>
+  );
+}
+
 function Index() {
   const [lang, setLang] = useState<Lang>(() => {
     if (typeof window !== "undefined") {
@@ -727,6 +815,7 @@ function Index() {
               <a href="#lalkitab" className="font-display transition-colors hover:text-gold">{t.nav.lalkitab}</a>
               <a href="#query" className="font-display transition-colors hover:text-gold">{t.nav.query}</a>
               <a href="#about" className="font-display transition-colors hover:text-gold">{t.nav.about}</a>
+              <a href="#testimonials" className="font-display transition-colors hover:text-gold">{(t.nav as any).testimonials ?? "Reviews"}</a>
               <a href="#faq" className="font-display transition-colors hover:text-gold">{t.nav.faq}</a>
               <a href="#book" className="font-display transition-colors hover:text-gold">{t.nav.book}</a>
             </div>
@@ -1157,34 +1246,19 @@ function Index() {
       <Divider />
 
       {/* Testimonials */}
-      <section className="relative z-10 mx-auto mt-4 max-w-3xl px-6">
+      <section id="testimonials" className="relative z-10 mx-auto mt-4 max-w-6xl scroll-mt-24 px-6">
         <Reveal>
           <h2 className="text-center text-3xl text-gradient-gold sm:text-4xl">{t.testimonials.title}</h2>
-          <p className="mt-3 text-center text-base text-muted-foreground italic">
-            {t.testimonials.subtitle}
-          </p>
+          <p className="mt-3 text-center text-base text-muted-foreground italic">Real stories from seekers · Acharya Aarti</p>
         </Reveal>
         <Reveal>
-          <div className="surface-card relative mt-10 overflow-hidden rounded-3xl p-12 text-center sm:p-14">
-            <span className="pointer-events-none absolute -top-6 left-6 text-[7rem] leading-none text-gold/10" aria-hidden>“</span>
-            <span className="pointer-events-none absolute -bottom-12 right-6 text-[7rem] leading-none text-gold/10" aria-hidden>”</span>
-            <p className="text-gradient-gold text-shimmer font-display inline-block rounded-full border border-gold/40 bg-gold/5 px-6 py-1.5 text-[11px] tracking-[0.35em] uppercase">
-              {t.testimonials.comingSoon}
-            </p>
-            <p className="mx-auto mt-7 max-w-md text-lg italic leading-relaxed text-muted-foreground">
-              {t.testimonials.para}
-            </p>
-            <div className="mt-7 flex items-center justify-center gap-3 text-gold/50" aria-hidden>
-              <span className="h-px w-16 bg-gradient-to-r from-transparent to-gold/40" />
-              <span className="font-display text-sm">✧</span>
-              <span className="h-px w-16 bg-gradient-to-l from-transparent to-gold/40" />
-            </div>
-            <p className="mt-7 text-sm text-muted-foreground">{t.testimonials.firstStory}</p>
+          <TestimonialsBlock />
+          <div className="mt-6 flex justify-center">
             <a
               href={WHATSAPP}
               target="_blank"
               rel="noreferrer noopener"
-              className="mt-4 inline-flex items-center gap-2 rounded-full border border-gold/40 px-6 py-2.5 text-xs tracking-[0.2em] text-gold uppercase transition-all duration-200 hover:scale-105 hover:bg-gold/10"
+              className="inline-flex items-center gap-2 rounded-full border border-gold/40 px-6 py-2.5 text-xs tracking-[0.2em] text-gold uppercase transition-all duration-200 hover:scale-105 hover:bg-gold/10"
             >
               {t.testimonials.share}
             </a>
