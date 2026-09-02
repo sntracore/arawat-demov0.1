@@ -690,21 +690,46 @@ function TestimonialsBlock() {
   const [showAll, setShowAll] = useState(false);
   const [filter, setFilter] = useState<"all" | "5" | "4" | "hinglish" | "genz">("all");
   const [speakingIdx, setSpeakingIdx] = useState<number | null>(null);
+  const [search, setSearch] = useState("");
+  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
+
+  const FEMALE_FIRST = new Set(["ananya","priya","sneha","neha","aditi","meera","kavya","nisha","rhea","tanya","simran","pooja","isha","diya","sanya","preksha","kiara","adhya"]);
+  const isFemaleName = useCallback((name: string) => FEMALE_FIRST.has(name.trim().split(/\s+/)[0]!.toLowerCase()), []);
+  const getInitials = useCallback((name: string) => name.split(/\s+/).map((w) => w[0]).join("").slice(0,2).toUpperCase(), []);
+
+  // search + star/tag filter
   const filtered = testimonials.filter((t) => {
-    if (filter === "5") return t.stars === 5;
-    if (filter === "4") return t.stars >= 4;
-    if (filter === "hinglish") return t.tag === "Hinglish";
-    if (filter === "genz") return t.tag === "GenZ";
+    if (filter === "5" && t.stars !== 5) return false;
+    if (filter === "4" && t.stars < 4) return false;
+    if (filter === "hinglish" && t.tag !== "Hinglish") return false;
+    if (filter === "genz" && t.tag !== "GenZ") return false;
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      if (!t.name.toLowerCase().includes(q) && !t.text.toLowerCase().includes(q)) return false;
+    }
     return true;
   });
   const visible = showAll ? filtered : filtered.slice(0, 9);
   const avg = (testimonials.reduce((s, t) => s + t.stars, 0) / testimonials.length).toFixed(1);
+  const c5 = testimonials.filter((t) => t.stars === 5).length;
+  const c4 = testimonials.filter((t) => t.stars === 4).length;
+  const c3 = testimonials.filter((t) => t.stars === 3).length;
+  const marqueeItems = filtered.slice(0, Math.min(12, filtered.length));
+  const doubled = marqueeItems.length ? [...marqueeItems, ...marqueeItems] : [];
 
-  // female names set — for female-voice selection
-  const FEMALE_FIRST = new Set(["ananya","priya","sneha","neha","aditi","meera","kavya","nisha","rhea","tanya","simran","pooja","isha","diya","sanya","preksha","kiara","adhya"]);
-  const isFemaleName = useCallback((name: string) => FEMALE_FIRST.has(name.trim().split(/\s+/)[0]!.toLowerCase()), []);
+  // JSON-LD for SEO — AggregateRating + reviews
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Arawat Occult Sciences",
+    aggregateRating: { "@type": "AggregateRating", ratingValue: avg, reviewCount: String(testimonials.length), bestRating: "5", worstRating: "1" },
+    review: testimonials.slice(0, 10).map((t) => ({ "@type": "Review", author: t.name, reviewRating: { "@type": "Rating", ratingValue: String(t.stars), bestRating: "5" }, reviewBody: t.text.replace(/[“”]/g, "") })),
+  };
 
-  // native Web Speech API — female voice for female names
+  const copy = useCallback(async (text: string, idx: number) => {
+    try { await navigator.clipboard.writeText(text); setCopiedIdx(idx); setTimeout(() => setCopiedIdx((v) => (v === idx ? null : v)), 1500); } catch {}
+  }, []);
+
   const speak = useCallback((raw: string, idx: number, female: boolean) => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
     const synth = window.speechSynthesis;
@@ -712,8 +737,7 @@ function TestimonialsBlock() {
     synth.cancel();
     const clean = raw.replace(/[“”"']/g, "").trim();
     const u = new SpeechSynthesisUtterance(clean);
-    u.lang = "en-IN";
-    u.rate = 0.95;
+    u.lang = "en-IN"; u.rate = 0.95;
     const voices = synth.getVoices();
     let pick: SpeechSynthesisVoice | null = null;
     if (female) {
@@ -721,38 +745,91 @@ function TestimonialsBlock() {
         || voices.find((v) => v.lang === "en-IN" && /female/i.test(v.name))
         || voices.find((v) => v.lang === "en-IN")
         || voices.find((v) => v.lang.startsWith("en") && !/male|david/i.test(v.name))
-        || voices.find((v) => v.lang.startsWith("en"))
-        || null;
+        || voices.find((v) => v.lang.startsWith("en")) || null;
       u.pitch = 1.15;
     } else {
       pick = voices.find((v) => v.lang.startsWith("en") && /male|david|mark|alex|george/i.test(v.name))
-        || voices.find((v) => v.lang.startsWith("en"))
-        || null;
+        || voices.find((v) => v.lang.startsWith("en")) || null;
       u.pitch = 0.92;
     }
     if (pick) { u.voice = pick; u.lang = pick.lang; }
-    u.onend = () => setSpeakingIdx(null);
-    u.onerror = () => setSpeakingIdx(null);
-    setSpeakingIdx(idx);
-    synth.speak(u);
+    u.onend = () => setSpeakingIdx(null); u.onerror = () => setSpeakingIdx(null);
+    setSpeakingIdx(idx); synth.speak(u);
   }, [speakingIdx]);
 
   useEffect(() => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      // warm up voices (Chrome loads async)
       window.speechSynthesis.getVoices();
       const h = () => window.speechSynthesis.getVoices();
       window.speechSynthesis.addEventListener?.("voiceschanged" as any, h);
       return () => window.speechSynthesis.removeEventListener?.("voiceschanged" as any, h);
     }
   }, []);
-
   useEffect(() => () => { if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel(); }, []);
+
   return (
     <div className="mt-8">
-      <div className="flex flex-wrap items-center justify-center gap-2 text-[11px]">
-        <span className="rounded-full border border-gold/20 bg-white/[0.03] px-3 py-1 text-gold/70">{testimonials.length} reviews · {avg} ★ avg</span>
-        <span className="h-3 w-px bg-gold/20 hidden sm:block" aria-hidden />
+      {/* SEO */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+      {/* 2. rating summary bar */}
+      <div className="surface-card rounded-2xl p-4 sm:p-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4">
+            <div className="text-center">
+              <p className="text-3xl font-bold text-gradient-gold">{avg}</p>
+              <div className="mt-0.5 flex justify-center"><Stars n={5} /></div>
+              <p className="mt-1 text-[10px] tracking-widest text-muted-foreground uppercase">{testimonials.length} reviews</p>
+            </div>
+            <div className="h-14 w-px bg-gold/20 hidden sm:block" aria-hidden />
+            <div className="flex-1 space-y-1.5 sm:min-w-[180px]">
+              {[[5,c5],[4,c4],[3,c3 ] as const].map(([star, cnt]) => (
+                <div key={star} className="flex items-center gap-2 text-xs">
+                  <span className="w-6 text-gold/70">{star}★</span>
+                  <div className="h-1.5 flex-1 rounded-full bg-white/10 overflow-hidden">
+                    <div className="h-full bg-gold transition-all" style={{ width: `${(cnt / testimonials.length) * 100}%` }} />
+                  </div>
+                  <span className="w-6 text-right text-muted-foreground">{cnt}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="hidden sm:flex items-center gap-1.5 text-[10px] tracking-widest text-gold/60 uppercase">
+            <span className="h-2 w-2 rounded-full bg-green-500/70 animate-pulse" /> Verified seekers
+          </div>
+        </div>
+      </div>
+
+      {/* 4. search */}
+      <div className="mt-4 flex gap-2">
+        <div className="relative flex-1">
+          <input value={search} onChange={(e) => { setSearch(e.target.value); setShowAll(false); }} placeholder="Search — e.g. career, relationship, anxious..." className="form-input py-2.5 text-sm pr-8" />
+          {search ? <button type="button" onClick={() => setSearch("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-gold/60 hover:text-gold text-sm px-1" aria-label="Clear search">×</button> : null}
+        </div>
+        {search ? <span className="hidden sm:inline-flex items-center rounded-full border border-gold/20 bg-white/[0.03] px-3 text-xs text-muted-foreground">{filtered.length} found</span> : null}
+      </div>
+
+      {/* 3. marquee */}
+      {doubled.length >= 6 ? (
+        <div className="mt-4 overflow-hidden rounded-2xl border border-gold/15 bg-white/[0.02] py-3">
+          <div className="marquee-track">
+            {doubled.map((t, i) => (
+              <div key={`m-${t.name}-${i}`} className="mx-2 flex w-[280px] shrink-0 flex-col rounded-xl border border-gold/15 bg-white/[0.03] p-3">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gold text-[10px] font-bold text-background">{getInitials(t.name)}</span>
+                  <span className="text-xs font-semibold text-foreground truncate">{t.name}</span>
+                  <span className="ml-auto text-[11px]" style={{ color: "oklch(0.85 0.15 88)" }}>{"★".repeat(t.stars)}</span>
+                </div>
+                <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-muted-foreground whitespace-pre-wrap break-words">{t.text}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-1 text-center text-[10px] tracking-widest text-gold/40 uppercase">Hover to pause · {filtered.length} reviews</p>
+        </div>
+      ) : null}
+
+      {/* filters */}
+      <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-[11px]">
         <div className="flex flex-wrap gap-1.5">
           {[
             ["all", "All"],
@@ -761,66 +838,55 @@ function TestimonialsBlock() {
             ["hinglish", "Hinglish"],
             ["genz", "GenZ"],
           ].map(([v, label]) => (
-            <button
-              key={v}
-              onClick={() => { setFilter(v as any); setShowAll(false); }}
-              className={`rounded-full border px-3 py-1 text-[11px] tracking-wide transition-colors ${filter === v ? "border-gold bg-gold text-background font-bold" : "border-gold/25 text-gold/70 hover:bg-gold/10 hover:text-gold"}`}
-            >
+            <button key={v} onClick={() => { setFilter(v as any); setShowAll(false); }} className={`rounded-full border px-3 py-1 text-[11px] tracking-wide transition-colors ${filter === v ? "border-gold bg-gold text-background font-bold" : "border-gold/25 text-gold/70 hover:bg-gold/10 hover:text-gold"}`}>
               {label}
             </button>
           ))}
         </div>
       </div>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {/* grid with 1. avatar + verified + 4. copy/share + speaker */}
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {visible.map((t, i) => {
           const isSpeaking = speakingIdx === i;
+          const initials = getInitials(t.name);
           return (
-          <div
-            key={`${t.name}-${i}`}
-            className={`surface-card flex flex-col rounded-2xl p-5 text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-glow ${isSpeaking ? "ring-1 ring-gold/40" : ""}`}
-          >
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-foreground">
-                  {t.name}
-                  {t.age ? <span className="ml-1 font-normal text-muted-foreground">, {t.age}</span> : null}
-                </p>
-                <div className="mt-1"><Stars n={t.stars} /></div>
+          <div key={`${t.name}-${i}`} className={`surface-card flex flex-col rounded-2xl p-5 text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-glow ${isSpeaking ? "ring-1 ring-gold/40" : ""}`}>
+            <div className="flex items-start gap-3">
+              <div className="relative shrink-0">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-gold/30 bg-gradient-to-br from-gold/30 to-gold/10 text-xs font-bold text-gold">{initials}</div>
+                <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-500 text-[9px] text-white border border-background" title="Verified seeker" aria-label="Verified">✓</span>
               </div>
-              <div className="flex shrink-0 items-center gap-1.5">
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-foreground">{t.name}{t.age ? <span className="ml-1 font-normal text-muted-foreground">, {t.age}</span> : null}</p>
+                <div className="mt-0.5"><Stars n={t.stars} /></div>
+              </div>
+              <div className="flex shrink-0 items-center gap-1">
                 {t.tag ? <span className="rounded-full border border-gold/20 bg-gold/10 px-2 py-0.5 text-[10px] tracking-widest text-gold uppercase">{t.tag}</span> : null}
-                <button
-                  type="button"
-                  onClick={() => speak(`${t.name} says: ${t.text}`, i, isFemaleName(t.name))}
-                  aria-label={isSpeaking ? `Stop reading ${t.name}` : `Read ${t.name} aloud in ${isFemaleName(t.name) ? "female" : "male"} English voice`}
-                  title={isSpeaking ? "Stop" : isFemaleName(t.name) ? "Female voice" : "Male voice"}
-                  className={`flex h-7 w-7 items-center justify-center rounded-full border transition-colors ${isSpeaking ? "border-gold bg-gold text-background" : "border-gold/30 text-gold/70 hover:bg-gold/10 hover:text-gold"}`}
-                >
-                  {isSpeaking ? (
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5"><path d="M6 6h4v12H6zM14 6h4v12h-4z" /></svg>
-                  ) : (
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.74 2.5-2.26 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" /></svg>
-                  )}
+                <button type="button" onClick={() => speak(`${t.name} says: ${t.text}`, i, isFemaleName(t.name))} aria-label={isSpeaking ? `Stop reading ${t.name}` : `Read ${t.name} aloud in ${isFemaleName(t.name) ? "female" : "male"} English voice`} title={isSpeaking ? "Stop" : isFemaleName(t.name) ? "Female voice" : "Male voice"} className={`flex h-7 w-7 items-center justify-center rounded-full border transition-colors ${isSpeaking ? "border-gold bg-gold text-background" : "border-gold/30 text-gold/70 hover:bg-gold/10 hover:text-gold"}`}>
+                  {isSpeaking ? <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5"><path d="M6 6h4v12H6zM14 6h4v12h-4z" /></svg> : <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.74 2.5-2.26 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" /></svg>}
                 </button>
               </div>
             </div>
             <p className="mt-3 flex-1 text-[13.5px] leading-relaxed text-muted-foreground whitespace-pre-wrap break-words">{t.text}</p>
             {isSpeaking ? <span className="mt-2 text-[10px] tracking-widest text-gold/60 uppercase">{isFemaleName(t.name) ? "Female voice · English..." : "Male voice · English..."}</span> : null}
+            <div className="mt-3 flex items-center gap-1.5 border-t border-gold/10 pt-3">
+              <button type="button" onClick={() => copy(`${t.name} (${t.stars}★): ${t.text}`, i)} className="rounded-full border border-gold/20 px-2.5 py-1 text-[10px] tracking-wide text-gold/70 hover:bg-gold/10 hover:text-gold transition-colors">{copiedIdx === i ? "Copied!" : "Copy"}</button>
+              <a href={`https://wa.me/?text=${encodeURIComponent(`${t.name} (${t.stars}★): ${t.text} — via Arawat Occult Sciences`)}`} target="_blank" rel="noreferrer noopener" className="rounded-full border border-gold/20 px-2.5 py-1 text-[10px] tracking-wide text-gold/70 hover:bg-gold/10 hover:text-gold transition-colors">Share</a>
+              <span className="ml-auto text-[10px] text-muted-foreground/50">#{i + 1}</span>
+            </div>
           </div>
           );
         })}
       </div>
+      {filtered.length === 0 ? <p className="mt-6 text-center text-sm text-muted-foreground">No reviews match “{search}” — try another word.</p> : null}
 
       {filtered.length > 9 ? (
         <div className="mt-8 flex flex-col items-center gap-3">
-          <button
-            onClick={() => setShowAll((v) => !v)}
-            className="rounded-full border border-gold/40 px-6 py-2.5 text-xs tracking-[0.18em] text-gold uppercase transition-all hover:scale-105 hover:bg-gold/10"
-          >
+          <button onClick={() => setShowAll((v) => !v)} className="rounded-full border border-gold/40 px-6 py-2.5 text-xs tracking-[0.18em] text-gold uppercase transition-all hover:scale-105 hover:bg-gold/10">
             {showAll ? "Show less ↑" : `View all ${filtered.length} reviews →`}
           </button>
-          {!showAll ? <span className="text-xs text-muted-foreground/60">Showing {visible.length} of {filtered.length} · {filter !== "all" ? "filtered" : "total 41"}</span> : null}
+          {!showAll ? <span className="text-xs text-muted-foreground/60">Showing {visible.length} of {filtered.length} · {search ? "search" : filter !== "all" ? "filtered" : "total 41"}</span> : null}
         </div>
       ) : null}
 
