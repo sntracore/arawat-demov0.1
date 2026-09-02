@@ -47,43 +47,24 @@ function playTing() {
     const Ctx = (window as any).AudioContext || (window as any).webkitAudioContext;
     if (!Ctx) return;
     const ctx = new Ctx();
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.type = "sine";
-    o.frequency.value = 880;
-    o.connect(g); g.connect(ctx.destination);
-    g.gain.setValueAtTime(0.35, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.7);
-    o.start(); o.stop(ctx.currentTime + 0.7);
-    // resume if suspended (autoplay policy)
+    [0, 0.22].forEach((d) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = "sine";
+      o.frequency.value = 880;
+      o.connect(g); g.connect(ctx.destination);
+      const t0 = ctx.currentTime + d;
+      g.gain.setValueAtTime(0.32, t0);
+      g.gain.exponentialRampToValueAtTime(0.01, t0 + 0.55);
+      o.start(t0); o.stop(t0 + 0.55);
+    });
     if (ctx.state === "suspended") ctx.resume();
   } catch {}
 }
-function playChakraVoice(c: { freq: number; voice: string }) {
+function playChakraVoice(_c: { freq: number; voice: string }) {
   playTing();
-  try {
-    const a = new Audio(c.voice);
-    a.volume = 0.75;
-    a.play().catch(() => {});
-  } catch {}
 }
-function playOmOnOpen() {
-  try {
-    const a = new Audio("/voices/aum.mp3");
-    a.volume = 0.7;
-    a.preload = "auto";
-    const tryPlay = () => a.play().catch(() => {});
-    const p = a.play();
-    if (p && (p as Promise<void>).catch) {
-      (p as Promise<void>).catch(() => {
-        const once = () => { tryPlay(); document.removeEventListener("click", once); document.removeEventListener("touchstart", once); document.removeEventListener("keydown", once); };
-        document.addEventListener("click", once, { once: true });
-        document.addEventListener("touchstart", once, { once: true });
-        document.addEventListener("keydown", once, { once: true });
-      });
-    }
-  } catch {}
-}
+function playOmOnOpen() {}
 
 const BOT_REPLIES: { pattern: RegExp; reply: string }[] = [
   { pattern: /\b(namaste|namaskar|pranam)\b/i, reply: "Namaste! \u{1F64F} I'm Arawat's virtual assistant. Acharya Aarti has 7+ years of experience in astrology, numerology, and aura reading. How can I help you today?" },
@@ -1075,8 +1056,7 @@ function Index() {
     navigator.vibrate?.(15);
   };
 
-  // Om on site open — with autoplay fallback to first click
-  useEffect(() => { playOmOnOpen(); }, []);
+  void playOmOnOpen;
 
   return (
     <main id="top" className="relative golden-cursor">
@@ -1091,7 +1071,7 @@ function Index() {
       >
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2.5">
           <a href="#top" className="flex items-center gap-2">
-            <span className="font-display text-sm tracking-[0.3em] text-gradient-gold">ARAWAT</span>
+            <span className="font-display text-sm tracking-[0.3em] text-gradient-gold">{lang === "hi" ? "ऐRAWAT" : "ARAWAT"}</span>
           </a>
           <div className="ml-auto flex flex-wrap items-center justify-end gap-2 text-[11px] uppercase tracking-[0.18em] text-gold/80">
             <div className="hidden items-center gap-x-4 sm:flex">
@@ -1816,7 +1796,7 @@ function Index() {
       <footer className="relative z-10 mx-auto mt-8 max-w-5xl px-6 pb-16 text-center">
         <video src="/arawat-logo-video.mp4" autoPlay muted loop playsInline preload="metadata" poster="/elephant-logo.jpg" aria-label="Arawat — golden elephant with mandala" className="mx-auto mb-6 h-auto w-[420px] max-w-[90vw] rounded-2xl border border-gold/40 bg-white p-1.5 shadow-glow" />
         <p className="text-4xl font-bold italic text-gradient-gold sm:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
-          ARAWAT <span className="font-bold italic">OCCULT SCIENCES</span>
+          {lang === "hi" ? "ऐRAWAT" : "ARAWAT"} <span className="font-bold italic">{lang === "hi" ? "ऑकल्ट साइंसेज़" : "OCCULT SCIENCES"}</span>
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-muted-foreground">
           {t.footer.trusted.map((item) => (
