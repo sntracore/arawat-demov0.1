@@ -547,11 +547,27 @@ function Reveal({ children, className }: { children: React.ReactNode; className?
   );
 }
 
+function LotusIcon({ size = 28 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden style={{ display: "block", flexShrink: 0, filter: "drop-shadow(0 0 8px rgba(201,168,106,0.55))" }}>
+      <g fill="#c9a86a">
+        <ellipse cx="32" cy="34" rx="8.5" ry="15" />
+        <ellipse cx="21.5" cy="38" rx="7" ry="12.5" transform="rotate(-22 21.5 38)" />
+        <ellipse cx="42.5" cy="38" rx="7" ry="12.5" transform="rotate(22 42.5 38)" />
+        <ellipse cx="14" cy="42" rx="6" ry="11" transform="rotate(-38 14 42)" />
+        <ellipse cx="50" cy="42" rx="6" ry="11" transform="rotate(38 50 42)" />
+      </g>
+      <ellipse cx="32" cy="50" rx="14" ry="5.5" fill="#f3e5c2" />
+      <ellipse cx="32" cy="50" rx="8" ry="3" fill="#c9a86a" opacity={0.6} />
+    </svg>
+  );
+}
+
 function Divider() {
   return (
     <div className="relative z-10 mx-auto mt-24 flex max-w-md items-center gap-4 px-6 text-gold/50" aria-hidden>
       <span className="h-px flex-1 bg-gradient-to-r from-transparent to-gold/40" />
-      <span className="text-lg">✦</span>
+      <span className="inline-flex items-center justify-center"><LotusIcon size={22} /></span>
       <span className="h-px flex-1 bg-gradient-to-l from-transparent to-gold/40" />
     </div>
   );
@@ -1377,7 +1393,7 @@ function Index() {
 
       {/* Lotus — middle */}
       <div className="relative z-10 mx-auto mt-8 flex justify-center" aria-hidden>
-        <span className="text-3xl opacity-70" style={{ filter: "drop-shadow(0 0 8px oklch(0.85 0.15 88 / 0.5))" }}>🪷</span>
+        <LotusIcon size={32} />
       </div>
 
       <Divider />
@@ -1862,7 +1878,7 @@ function Index() {
 
       {/* Lotus — centre small last page */}
       <div className="relative z-10 mx-auto mt-16 flex justify-center" aria-hidden>
-        <span className="text-4xl opacity-80" style={{ filter: "drop-shadow(0 0 8px oklch(0.85 0.15 88 / 0.5))" }}>🪷</span>
+        <LotusIcon size={40} />
       </div>
       {/* Footer — ARAWAT OCCULT SCIENCES italic bold enlarged */}
       <footer className="relative z-10 mx-auto mt-8 max-w-5xl px-6 pb-16 text-center">
